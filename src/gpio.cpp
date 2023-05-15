@@ -58,11 +58,11 @@ GPIO_PinValue Read(const GPIO_Pin& pin) {
 }
 
 std::string export_filepath(uint32_t pinNumber) {
-    return GPIO_FILE_PATH + "gpio" + std::to_string(pinNumber) + "/export";
+    return GPIO_FILE_PATH + "export";
 }
 
 std::string unexport_filepath(uint32_t pinNumber) {
-    return GPIO_FILE_PATH + "gpio" + std::to_string(pinNumber) + "/unexport";
+    return GPIO_FILE_PATH + "unexport";
 }
 
 std::string direction_filepath(uint32_t pinNumber) {
