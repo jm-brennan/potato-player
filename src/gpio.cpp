@@ -1,0 +1,61 @@
+#include "gpio.h"
+#include "utils.h"
+
+void Export(GPIO_Pin& pin) {
+    write_to_file(export_filepath(pin.pinNumber), std::to_string(pin.pinNumber));
+
+    std::string directionStr = "in";
+    if (pin.direction == GPIO_PinDirection::WRITE) {
+        directionStr = "out";
+    }
+    write_to_file(direction_filepath(pin.pinNumber), directionStr);
+    
+    pin.status = EXPORTED;
+}
+
+void Unexport(GPIO_Pin& pin) {
+    write_to_file(unexport_filepath(pin.pinNumber), std::to_string(pin.pinNumber));
+    pin.status = UNEXPORTED;
+}
+
+void Write(const GPIO_Pin& pin, GPIO_PinValue value) {
+    if (pin.status == GPIO_PinStatus::EXPORTED && 
+        pin.direction == GPIO_PinDirection::WRITE) {
+        write_to_file(value_filepath(pin.pinNumber), std::to_string(value));
+    } else {
+        std::cerr << "Error: Could not write to GPIO value file";
+    }
+}
+
+GPIO_PinValue Read(const GPIO_Pin& pin) {
+    if (pin.status == GPIO_PinStatus::EXPORTED && 
+        pin.direction == GPIO_PinDirection::READ) {
+        
+        std::cout << "Pin " << pin.pinNumber 
+                  << " value: " << read_first_byte_of_file(value_filepath(pin.pinNumber)) 
+                  << "\n";
+    } else {
+        std::cerr << "Error: Could not read from GPIO value file";
+    }
+}
+
+std::string export_filepath(uint32_t pinNumber) {
+    return GPIO_FILE_PATH + "gpio" + std::to_string(pinNumber) + "/export";
+}
+
+std::string unexport_filepath(uint32_t pinNumber) {
+    return GPIO_FILE_PATH + "gpio" + std::to_string(pinNumber) + "/unexport";
+}
+
+std::string direction_filepath(uint32_t pinNumber) {
+    return GPIO_FILE_PATH + "gpio" + std::to_string(pinNumber) + "/direction";
+}
+
+std::string value_filepath(uint32_t pinNumber) {
+    return GPIO_FILE_PATH + "gpio" + std::to_string(pinNumber) + "/value";
+}
+
+
+/* int main() {
+
+} */
