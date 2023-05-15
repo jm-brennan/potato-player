@@ -31,11 +31,14 @@ GPIO_PinValue Read(const GPIO_Pin& pin) {
     if (pin.status == GPIO_PinStatus::EXPORTED && 
         pin.direction == GPIO_PinDirection::READ) {
         
+        uint8_t val = read_first_byte_of_file(value_filepath(pin.pinNumber));
         std::cout << "Pin " << pin.pinNumber 
-                  << " value: " << read_first_byte_of_file(value_filepath(pin.pinNumber)) 
+                  << " value: " << val 
                   << "\n";
+        return static_cast<GPIO_PinValue>(val);
     } else {
         std::cerr << "Error: Could not read from GPIO value file";
+        return LOW;
     }
 }
 
