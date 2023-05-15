@@ -50,7 +50,7 @@ GPIO_PinValue Read(const GPIO_Pin& pin) {
         uint8_t val = read_first_byte_of_file(value_filepath(pin.pinNumber));
         printf("Pin %d value: %d\n", pin.pinNumber, val); 
 
-        return static_cast<GPIO_PinValue>(val);
+        return static_cast<GPIO_PinValue>(val - 48);
     } else {
         printf("Error: Could not read from GPIO value file");
         return LOW;
