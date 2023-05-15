@@ -23,7 +23,7 @@ void Write(const GPIO_Pin& pin, GPIO_PinValue value) {
         pin.direction == GPIO_PinDirection::WRITE) {
         write_to_file(value_filepath(pin.pinNumber), std::to_string(value));
     } else {
-        std::cerr << "Error: Could not write to GPIO value file";
+        printf("Error: Could not write to GPIO value file");
     }
 }
 
@@ -32,12 +32,11 @@ GPIO_PinValue Read(const GPIO_Pin& pin) {
         pin.direction == GPIO_PinDirection::READ) {
         
         uint8_t val = read_first_byte_of_file(value_filepath(pin.pinNumber));
-        std::cout << "Pin " << pin.pinNumber 
-                  << " value: " << val 
-                  << "\n";
+        printf("Pin %d value: %d\n", pin.pinNumber, val); 
+
         return static_cast<GPIO_PinValue>(val);
     } else {
-        std::cerr << "Error: Could not read from GPIO value file";
+        printf("Error: Could not read from GPIO value file");
         return LOW;
     }
 }
