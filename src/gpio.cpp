@@ -31,7 +31,9 @@ GPIO_PinValue Read(const GPIO_Pin& pin) {
     if (pin.status == GPIO_PinStatus::EXPORTED && 
         pin.direction == GPIO_PinDirection::READ) {
         
-        std::string contents = read_entire_file(value_filepath(pin.pinNumber).c_str());
+        std::string readFile = value_filepath(pin.pinNumber);
+        printf("reading file: %s\n", readFile.c_str());
+        std::string contents = read_entire_file(readFile.c_str());
 
         GPIO_PinValue val = LOW;
 
