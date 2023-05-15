@@ -33,21 +33,21 @@ GPIO_PinValue Read(const GPIO_Pin& pin) {
         
         std::string readFile = value_filepath(pin.pinNumber);
         printf("reading file: %s\n", readFile.c_str());
-        std::string contents = read_entire_file(readFile.c_str());
+        //std::string contents = read_entire_file(readFile.c_str());
 
-        GPIO_PinValue val = LOW;
-
-        if (contents == "1") {
+        uint8_t val = read_first_byte_of_file(value_filepath(pin.pinNumber));
+/* 
+        if (contents.at(0) == "1") {
             val = HIGH;
         }
-        else if (contents == "0") {
+        else if (contents.at(0) == "0") {
 
         }
         else {
             printf("unexpected file contents %s\n", contents.c_str());
-        }
+        } */
 
-        //uint8_t val = read_first_byte_of_file(value_filepath(pin.pinNumber));
+        GPIO_PinValue val = LOW;
         printf("Pin %d value: %d\n", pin.pinNumber, val); 
 
         return static_cast<GPIO_PinValue>(val);
