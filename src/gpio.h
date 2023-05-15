@@ -34,4 +34,4 @@ std::string export_filepath(uint32_t pinNumber);
 std::string unexport_filepath(uint32_t pinNumber);
 std::string value_filepath(uint32_t pinNumber);
 
-const std::string GPIO_FILE_PATH = "sys/class/gpio/";
+const std::string GPIO_FILE_PATH = "/sys/class/gpio/";
