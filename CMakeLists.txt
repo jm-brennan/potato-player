@@ -23,7 +23,7 @@ set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 set(SOURCES 
-"${SRC_DIR}/main.cpp"
+"${SRC_DIR}/glfw_main.cpp"
 #"${SRC_DIR}/gpio.cpp"
 #"${SRC_DIR}/gpio.h"
 "${SRC_DIR}/utils.h"
@@ -37,6 +37,13 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${INCLUDES})
 target_include_directories(${PROJECT_NAME} PRIVATE "${SRC_DIR}")
 target_include_directories(${PROJECT_NAME} PRIVATE "${INCLUDE_DIR}")
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
+
+#find_package(OpenGL REQUIRED)
+#find_package(GLUT REQUIRED)
+#cmake_print_variables(GLUT)
+#include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
+#target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} )
+
 
 set(GLFW_DIR "${LIB_DIR}/glfw-3.3.2")
 set(GLFW_BUILD_EXAMPLES OFF)
