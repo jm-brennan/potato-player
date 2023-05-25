@@ -7,16 +7,16 @@ set (CMAKE_CXX_STANDARD 11)
 set(CMAKE_BUILD_TYPE Debug)
 
 # use, i.e. don't skip the full RPATH for the build tree
-set(CMAKE_SKIP_BUILD_RPATH FALSE)
+#set(CMAKE_SKIP_BUILD_RPATH FALSE)
  
 # when building, don't use the install RPATH already
 # (but later on when installing)
-set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+#set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+#set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
  
 # add the automatically determined parts of the RPATH
 # which point to directories outside the build tree to the install RPATH
-set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+#set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 # Source files
 set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
@@ -24,17 +24,12 @@ set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 set(SOURCES 
 "${SRC_DIR}/main.cpp"
-"${SRC_DIR}/gpio.cpp"
-"${SRC_DIR}/gpio.h"
+#"${SRC_DIR}/gpio.cpp"
+#"${SRC_DIR}/gpio.h"
 "${SRC_DIR}/utils.h"
-
-"${SRC_DIR}/miniaudio.h"
 )
 
-set(INCLUDES 
-)
-
-list(APPEND CMAKE_PREFIX_PATH "${LIB_DIR}/SFML-2.5.1")
+#list(APPEND CMAKE_PREFIX_PATH "${LIB_DIR}/SFML-2.5.1")
 
 
 # Executable definition and properties
@@ -43,13 +38,31 @@ target_include_directories(${PROJECT_NAME} PRIVATE "${SRC_DIR}")
 target_include_directories(${PROJECT_NAME} PRIVATE "${INCLUDE_DIR}")
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 
+set(GLFW_DIR "${LIB_DIR}/glfw-3.3.2")
+set(GLFW_BUILD_EXAMPLES OFF)
+set(GLFW_BUILD_TESTS OFF)
+set(GLFW_BUILD_DOCS OFF)
+set(GLFW_INSTALL OFF)
+add_subdirectory("${GLFW_DIR}")
+target_link_libraries(${PROJECT_NAME} "glfw" "${GLFW_LIBRARIES}")
+target_include_directories(${PROJECT_NAME} PRIVATE "${GLFW_DIR}/include")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "GLFW_INCLUDE_NONE")
+
+
+# glad
+set(GLAD_DIR "${LIB_DIR}/glad")
+add_library("glad" "${GLAD_DIR}/src/glad.c")
+target_include_directories("glad" PRIVATE "${GLAD_DIR}/include")
+target_include_directories(${PROJECT_NAME} PRIVATE "${GLAD_DIR}/include")
+target_link_libraries(${PROJECT_NAME} "glad" "${CMAKE_DL_LIBS}")
+
+
 # sfml
 #target_include_directories(${PROJECT_NAME} PRIVATE "${LIB_DIR}/SFML-2.5.1/include")
 #target_include_directories(${PROJECT_NAME} PRIVATE "${LIB_DIR}/SFML-2.5.1/include/SFML")
 #target_include_directories(${PROJECT_NAME} PRIVATE "${LIB_DIR}/SFML-2.5.1/include/SFML/Audio")
 #find_library(SFML_Lib sfml-audio)
-#cmake_print_variables(SFLM_Lib)
-#
+
 #target_link_libraries(${PROJECT_NAME} PRIVATE "${SFML_Lib}")
 #find_library(FLAC_Lib FLAC)
 #cmake_print_variables(FLAC_Lib)
