@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
     
     glfwSwapInterval(1);
 
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    if (!gladLoadGLES2Loader((GLADloadproc)glfwGetProcAddress)) {
         printf("ERROR::GLAD init\n");
         return -1;
     }
