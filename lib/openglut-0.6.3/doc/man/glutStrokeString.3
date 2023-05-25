@@ -1,0 +1,88 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTSTROKESTRING 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutStrokeString
+.Nd Draw a string of stroked characters.
+.Sh LIBRARY
+OpenGLUT - fonts
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutStrokeString "void *fontID" "const unsigned char *string"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ fontID
+.Ef
+    A GLUT stroked font identifier.
+.Pp
+.Bf Em
+ string
+.Ef
+    A NUL-terminated ASCII string.
+.Sh DESCRIPTION
+This function draws a 
+.Bf Sy
+ string
+.Ef
+ in the font indicated
+by 
+.Bf Sy
+ fontID.
+.Ef
+ 
+It is 
+.Bf Li
+ almost
+.Ef
+  equivalent to calling glutStrokeCharacter()
+on each character in the 
+.Bf Sy
+ string,
+.Ef
+ successively.
+Mostly, it is a convenience function to hide the loop,
+and to treat \\n as a special symbol rather than a normal
+glyph.
+.Pp
+The first character displays at the current model space
+origin,  The origin changes by successive translations.
+.Pp
+The newline character, \\n (ASCII LF) is treated as
+a newline and resets the origin horizontally
+while advancing the line 1 font-height down the y-axis.
+.Pp
+Does nothing if:
+ - 
+.Bf Sy
+ fontID
+.Ef
+ is out of range.
+ - 
+.Bf Sy
+ string
+.Ef
+ is 
+.Bf Sy
+ NULL
+.Ef
+ 
+ - 
+.Bf Sy
+ string
+.Ef
+ is empty
+.Pp
+Unlike glutBitmapString(), there is little performance
+advantage to using glutStrokeString() as compared with
+calling glutStrokeCharacter() yourself for every
+character.
+.Pp
+.Sh SEE ALSO
+.Xr glutStrokeLength 3
+.Xr glutStrokeCharacter 3
+.Xr glutStrokeHeight 3
+.Xr glutBitmapString 3
+.fl
+.sp 3

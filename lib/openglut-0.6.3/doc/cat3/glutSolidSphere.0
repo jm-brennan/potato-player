@@ -1,0 +1,39 @@
+GLUTSOLIDSPHERE(3)               Local Manual               GLUTSOLIDSPHERE(3)
+
+[1mNAME[0m
+     [1mglutSolidSphere [22m-- Draw a solid sphere centered at the origin.
+
+[1mLIBRARY[0m
+     OpenGLUT - geometry
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutSolidSphere[22m([4mGLdouble[24m [4mradius[24m, [4mGLint[24m [4mslices[24m, [4mGLint[24m [4mstacks[24m);
+
+[1mPARAMETERS[0m
+      [4mradius[24m         Sphere radius.
+
+      [4mslices[24m         The number of divisions around the z axis. (latitudal)
+
+      [4mstacks[24m         The number of divisions along the z axis. (longitudal)
+
+[1mDESCRIPTION[0m
+     The glutSolidSphere() function draws a shaded sphere centered at the ori-
+     gin.  The surface is created from quadrangles (except for triangles as
+     degenerate quads at the poles) in a longitude/latitude pattern.  The
+     equatorial great circle lies in the xy-plane and is centered on the ori-
+     gin.
+
+[1mCAVEATS[0m
+     The number of polygons representing the spherical surface is proportional
+     to (slices*stacks).
+
+[1mSEE ALSO[0m
+     glutWireSphere(3)
+
+
+
+
+                                     Epoch

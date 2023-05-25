@@ -1,0 +1,41 @@
+GLUTWIREOCTAHEDRON(3)            Local Manual            GLUTWIREOCTAHEDRON(3)
+
+[1mNAME[0m
+     [1mglutWireOctahedron [22m-- Draw a wireframe octahedron.
+
+[1mLIBRARY[0m
+     OpenGLUT - geometry
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutWireOctahedron[22m([4mvoid[24m);
+
+[1mDESCRIPTION[0m
+     This function draws a regular wireframe 8-sided polyhedron centered at
+     the origin.  The vertices are at (+/-1, 0, 0), (0, +/-1, 0), (0, 0,
+     +/-1).
+
+[1mCAVEATS[0m
+     We visit the same vertices the same number of times as for the solid oc-
+     tahedron, but the order is different.
+
+     Draws every edge twice.
+
+     The lines have normals, but the normals are from the facets, rather than
+     upon the edge.  If you squint too hard, the lighting on a wireframe octa-
+     hedron does not look quite right.
+
+[1mTODO[0m
+     It may be faster (and look better) to draw each edge once, setting the
+     Normal at each edge.  (I don't think that this matters all that much, but
+     a lineloop was proposed for the wire Cube for speed.)
+
+[1mSEE ALSO[0m
+     glutSolidOctahedron(3)
+
+
+
+
+                                     Epoch

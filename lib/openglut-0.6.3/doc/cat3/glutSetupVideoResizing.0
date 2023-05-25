@@ -1,0 +1,26 @@
+GLUTSETUPVIDEORESIZING(3)        Local Manual        GLUTSETUPVIDEORESIZING(3)
+
+[1mNAME[0m
+     [1mglutSetupVideoResizing [22m-- Undocumented, unimplemented.
+
+[1mLIBRARY[0m
+     OpenGLUT - videomode
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutSetupVideoResizing[22m([4mvoid[24m);
+
+[1mDESCRIPTION[0m
+     This function is undocumented.  This function is unimplemeneted (pres-
+     ently).
+
+[1mSEE ALSO[0m
+     glutVideoResizeGet(3) glutSetupVideoResizing(3) glutStopVideoResizing(3)
+     glutVideoResize(3) glutVideoPan(3)
+
+
+
+
+                                     Epoch

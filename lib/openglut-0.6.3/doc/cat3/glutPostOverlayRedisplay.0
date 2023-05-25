@@ -1,0 +1,31 @@
+GLUTPOSTOVERLAYREDISPLAY(3)      Local Manual      GLUTPOSTOVERLAYREDISPLAY(3)
+
+[1mNAME[0m
+     [1mglutPostOverlayRedisplay [22m-- Posts a redispaly against the layer for the
+     current window.
+
+[1mLIBRARY[0m
+     OpenGLUT - overlays
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutPostOverlayRedisplay[22m([4mvoid[24m);
+
+[1mDESCRIPTION[0m
+     For the  current window  , tells OpenGLUT that you wish to have your
+     OverlayDisplay callback invoked.
+
+[1mCAVEATS[0m
+     Unimplemented.
+
+[1mSEE ALSO[0m
+     glutEstablishOverlay(3) glutRemoveOverlay(3) glutUseLayer(3)
+     glutPostWindowOverlayRedisplay(3) glutShowOverlay(3) glutHideOverlay(3)
+     glutOverlayDisplayFunc(3) glutPostRedisplay(3)
+
+
+
+
+                                     Epoch

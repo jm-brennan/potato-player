@@ -1,0 +1,51 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTSTROKEHEIGHT 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutStrokeHeight
+.Nd Returns the height of a given font.
+.Sh LIBRARY
+OpenGLUT - fonts
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  GLfloat
+.Fn glutStrokeHeight "void *fontID"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ fontID
+.Ef
+    A GLUT stroked font identifier.
+.Sh DESCRIPTION
+This function reports the height of a font,
+given by 
+.Bf Sy
+ fontID,
+.Ef
+ 
+as a global characteristic of that font.
+.Pp
+Returns 0 if 
+.Bf Sy
+ fontID
+.Ef
+ is invalid.
+.Pp
+.Sh CAVEATS
+Does 
+.Bf Li
+ not
+.Ef
+  report the height used by individual characters.  This may limit its usefulness; perhaps we should change it?  (And/or add a new function.)
+.Pp
+.Sh TODO
+We have discussed adding a "font descender" query. We should go ahead and do it.
+.Pp
+.Sh SEE ALSO
+.Xr glutStrokeCharacter 3
+.Xr glutStrokeString 3
+.Xr glutStrokeWidth 3
+.Xr glutStrokeLength 3
+.Xr glutBitmapHeight 3
+.fl
+.sp 3

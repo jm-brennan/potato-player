@@ -1,0 +1,87 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTLAYERGET 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutLayerGet
+.Nd Allows you to get some overlay state/option variables.
+.Sh LIBRARY
+OpenGLUT - overlays
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  int
+.Fn glutLayerGet "GLenum eWhat"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ eWhat
+.Ef
+    Enumerated parameter ID.
+.Sh DESCRIPTION
+Returns some useful information about layers.
+Or, it would be useful if layers were implemented...
+.Bf Sy
+ eWhat
+.Ef
+ may be given any of the following values:
+.Pp
+ - 
+.Bf Sy
+ GLUT_HAS_OVERLAY
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_LAYER_IN_USE
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_NORMAL_DAMAGED
+.Ef
+ 
+.br
+0 unless the window system has told us that
+the normal layer is damaged (glutPostRedisplay()
+does not affect this).
+.Pp
+ - 
+.Bf Sy
+ GLUT_OVERLAY_DAMAGED
+.Ef
+ 
+.br
+ -1 if no layer in use.
+.Pp
+ - 
+.Bf Sy
+ GLUT_OVERLAY_POSSIBLE
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_TRANSPARENT_INDEX
+.Ef
+ 
+.br
+ -1 if no layer in use.
+.Pp
+All information relates to the 
+.Bf Li
+ current window
+.Ef
+ 
+and any overlay that it may have.
+.Pp
+.Sh SEE ALSO
+.Xr glutSetOption 3
+.Xr glutGet 3
+.Xr glutDeviceGet 3
+.Xr glutGetModifiers 3
+.fl
+.sp 3

@@ -1,0 +1,40 @@
+GLUTBITMAPCHARACTER(3)           Local Manual           GLUTBITMAPCHARACTER(3)
+
+[1mNAME[0m
+     [1mglutBitmapCharacter [22m-- Draw a bitmapped character
+
+[1mLIBRARY[0m
+     OpenGLUT - bitmapfont
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutBitmapCharacter[22m([4mvoid[24m [4m*font[24m, [4mint[24m [4mcharacter[24m);
+
+[1mPARAMETERS[0m
+      [4mfont[24m       A bitmapped font identifier.
+
+      [4mcharacter[24m  A character code.
+
+[1mDESCRIPTION[0m
+     Draw a  [1mcharacter  [22mat the current OpenGL raster position using a
+     bitmapped  [1mfont.    [22mThe raster position is advanced by the width of the
+     character.
+
+     Nothing is drawn, and the raster position is unaffected when either:
+      -  [1mcharacter  [22mis out of range
+      -  [1mfont  [22mis not a valid OpenGLUT bitmap font
+      - The current OpenGL raster position is invalid
+
+[1mCAVEATS[0m
+     glutBitmapString() is generally more efficient for strings of characters.
+
+[1mSEE ALSO[0m
+     glRasterPos(3) glutBitmapString(3) glutBitmapWidth(3) glutBitmapHeight(3)
+     glutStrokeCharacter(3)
+
+
+
+
+                                     Epoch

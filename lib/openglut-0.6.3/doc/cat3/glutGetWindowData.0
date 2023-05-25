@@ -1,0 +1,31 @@
+GLUTGETWINDOWDATA(3)             Local Manual             GLUTGETWINDOWDATA(3)
+
+[1mNAME[0m
+     [1mglutGetWindowData [22m-- Get the user data for the current window
+
+[1mLIBRARY[0m
+     OpenGLUT - window
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid*[0m
+     [1mglutGetWindowData[22m([4mvoid[24m);
+
+[1mDESCRIPTION[0m
+     This function will return whatever  [1mvoid*  [22mvalue is associated with the
+     current window   via glutSetWindowData().  This is  [1mNULL  [22mif you did not
+     associate a pointer with your window.  This can be useful in a situation
+     where you have a single callback function performing services for many
+     windows.  You  [4mcould[24m   keep track of the  window id  s in a global list
+     and search for the  current window   in that list.  But this is quicker
+     than searching a data structure, and allows you to avoid the use of glob-
+     als for this.
+
+[1mSEE ALSO[0m
+     glutSetWindowData(3)
+
+
+
+
+                                     Epoch

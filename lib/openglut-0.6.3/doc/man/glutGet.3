@@ -1,0 +1,344 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTGET 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutGet
+.Nd Allows you to query some general state/option variables.
+.Sh LIBRARY
+OpenGLUT - state
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  int
+.Fn glutGet "GLenum eWhat"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ eWhat
+.Ef
+    Enumerated parameter ID.
+.Sh DESCRIPTION
+This function permits you to query for the current value
+of many different OpenGLUT state variables.  The current
+list is:
+.Pp
+ - 
+.Bf Sy
+ GLUT_ACTION_ON_WINDOW_CLOSE
+.Ef
+ 
+.br
+Allows you to do something other than die if the
+user closes one of your windows.
+.Pp
+ - 
+.Bf Sy
+ GLUT_DISPLAY_MODE_POSSIBLE
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_ELAPSED_TIME
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_INIT_DISPLAY_MODE
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_INIT_STATE
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_INIT_WINDOW_HEIGHT
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_INIT_WINDOW_WIDTH
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_INIT_WINDOW_X
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_INIT_WINDOW_Y
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_MENU_NUM_ITEMS
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_RENDERING_CONTEXT
+.Ef
+ 
+.br
+Allows you to specify context-sharing when you
+open new windows.
+.Pp
+ - 
+.Bf Sy
+ GLUT_SCREEN_HEIGHT
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_SCREEN_HEIGHT_MM
+.Ef
+ 
+.br
+Height in millimeters.
+.Pp
+ - 
+.Bf Sy
+ GLUT_SCREEN_WIDTH
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_SCREEN_WIDTH_MM
+.Ef
+ 
+.br
+Width in millimeters.
+.Pp
+ - 
+.Bf Sy
+ GLUT_VERSION
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_ACCUM_ALPHA_SIZE
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_ACCUM_BLUE_SIZE
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_ACCUM_GREEN_SIZE
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_ACCUM_RED_SIZE
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_ALPHA_SIZE
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_BLUE_SIZE
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_BORDER_WIDTH
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_BUFFER_SIZE
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_COLORMAP_SIZE
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_CURSOR
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_DEPTH_SIZE
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_DOUBLEBUFFER
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_FORMAT_ID
+.Ef
+ 
+.br
+System dependant.
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_GREEN_SIZE
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_HEADER_HEIGHT
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_HEIGHT
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_NUM_CHILDREN
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_NUM_SAMPLES
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_PARENT
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_RED_SIZE
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_RGBA
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_STENCIL_SIZE
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_STEREO
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_WIDTH
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_X
+.Ef
+ 
+.br
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_Y
+.Ef
+ 
+.br
+.Pp
+.Pp
+Most of the above are very obvious, and so full documentation
+is postponed for now.
+.Pp
+.Sh TODO
+Go back and flesh out the above list.
+.Pp
+This function is a bit messy, especially the WINCE part.  Fix.
+.Pp
+Lots of code uses return to hop out.  Since it's such a sprawling function, it's easy to be in the middle and not be 100% sure if there's anything important at the end of the function, or if it is safe to just "drop out" of the current case and head for the bottom.
+.Pp
+Causes crashes (assertion failure) if you call this before having called glutInit()---other than GLUT_INIT_STATE and GLUT_ELAPSED_TIME.  Because various things can cause OpenGLUT to become deinitialized, we should probably either return default values of some kind or do minimal initialization if we are called without proper initialization.
+.Pp
+.Sh SEE ALSO
+.Xr glutSetOption 3
+.Xr glutDeviceGet 3
+.Xr glutGetModifiers 3
+.Xr glutLayerGet 3
+.fl
+.sp 3

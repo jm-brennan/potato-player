@@ -1,0 +1,30 @@
+GLUTSHOWOVERLAY(3)               Local Manual               GLUTSHOWOVERLAY(3)
+
+[1mNAME[0m
+     [1mglutShowOverlay [22m-- Make an overlay visible.
+
+[1mLIBRARY[0m
+     OpenGLUT - overlays
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutShowOverlay[22m([4mvoid[24m);
+
+[1mDESCRIPTION[0m
+     Causes a previously-hidden overlay to become apparent.  Applies to the
+     current window  .
+
+[1mCAVEATS[0m
+     Unimplemented.
+
+[1mSEE ALSO[0m
+     glutEstablishOverlay(3) glutRemoveOverlay(3) glutUseLayer(3)
+     glutPostOverlayRedisplay(3) glutPostWindowOverlayRedisplay(3)
+     glutHideOverlay(3)
+
+
+
+
+                                     Epoch

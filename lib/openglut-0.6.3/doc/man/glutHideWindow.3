@@ -1,0 +1,29 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTHIDEWINDOW 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutHideWindow
+.Nd Make the current window hidden
+.Sh LIBRARY
+OpenGLUT - window
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutHideWindow "void"
+.Sh DESCRIPTION
+Even if a window is ``open'', it need not be visible.
+It may be convenient to hide a window rather than to close it,
+if you want to re-display the window at the same location and
+size, later.  Redefining all of the OpenGLUT features of a
+window and adding its 
+.Bf Li
+ window id
+.Ef
+  to your tracking
+when re-opening a window may also be bothersome.  So, rather
+than destroying it, you can simply ask for it to be hidden.
+.Pp
+.Sh SEE ALSO
+.Xr glutShowWindow 3
+.fl
+.sp 3

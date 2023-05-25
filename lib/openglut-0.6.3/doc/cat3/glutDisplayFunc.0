@@ -1,0 +1,39 @@
+GLUTDISPLAYFUNC(3)               Local Manual               GLUTDISPLAYFUNC(3)
+
+[1mNAME[0m
+     [1mglutDisplayFunc [22m-- Sets the Display callback for the current window.
+
+[1mLIBRARY[0m
+     OpenGLUT - windowcallback
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutDisplayFunc[22m([4mvoid([24m [4m*callback[24m [4m)([24m [4mvoid[24m [4m)[24m);
+
+[1mPARAMETERS[0m
+      [4mcallback[24m     Client function for normal redisplay event.
+
+[1mDESCRIPTION[0m
+     Sets the display callback for the  current window  .  All windows, in-
+     cluding subwindows,  [4mmust[24m   have a display callback registered.  OpenGLUT
+     will call the  [1mcallback  [22mfunction whenever it thinks that the window may
+     require updating.
+
+     This callback is bound to the  current window  .
+
+[1mCAVEATS[0m
+     Unlike most callbacks, it is illegal to try to disable the display call-
+     back by setting it to  [1mNULL  [22m.
+
+     Multiple redisplays may be coalesced into a single event for invoking the
+      [1mcallback  [22monly once.
+
+[1mSEE ALSO[0m
+     glutPostRedisplay(3) glutOverlayDisplayFunc(3)
+
+
+
+
+                                     Epoch

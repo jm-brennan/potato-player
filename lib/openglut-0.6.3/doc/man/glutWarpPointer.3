@@ -1,0 +1,55 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTWARPPOINTER 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutWarpPointer
+.Nd Moves the mouse pointer to given window coordinates.
+.Sh LIBRARY
+OpenGLUT - window
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutWarpPointer "int x" "int y"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ x
+.Ef
+        Window X coord for mouse.
+.Pp
+.Bf Em
+ y
+.Ef
+        Window Y coord for mouse.
+.Sh DESCRIPTION
+glutWarpPointer() moves the mouse pointer to window-relative
+coordinates given by 
+.Bf Sy
+ x
+.Ef
+ and 
+.Bf Sy
+ y.
+.Ef
+ 
+.Pp
+.Sh CAVEATS
+.Bf Sy
+ x
+.Ef
+ and 
+.Bf Sy
+ y
+.Ef
+ are relative to current window.
+.Pp
+Not applicable for 
+.Bf Sy
+ GLUT_OFFSCREEN
+.Ef
+ windows.
+.Pp
+Warping means moving, just as if the user had manually moved the mouse.  This can generate mouse-motion callbacks. If your callback then moves the pointer again, you may end up in an endless loop.  There is some discussion about changing this, but at present this is just a caveat for you, the user, to be aware of.
+.Pp
+.fl
+.sp 3

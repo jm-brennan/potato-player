@@ -1,0 +1,48 @@
+GLUTGAMEMODESTRING(3)            Local Manual            GLUTGAMEMODESTRING(3)
+
+[1mNAME[0m
+     [1mglutGameModeString [22m-- Set the game mode display string
+
+[1mLIBRARY[0m
+     OpenGLUT - gamemode
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutGameModeString[22m([4mconst[24m [4mchar[24m [4m*string[24m);
+
+[1mPARAMETERS[0m
+      [4mstring[24m     A configuration parameter as a string.
+
+[1mDESCRIPTION[0m
+     Sets the gamemode status according to an undocumented string.
+
+     Glancing at old GLUT 3.7, the freeglut codebase that we inherited does
+     not implement more than a single GLUT gamemode ``criteria''. It may not
+     even do that much correctly.
+
+     In principle, this code lets you set the video dimensions, rendering
+     depth, and video refresh rate.  In practice, the combination that you re-
+     quest may be unsupportable and the target host may even refuse to honor
+     any such changes.
+
+     If you use this function but do not set all options, the following de-
+     faults may be substituted for some values:
+
+      -  [1mwidth  [22m640
+      -  [1mheight  [22m480
+      -  [1mdepth  [22m16
+      -  [1mrefresh  [22m72
+
+[1mTODO[0m
+     Documentation
+
+[1mSEE ALSO[0m
+     glutGameModeString(3) glutEnterGameMode(3) glutLeaveGameMode(3)
+     glutGameModeGet(3)
+
+
+
+
+                                     Epoch

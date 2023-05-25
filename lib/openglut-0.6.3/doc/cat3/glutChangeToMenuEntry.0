@@ -1,0 +1,34 @@
+GLUTCHANGETOMENUENTRY(3)         Local Manual         GLUTCHANGETOMENUENTRY(3)
+
+[1mNAME[0m
+     [1mglutChangeToMenuEntry [22m-- Replace a menu entry with an item.
+
+[1mLIBRARY[0m
+     OpenGLUT - menus
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutChangeToMenuEntry[22m([4mint[24m [4mitem[24m, [4mconst[24m [4mchar[24m [4m*label[24m, [4mint[24m [4mvalue[24m);
+
+[1mPARAMETERS[0m
+      [4mitem[24m     Integer position down the list
+
+      [4mlabel[24m    Menu item text
+
+      [4mvalue[24m    Menu item callback value
+
+[1mDESCRIPTION[0m
+     Walks the list of the menu items and replaces the numbered  [1mitem  [22min the
+     list with the given definition.  Except that it replaces a pre-existing
+     [1mitem,  [22mthis function is much like glutAddMenuEntry().
+
+[1mSEE ALSO[0m
+     glutAddMenuEntry(3) glutAddSubMenu(3) glutChangeToSubMenu(3)
+     glutRemoveMenuItem(3)
+
+
+
+
+                                     Epoch

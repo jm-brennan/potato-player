@@ -1,0 +1,29 @@
+GLUTSETMENUDATA(3)               Local Manual               GLUTSETMENUDATA(3)
+
+[1mNAME[0m
+     [1mglutSetMenuData [22m-- Store menu user data pointer
+
+[1mLIBRARY[0m
+     OpenGLUT - menus
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutSetMenuData[22m([4mvoid[24m [4m*data[24m);
+
+[1mPARAMETERS[0m
+      [4mdata[24m     Client pointer data
+
+[1mDESCRIPTION[0m
+     glutSetMenuData() associates an arbitrary user data pointer,  [1mdata,  [22mwith
+     the  current menu  .  OpenGLUT does not interpret this pointer in any
+     way, but merely stores it for you in the menu structure.
+
+[1mSEE ALSO[0m
+     glutGetMenuData(3)
+
+
+
+
+                                     Epoch

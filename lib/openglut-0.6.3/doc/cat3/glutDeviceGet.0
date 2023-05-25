@@ -1,0 +1,104 @@
+GLUTDEVICEGET(3)                 Local Manual                 GLUTDEVICEGET(3)
+
+[1mNAME[0m
+     [1mglutDeviceGet [22m-- Allows you to get some device state/option variables.
+
+[1mLIBRARY[0m
+     OpenGLUT - inputstate
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mint[0m
+     [1mglutDeviceGet[22m([4mGLenum[24m [4meWhat[24m);
+
+[1mPARAMETERS[0m
+      [4meWhat[24m     Enumerated parameter ID.
+
+[1mDESCRIPTION[0m
+     Retrieves some system-specific information about attached devices.  Sup-
+     ported device queries are:
+
+      -  [1mGLUT_HAS_JOYSTICK[0m
+     Return non-zero if there is a joystick.
+
+      -  [1mGLUT_HAS_KEYBOARD[0m
+     Return non-zero if there is a keyboard.
+
+      -  [1mGLUT_HAS_MOUSE[0m
+     Return non-zero if there is a mouse.
+
+      -  [1mGLUT_HAS_SPACEBALL[0m
+     Return non-zero if there is a spaceball.
+
+      -  [1mGLUT_JOYSTICK_AXES[0m
+     Return the number of axes for the joystick.
+
+      -  [1mGLUT_JOYSTICK_POLL_RATE[0m
+     Return the rate (in GLUT timer ticks?) at which the joystick is polled.
+
+      -  [1mGLUT_NUM_MOUSE_BUTTONS[0m
+     Return the number of buttons that the user's mouse has.
+
+      -  [1mGLUT_OWNS_JOYSTICK[0m
+     Return non-zero if OpenGLUT believes that it has successfully acquired
+     access to the joystick.
+
+      -  [1mGLUT_DEVICE_IGNORE_KEY_REPEAT[0m
+     Return non-zero if the  current window   is set to disable key repeating.
+
+      -  [1mGLUT_DEVICE_KEY_REPEAT[0m
+     Described as returning the key repeat rate in one place, but actually re-
+     turns a key repeat mode.
+
+      -  [1mGLUT_HAS_DIAL_AND_BUTTON_BOX[0m
+     Return non-zero if a dials-and-buttons box is present.
+
+      -  [1mGLUT_HAS_TABLET[0m
+     Return non-zero if a tablet is present.
+
+      -  [1mGLUT_NUM_BUTTON_BOX_BUTTONS[0m
+     Return the number of buttons on a dials-and-buttons box, if any.
+
+      -  [1mGLUT_NUM_DIALS[0m
+     Return the number of dials on a dials-and-buttons box, if any.
+
+      -  [1mGLUT_NUM_SPACEBALL_BUTTONS[0m
+     Return the number of buttons on a spaceball, if any.
+
+      -  [1mGLUT_NUM_TABLET_BUTTONS[0m
+     Return the number of buttons on a tablet, if any.
+
+[1mTODO[0m
+     Only supports querying for one joystick.
+
+     Consider moving to a table-based approach rather than a switch(), letting
+     us move to modular functions.
+
+[1mBUGS[0m
+     Keyboards are optional, but OpenGLUT doesn't detect their absence.
+
+     Mice are optional, but OpenGLUT is only able to check for them under
+     WIN32.
+
+     Mice can have a varying number of buttons, but OpenGLUT assumes exactly 3
+     on UNIX_X11.
+
+     Not all joystick queries are implemented yet.
+
+      [1mGLUT_DEVICE_KEY_REPEAT  [22mreturns the key repeat mode, but the comment
+     says it returns the  rate  .
+
+     Some things, like joystick poll rates, seem to have insufficient context.
+     Which joystick?  Which window? Maybe we assume the  current window   and
+     the current joystick (or the first one)?
+
+      [1mGLUT_DEVICE_KEY_REPEAT  [22mshould probably return  [1mogState.KeyRepeat.[0m
+
+[1mSEE ALSO[0m
+     glutSetOption(3) glutGet(3) glutGetModifiers(3) glutLayerGet(3)
+
+
+
+
+                                     Epoch

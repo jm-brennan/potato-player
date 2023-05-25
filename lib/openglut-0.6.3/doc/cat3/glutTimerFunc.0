@@ -1,0 +1,44 @@
+GLUTTIMERFUNC(3)                 Local Manual                 GLUTTIMERFUNC(3)
+
+[1mNAME[0m
+     [1mglutTimerFunc [22m-- Sets the Timer callback for the current window.
+
+[1mLIBRARY[0m
+     OpenGLUT - idletimer
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutTimerFunc[22m([4munsigned[24m [4mint[24m [4mmsec[24m, [4mvoid([24m [4m*callback[24m [4m)([24m [4mint[24m [4mdata[24m [4m)[24m,
+         [4mint[24m [4mdata[24m);
+
+[1mPARAMETERS[0m
+      [4mmsec[24m         Milliseconds till invocation.
+
+      [4mcallback[24m     Client function for timer event.
+
+      [4mdata[24m         Arbitrary data; passed to  [1mcallback  [22m.
+
+[1mDESCRIPTION[0m
+     After  [4mat[24m [4mleast[24m   [1mmsec  [22mmilliseconds, OpenGLUT will call  [1mcallback  [22m,
+     passing in your user-supplied  [1mdata  [22mparameter.  OpenGLUT will call your
+     function only once.
+
+     This callback is  [4mnot[24m   bound to any window.
+
+[1mCAVEATS[0m
+     Unlike most other callbacks, timers only occur once.
+
+     Unlike most other callbacks, you cannot deregister a timer callback.
+
+     Unlike most other callbacks, you can register an arbitrary number of
+     timers.
+
+[1mSEE ALSO[0m
+     glutIdleFunc(3) glutMainLoop(3) glutMainLoopEvent(3)
+
+
+
+
+                                     Epoch

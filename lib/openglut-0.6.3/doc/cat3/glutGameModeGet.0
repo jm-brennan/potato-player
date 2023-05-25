@@ -1,0 +1,60 @@
+GLUTGAMEMODEGET(3)               Local Manual               GLUTGAMEMODEGET(3)
+
+[1mNAME[0m
+     [1mglutGameModeGet [22m-- Return the value of a game mode parameter
+
+[1mLIBRARY[0m
+     OpenGLUT - gamemode
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mint[0m
+     [1mglutGameModeGet[22m([4mGLenum[24m [4mpname[24m);
+
+[1mPARAMETERS[0m
+      [4mpname[24m      The parameter value to be returned
+
+[1mDESCRIPTION[0m
+      [1mpname  [22mis one of:
+
+      -  [1mGLUT_GAME_MODE_ACTIVE[0m
+     Return non-zero if we are presently in gamemode.
+
+      -  [1mGLUT_GAME_MODE_POSSIBLE[0m
+     Return whether the requested gamemode settings are viable.  (May also ac-
+     tually change the mode?)  Does not necessarily tell you whether entering
+     gamemode will have any effect.
+
+      -  [1mGLUT_GAME_MODE_WIDTH[0m
+     Return the game mode width. (in pixels)
+
+      -  [1mGLUT_GAME_MODE_HEIGHT[0m
+     Return the game mode height. (in pixels)
+
+      -  [1mGLUT_GAME_MODE_PIXEL_DEPTH[0m
+     Return the game mode pixel depth. (in bits)
+
+      -  [1mGLUT_GAME_MODE_REFRESH_RATE[0m
+     Return the game mode vertical refresh frequency. (in Hz)
+
+      -  [1mGLUT_GAME_MODE_DISPLAY_CHANGED[0m
+     Return non-zero if we are presently in gamemode.  (Same as
+     [1mGLUT_GAME_MODE_ACTIVE.)[0m
+
+     If  [1mpname  [22mis unknown, a warning is printed and a value of
+      -1 is returned.
+
+[1mTODO[0m
+     Documentation
+
+     OpenGLUT intrepretation of GLUT_GAME_MODE_DISPLAY_CHANGED
+
+[1mSEE ALSO[0m
+     glutGameModeString(3) glutEnterGameMode(3) glutLeaveGameMode(3)
+     glutGameModeGet(3)
+
+
+
+
+                                     Epoch

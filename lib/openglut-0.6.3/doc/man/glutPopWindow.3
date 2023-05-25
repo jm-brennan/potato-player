@@ -1,0 +1,45 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTPOPWINDOW 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutPopWindow
+.Nd Request to raise the current window to the top
+.Sh LIBRARY
+OpenGLUT - window
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutPopWindow "void"
+.Sh DESCRIPTION
+Request that the 
+.Bf Li
+ current window
+.Ef
+  be brought to the top.
+.Pp
+A window can be in front of or behind other windows, as determined
+by the z-order from front to back.  Top-level OpenGLUT windows
+can be placed at the front or back of the z-order by means of
+the glutPopWindow() and glutPushWindow() API functions.
+.Pp
+A z-order also applies to the subwindows of a top-level window.
+While the z-order of top-level windows can usually be
+adjusted by the user, subwindow z-order is controlled entirely
+by the application.
+.Pp
+If this has any effect on your window's visibility, you should
+receive a glutWindowStatusFunc() callback and a
+glutDisplayFunc() callback.
+.Pp
+.Sh CAVEATS
+The z-order of top-level windows is ultimately managed by the windowing system.  Therefore, a push or pop request by an OpenGLUT application may not necessarily succeed or take immediate effect.
+.Pp
+Not applicable to offscreen windows.
+.Pp
+.Sh SEE ALSO
+.Xr glutCreateWindow 3
+.Xr glutDisplayFunc 3
+.Xr glutPushWindow 3
+.Xr glutWindowStatusFunc 3
+.fl
+.sp 3

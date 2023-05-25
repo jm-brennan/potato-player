@@ -1,0 +1,41 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTPOSTWINDOWREDISPLAY 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutPostWindowRedisplay
+.Nd Mark an indicated window as needing a redisplay.
+.Sh LIBRARY
+OpenGLUT - window
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutPostWindowRedisplay "int windowID"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ windowID
+.Ef
+    The OpenGLUT window id to be affected.
+.Sh DESCRIPTION
+Similar to glutPostRedisplay(), except that instead
+of affecting the 
+.Bf Li
+ current window
+.Ef
+ , this function
+affects an arbitrary window, indicated by the
+.Bf Sy
+ windowID
+.Ef
+ parameter.
+.Pp
+.Sh SEE ALSO
+.Xr glutPostRedisplay 3
+.Xr glutPostOverlayRedisplay 3
+.Xr glutPostWindowOverlayRedisplay 3
+.Xr glutSwapBuffers 3
+.Xr glutDisplayFunc 3
+.Xr glutCreateWindow 3
+.Xr glutCreateSubWindow 3
+.fl
+.sp 3

@@ -1,0 +1,33 @@
+GLUTGETWINDOW(3)                 Local Manual                 GLUTGETWINDOW(3)
+
+[1mNAME[0m
+     [1mglutGetWindow [22m-- Return the current window identifier, 0 if undefined
+
+[1mLIBRARY[0m
+     OpenGLUT - window
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mint[0m
+     [1mglutGetWindow[22m([4mvoid[24m);
+
+[1mDESCRIPTION[0m
+     glutGetWindow() returns the  window id   of the  current window  .  This
+     is useful, e.g., if you have a generic function that is used with several
+     windows and it needs to temporarily change to another window.  (There is
+     no window stack for you to use with pushes and pops.  Do not be confused
+     by glutPushWindow() and glutPopWindow(); those pushes and pops are  [4mnot[0m
+     stack-related!)
+
+     One cause for the function to return 0 is if you have called glutDestroy-
+     Window() on the  current window   and have done nothing to set a new win-
+     dow as current.
+
+[1mSEE ALSO[0m
+     glutSetWindow(3)
+
+
+
+
+                                     Epoch

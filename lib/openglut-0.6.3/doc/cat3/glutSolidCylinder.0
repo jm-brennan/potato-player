@@ -1,0 +1,35 @@
+GLUTSOLIDCYLINDER(3)             Local Manual             GLUTSOLIDCYLINDER(3)
+
+[1mNAME[0m
+     [1mglutSolidCylinder [22m-- Draw a solid cylinder.
+
+[1mLIBRARY[0m
+     OpenGLUT - geometry
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutSolidCylinder[22m([4mGLdouble[24m [4mradius[24m, [4mGLdouble[24m [4mheight[24m, [4mGLint[24m [4mslices[24m,
+         [4mGLint[24m [4mstacks[24m);
+
+[1mPARAMETERS[0m
+      [4mradius[24m      Radius of the cylinder.
+
+      [4mheight[24m      Z height.
+
+      [4mslices[24m      Divisions around z axis.
+
+      [4mstacks[24m      Divisions along z axis.
+
+[1mDESCRIPTION[0m
+     glutSolidCylinder() draws a shaded cylinder, the center of whose base is
+     at the origin and whose axis is along the positive z axis.
+
+[1mSEE ALSO[0m
+     glutWireCylinder(3)
+
+
+
+
+                                     Epoch

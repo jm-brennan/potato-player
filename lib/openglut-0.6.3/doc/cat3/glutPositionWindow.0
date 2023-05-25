@@ -1,0 +1,43 @@
+GLUTPOSITIONWINDOW(3)            Local Manual            GLUTPOSITIONWINDOW(3)
+
+[1mNAME[0m
+     [1mglutPositionWindow [22m-- Request to change the position of the current win-
+     dow
+
+[1mLIBRARY[0m
+     OpenGLUT - window
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutPositionWindow[22m([4mint[24m [4mx[24m, [4mint[24m [4my[24m);
+
+[1mPARAMETERS[0m
+      [4mx[24m        Requested horizontal position of the current window
+
+      [4my[24m        Requested vertical position of the current window
+
+[1mDESCRIPTION[0m
+     The glutPositionWindow() function requests that the window system posi-
+     tion a top-level or subwindow relative to the top-left corner.  Subwin-
+     dows are typically resized and repositioned in response to window resize
+     events.
+
+[1mCAVEATS[0m
+     The position of top-level windows is ultimately determined by the window-
+     ing system.  Therefore, a position request by an OpenGLUT application may
+     not necessarily succeed.
+
+     May not take immediate effect; wait for the callback.
+
+     Not applicable to offscreen windows.
+
+[1mSEE ALSO[0m
+     glutInit(3) glutInitWindowPosition(3) glutReshapeFunc(3)
+     glutCreateSubWindow(3)
+
+
+
+
+                                     Epoch

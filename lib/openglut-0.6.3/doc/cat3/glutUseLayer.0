@@ -1,0 +1,43 @@
+GLUTUSELAYER(3)                  Local Manual                  GLUTUSELAYER(3)
+
+[1mNAME[0m
+     [1mglutUseLayer [22m-- Allows you to switch between normal and layer mode.
+
+[1mLIBRARY[0m
+     OpenGLUT - overlays
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutUseLayer[22m([4mGLenum[24m [4mlayer[24m);
+
+[1mPARAMETERS[0m
+      [4mlayer[24m     Whether to be in a layer or in the normal window.
+
+[1mDESCRIPTION[0m
+     By default, OpenGLUT operates in "normal" mode, with respect to layers.
+     If you have a layer open and wish to operate on the layer, you must use
+     glutUseLayer().
+
+      [1mlayer  [22mcan take on the following values, indicating the layer mode to
+     use:
+
+      -  [1mGLUT_NORMAL[0m
+      -  [1mGLUT_LAYER[0m
+
+[1mCAVEATS[0m
+     Unimplemented.
+
+     It is unclear what the consequences are if you are in  [1mGLUT_OVERLAY  [22mmode
+     and switch to another (or the same) window via glutSetWindow().  What if
+     the target has a layer?  What if it doesn't?
+
+[1mSEE ALSO[0m
+     glutEstablishOverlay(3) glutRemoveOverlay(3) glutPostOverlayRedisplay(3)
+     glutPostWindowOverlayRedisplay(3) glutShowOverlay(3) glutHideOverlay(3)
+
+
+
+
+                                     Epoch

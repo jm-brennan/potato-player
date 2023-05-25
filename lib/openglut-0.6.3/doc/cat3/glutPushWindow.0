@@ -1,0 +1,45 @@
+GLUTPUSHWINDOW(3)                Local Manual                GLUTPUSHWINDOW(3)
+
+[1mNAME[0m
+     [1mglutPushWindow [22m-- Request to lower the current window to the bottom.
+
+[1mLIBRARY[0m
+     OpenGLUT - window
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutPushWindow[22m([4mvoid[24m);
+
+[1mDESCRIPTION[0m
+     This function requests that the  current window   be ``pushed'' to the
+     back.
+
+     A window can be in front of or behind other windows, as determined by the
+     z-order from front to back.  Top-level OpenGLUT windows can be placed at
+     the front or back of the z-order by means of the glutPopWindow() and
+     glutPushWindow() API functions.
+
+     A z-order also applies to the subwindows of a top-level window.  While
+     the z-order of top-level windows can usually be adjusted by the user,
+     subwindow z-order is controlled entirely by the application.
+
+     There may not be an immediate effect to this function.  Wait for the
+     glutWindowStatusFunc() callback to tell you about whatever obscured/visi-
+     ble status your window achieves.
+
+[1mCAVEATS[0m
+     The z-order of top-level windows is ultimately managed by the windowing
+     system.  Therefore, a push or pop request by an OpenGLUT application may
+     not necessarily succeed or take immediate effect.
+
+     Not applicable to offscreen windows.
+
+[1mSEE ALSO[0m
+     glutPopWindow(3) glutWindowStatusFunc(3)
+
+
+
+
+                                     Epoch

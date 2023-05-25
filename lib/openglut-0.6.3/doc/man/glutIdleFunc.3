@@ -1,0 +1,42 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTIDLEFUNC 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutIdleFunc
+.Nd Sets the global idle callback.
+.Sh LIBRARY
+OpenGLUT - idletimer
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutIdleFunc "void( *callback )( void )"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ callback
+.Ef
+    Client function for idle event.
+.Sh DESCRIPTION
+When OpenGLUT's glutMainLoop() is doing nothing else,
+it checks to see if an ``idle'' callback set.
+If so, OpenGLUT invokes that callback.
+.Pp
+This callback is 
+.Bf Em
+ not
+.Ef
+  bound to any window.
+.Pp
+.Sh CAVEATS
+There is at most 
+.Bf Em
+ one
+.Ef
+  idle callback for your entire application.
+.Pp
+.Sh SEE ALSO
+.Xr glutTimerFunc 3
+.Xr glutMainLoop 3
+.Xr glutMainLoopEvent 3
+.fl
+.sp 3

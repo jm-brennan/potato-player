@@ -1,0 +1,27 @@
+GLUTDETACHMENU(3)                Local Manual                GLUTDETACHMENU(3)
+
+[1mNAME[0m
+     [1mglutDetachMenu [22m-- Detach menu from the current window.
+
+[1mLIBRARY[0m
+     OpenGLUT - menus
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutDetachMenu[22m([4mint[24m [4mbutton[24m);
+
+[1mPARAMETERS[0m
+      [4mbutton[24m     Mouse button to unbind from.
+
+[1mDESCRIPTION[0m
+     If the given  [1mbutton  [22mhas a menu bound to it, this breaks the assocation.
+
+[1mSEE ALSO[0m
+     glutCreateMenu(3) glutDestroyMenu(3) glutAttachMenu(3)
+
+
+
+
+                                     Epoch

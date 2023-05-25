@@ -1,0 +1,42 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTADDSUBMENU 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutAddSubMenu
+.Nd Append a submenu to the current menu.
+.Sh LIBRARY
+OpenGLUT - menus
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutAddSubMenu "const char *label" "int subMenuID"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ label
+.Ef
+     Submenu item text
+.Pp
+.Bf Em
+ subMenuID
+.Ef
+ Submenu identifier
+.Sh DESCRIPTION
+Attaches an existing menu as a submenu of the current menu.
+.Bf Sy
+ label
+.Ef
+ is the text used for the item in the menu.
+.Bf Sy
+ subMenuID
+.Ef
+ is the identifier of an existing menu to be
+appended as a submenu.
+.Pp
+The submenu is added to the end of the menu.
+.Pp
+.Sh SEE ALSO
+.Xr glutCreateMenu 3
+.Xr glutAddMenuEntry 3
+.fl
+.sp 3

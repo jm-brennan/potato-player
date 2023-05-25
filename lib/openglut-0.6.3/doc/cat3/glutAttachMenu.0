@@ -1,0 +1,33 @@
+GLUTATTACHMENU(3)                Local Manual                GLUTATTACHMENU(3)
+
+[1mNAME[0m
+     [1mglutAttachMenu [22m-- Attach the current menu to the current window.
+
+[1mLIBRARY[0m
+     OpenGLUT - menus
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutAttachMenu[22m([4mint[24m [4mbutton[24m);
+
+[1mPARAMETERS[0m
+      [4mbutton[24m     Mouse button to bind to
+
+[1mDESCRIPTION[0m
+     Associates the  [1mbutton  [22mwith the current menu in the current window.
+
+[1mTODO[0m
+     Assumes 3 mouse buttons.  (Actually  [1mFREEGLUT_MAX_MENUS  [22mholds the as-
+     sumed number of buttons.)  Cannot bind to more buttons.  Will not issue
+     any warnings or errors if the user does not have enough buttons to reach
+     your menu.
+
+[1mSEE ALSO[0m
+     glutCreateMenu(3) glutSetMenu(3) glutDetachMenu,(3)
+
+
+
+
+                                     Epoch

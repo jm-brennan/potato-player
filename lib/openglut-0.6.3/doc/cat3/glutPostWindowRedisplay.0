@@ -1,0 +1,32 @@
+GLUTPOSTWINDOWREDISPLAY(3)       Local Manual       GLUTPOSTWINDOWREDISPLAY(3)
+
+[1mNAME[0m
+     [1mglutPostWindowRedisplay [22m-- Mark an indicated window as needing a redis-
+     play.
+
+[1mLIBRARY[0m
+     OpenGLUT - window
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutPostWindowRedisplay[22m([4mint[24m [4mwindowID[24m);
+
+[1mPARAMETERS[0m
+      [4mwindowID[24m     The OpenGLUT window id to be affected.
+
+[1mDESCRIPTION[0m
+     Similar to glutPostRedisplay(), except that instead of affecting the
+     current window  , this function affects an arbitrary window, indicated by
+     the  [1mwindowID  [22mparameter.
+
+[1mSEE ALSO[0m
+     glutPostRedisplay(3) glutPostOverlayRedisplay(3)
+     glutPostWindowOverlayRedisplay(3) glutSwapBuffers(3) glutDisplayFunc(3)
+     glutCreateWindow(3) glutCreateSubWindow(3)
+
+
+
+
+                                     Epoch

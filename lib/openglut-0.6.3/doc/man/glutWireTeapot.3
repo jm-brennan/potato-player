@@ -1,0 +1,33 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTWIRETEAPOT 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutWireTeapot
+.Nd Draw a wireframe teapot.
+.Sh LIBRARY
+OpenGLUT - geometry
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutWireTeapot "GLdouble size"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ size
+.Ef
+        Scale factor.
+.Sh DESCRIPTION
+This function draws the standard Teapot in wireframe
+using OpenGL evaluators.
+This is the classic "Utah Teapot" of computer graphics.
+The base should lie in the xy-plane with "up" being
+along the positive z axis.
+.Pp
+This is derived from SGI code.  It should also
+be the same as the teapot modeled by Martin Newell
+in 1975.
+.Pp
+.Sh SEE ALSO
+.Xr glutSolidTeapot 3
+.fl
+.sp 3

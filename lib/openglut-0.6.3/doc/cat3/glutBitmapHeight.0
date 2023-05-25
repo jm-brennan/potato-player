@@ -1,0 +1,39 @@
+GLUTBITMAPHEIGHT(3)              Local Manual              GLUTBITMAPHEIGHT(3)
+
+[1mNAME[0m
+     [1mglutBitmapHeight [22m-- Return the height of a given font, in pixels.
+
+[1mLIBRARY[0m
+     OpenGLUT - bitmapfont
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mint[0m
+     [1mglutBitmapHeight[22m([4mvoid[24m [4m*font[24m);
+
+[1mPARAMETERS[0m
+      [4mfont[24m     A bitmapped font identifier.
+
+[1mDESCRIPTION[0m
+     Return the line-to-line vertical spacing (in pixels) between lines of a
+     bitmapped  [1mfont.[0m
+
+     Returns 0 if  [1mfont  [22mis invalid.
+
+[1mCAVEATS[0m
+     Does  not   report the height used by individual characters.  This may
+     limit its usefulness.  (Compare with other font-metric queries.)
+
+[1mTODO[0m
+     We have discussed adding a "font descender" query. We should go ahead and
+     do it.
+
+[1mSEE ALSO[0m
+     glutBitmapCharacter(3) glutBitmapString(3) glutBitmapWidth(3)
+     glutBitmapLength(3) glutStrokeHeight(3)
+
+
+
+
+                                     Epoch

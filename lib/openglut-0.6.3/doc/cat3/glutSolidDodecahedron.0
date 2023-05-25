@@ -1,0 +1,27 @@
+GLUTSOLIDDODECAHEDRON(3)         Local Manual         GLUTSOLIDDODECAHEDRON(3)
+
+[1mNAME[0m
+     [1mglutSolidDodecahedron [22m-- Draw a solid dodecahedron.
+
+[1mLIBRARY[0m
+     OpenGLUT - geometry
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutSolidDodecahedron[22m([4mvoid[24m);
+
+[1mDESCRIPTION[0m
+     This function draws a regular, solid, 12-sided polyhedron centered at the
+     origin.  The distance from the origin to the vertices is sqrt(3).  The
+     facets are pentagons.
+
+[1mSEE ALSO[0m
+     glutWireDodecahedron(3) glutSolidRhombicDodecahedron(3)
+     glutWireRhombicDodecahedron(3)
+
+
+
+
+                                     Epoch

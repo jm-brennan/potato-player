@@ -1,0 +1,44 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTPASSIVEMOTIONFUNC 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutPassiveMotionFunc
+.Nd Sets the non-dragging (gliding?) mouse-motion callback.
+.Sh LIBRARY
+OpenGLUT - input
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutPassiveMotionFunc "void( *callback )( int x" "int y )"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ callback
+.Ef
+    Client mouse-glide hook.
+.Sh DESCRIPTION
+If you set this callback on a window, then every time that
+OpenGLUT detects a change in the mouse position inside
+that window, with no buttons pressed on that mouse,
+OpenGLUT will invoke 
+.Bf Sy
+ callback
+.Ef
+ with the window
+coordinates of the mouse.
+.Pp
+This callback is bound to the 
+.Bf Li
+ current window
+.Ef
+ .
+.Pp
+.Sh CAVEATS
+Windows created via glutCreateMenuWindow() always cascade keyboard and mouse events to their parent.
+.Pp
+.Sh SEE ALSO
+.Xr glutMotionFunc 3
+.Xr glutMouseFunc 3
+.Xr glutEntryFunc 3
+.fl
+.sp 3

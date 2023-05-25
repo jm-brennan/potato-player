@@ -1,0 +1,54 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTADDMENUENTRY 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutAddMenuEntry
+.Nd Append an item to the current menu.
+.Sh LIBRARY
+OpenGLUT - menus
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutAddMenuEntry "const char *label" "int value"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ label
+.Ef
+    Menu item text
+.Pp
+.Bf Em
+ value
+.Ef
+    Menu item callback value
+.Sh DESCRIPTION
+Inserts a given (
+.Bf Sy
+ label,
+.Ef
+ 
+.Bf Sy
+ value)
+.Ef
+ pair
+into the current menu.  
+.Bf Sy
+ label
+.Ef
+ is the text displayed
+in the menu; 
+.Bf Sy
+ value
+.Ef
+ is the identifier received
+by the callback when the item is selected.
+.Pp
+The new entry is added to the end of the menu.
+.Pp
+.Sh SEE ALSO
+.Xr glutAddSubMenu 3
+.Xr glutChangeToMenuEntry 3
+.Xr glutChangeToSubMenu 3
+.Xr glutRemoveMenuItem 3
+.fl
+.sp 3

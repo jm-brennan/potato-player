@@ -1,0 +1,86 @@
+GLUTINIT(3)                      Local Manual                      GLUTINIT(3)
+
+[1mNAME[0m
+     [1mglutInit [22m-- Initialize OpenGLUT data structures.
+
+[1mLIBRARY[0m
+     OpenGLUT - mainloop
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutInit[22m([4mint[24m [4m*pargc[24m, [4mchar[24m [4m**argv[24m);
+
+[1mPARAMETERS[0m
+      [4mpargc[24m     Pointer to something like main()'s  [1margc.[0m
+
+      [4margv[24m      Something like main()'s  [1margv.[0m
+
+[1mDESCRIPTION[0m
+     This function should be called once, near the start of any GLUT, freeg-
+     lut, or OpenGLUT program.  It serves two vital roles:
+
+      - It allows OpenGLUT to initialize internal structures.
+      - It allows OpenGLUT to process command-line arguments to control the
+     initial window position, etc.
+
+     You should take note of the interaction between glutInit() and the re-
+     lated functions such as glutInitWindowPosition().  OpenGLUT always uses
+     the most recent configuration information, so if you call glutInit(),
+     then glutInitWindowPosition(), you prevent the user from controlling the
+     initial window position via a command-line parameter.
+
+     glutInit() will remove from  [1mpargc,   argv  [22many parameters that it recog-
+     nizes in the command line.  The following command-line parameters are su-
+     ported:
+
+      -  [1m-display   [22mdisplay-id  This allows connection to an alternate X
+     server.
+      -  [1m-geometry   [22mgeometry-spec  This takes width, height, and window posi-
+     tion.  The position is given as a signed value (negative values being
+     distance from the far boundary of the screen).  For example, a window ge-
+     ometry of 5x7+11-17 is 5 pixels wide, 7 pixels tall, 11 pixels from the
+     left, and 17 pixels from the bottom edge of the screen.
+      -  [1m-direct  [22mInsist on only OpenGL direct rendering.  Direct rendering is
+     normally requested but indirect is normally accepted.   [1m-direct  [22mis not
+     always available.  See  [1m-indirect.[0m
+      -  [1m-indirect  [22mAttempt only indirect OpenGL rendering.   [1m-indirect  [22mis
+     always available.  See  [1m-direct.[0m
+      -  [1m-iconic  [22mOpen the window in iconized form.
+      -  [1m-gldebug  [22mPrint any detected OpenGL errors via glutReportErrors().
+     Presently done at the bottom of glutMainLoopEvent().
+      -  [1m-sync  [22mSynchronize the window system communications heavily.
+
+     Additionally, this function checks whether the environment variable
+     [1mGLUT_FPS  [22mis defined (only on UNIX_X11); if so, OpenGLUT will periodi-
+     cally print the average number of times per second that your program
+     calls glutSwapBuffers().
+
+[1mCAVEATS[0m
+     You really should always call this, even if you are a WIN32 user.  It
+     provides a way for the user to directly inform OpenGLUT about preferences
+     without the application needing to explicitly deal with those issues.
+     This is also where OpenGLUT retrieves your program's name to help disam-
+     biguate error and warning messages it may be forced to emit.
+
+     Option  [1m-sync  [22msets a flag, but is not actually used at this time.
+
+     Lots of code does XFlush() on the X server, regardless of whether  [1m-sync[0m
+     is specified.  Much of that appears to be required in order to support
+     direct client invocation of  glutMainLoopEvent(), regrettably. However,
+     if one calls glutMainLoop(), instead, we might avoid gratuitous XFlush()
+     calls.  (That last sentence isn't particularly germain to this function,
+     but there's no better place to make this remark at this time.) Even for
+     glutMainLoopEvent(), we may be able to coalesce many XFlush() calls.
+
+[1mSEE ALSO[0m
+     glutInitWindowPosition(3) glutInitWindowSize(3) glutInitDisplayMode(3)
+     glutInitDisplayString(3) glutCreateWindow(3) glutDisplayFunc(3)
+     glutMainLoop(3) glutMainLoopEvent(3) glutReportErrors(3)
+     glutSwapBuffers(3)
+
+
+
+
+                                     Epoch

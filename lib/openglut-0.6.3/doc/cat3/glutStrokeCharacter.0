@@ -1,0 +1,37 @@
+GLUTSTROKECHARACTER(3)           Local Manual           GLUTSTROKECHARACTER(3)
+
+[1mNAME[0m
+     [1mglutStrokeCharacter [22m-- Draw a stroked character.
+
+[1mLIBRARY[0m
+     OpenGLUT - fonts
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutStrokeCharacter[22m([4mvoid[24m [4m*fontID[24m, [4mint[24m [4mcharacter[24m);
+
+[1mPARAMETERS[0m
+      [4mfontID[24m     A GLUT stroked font identifier.
+
+      [4mcharacter[24m  An ASCII character other than NUL.
+
+[1mDESCRIPTION[0m
+     This function draws one  [1mcharacter  [22mfrom one stroked font (selected by
+     [1mfontID)  [22musing OpenGL  [1mGL_LINE_STRIP.    [22mThese characters are drawn at
+     the origin in model space.  The the model space origin is translated at
+     the end, according to the  [1mcharacter  [22mwidth in  [1mfontID.[0m
+
+     Does nothing if:
+      - The  [1mfontID  [22mis invalid.
+      - The  [1mcharacter  [22mis out of the font's range.
+
+[1mSEE ALSO[0m
+     glBegin(3) glTranslatef(3) glutStrokeWidth(3) glutStrokeString(3)
+     glutStrokeHeight(3) glutBitmapCharacter(3)
+
+
+
+
+                                     Epoch

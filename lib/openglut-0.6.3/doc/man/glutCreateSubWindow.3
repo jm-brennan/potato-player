@@ -1,0 +1,93 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTCREATESUBWINDOW 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutCreateSubWindow
+.Nd Create a subwindow
+.Sh LIBRARY
+OpenGLUT - window
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  int
+.Fn glutCreateSubWindow "int parentID" "int x" "int y" "int w" "int h"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ parentID
+.Ef
+   Parent window identifier
+.Pp
+.Bf Em
+ x
+.Ef
+          Horizontal position of subwindow
+.Pp
+.Bf Em
+ y
+.Ef
+          Vertical position of subwindow
+.Pp
+.Bf Em
+ w
+.Ef
+          Width of subwindow
+.Pp
+.Bf Em
+ h
+.Ef
+          Height of subwindow
+.Sh DESCRIPTION
+In almost every regard that is important to you, a subwindow is like
+a top-level window.  It has a window id; it has its own set of
+event callbacks; you can render to it; you are notified of its
+creation; ...
+.Pp
+A subwindow lives inside of some other window (possibly a top-level
+window, possibly another subwindow).  Because of this, it generally
+only interacts with other windows of your own creation, hence
+it is not subjected to a window manager.  This is the primary
+source for its differences from a top-level window:
+.Pp
+ - There are no borders or decorations.
+ - There is no title bar, hence no title.
+ - Requests tend to be acted on a little more directly,
+without interference from a window manager.
+ - The subwindow inherits the display mode of its parent.
+.Pp
+Like a top-level window, you 
+.Bf Em
+ must
+.Ef
+  register a display
+callback function if you wish to use glutMainloop().
+.Pp
+A notable case where this function can fail is for offscreen
+windows.  A coherent concept of a subwindow of an offscreen
+window would introduce more complication than is presently
+believed to be worthwhile.  Attempting such a window presently
+just fails.  Failure is denoted by a 0 
+.Bf Li
+ window id
+.Ef
+  being
+returned.
+.Pp
+Subwindows can be very useful for partitioning a window into
+GUI elements: They have their own input callbacks, so you
+don't have to figure out which window an event is for.
+Graphics are clipped to the boundaries of your subwindows,
+so you do not need to worry much about where your drawing
+goes.  Because windows and subwindows work almost identically
+from the perspective of a GLUT program, it is relatively easy
+to move a cluster of related controls into a separate top-level
+window---or, conversely, embed what was a top-level window
+inside of another window.  OpenGLUT can also report
+some basic statistics about your (sub)window, relieving you
+of the duty of tracking all of that information for yourself.
+.Pp
+.Sh SEE ALSO
+.Xr glutCreateWindow 3
+.Xr glutDestroyWindow 3
+.Xr glutCreateMenuWindow 3
+.fl
+.sp 3

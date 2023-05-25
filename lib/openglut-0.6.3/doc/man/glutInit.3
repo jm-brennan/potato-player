@@ -1,0 +1,174 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTINIT 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutInit
+.Nd Initialize OpenGLUT data structures.
+.Sh LIBRARY
+OpenGLUT - mainloop
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutInit "int *pargc" "char **argv"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ pargc
+.Ef
+    Pointer to something like main()'s 
+.Bf Sy
+ argc.
+.Ef
+ 
+.Pp
+.Bf Em
+ argv
+.Ef
+     Something like main()'s 
+.Bf Sy
+ argv.
+.Ef
+ 
+.Sh DESCRIPTION
+This function should be called once, near the start of
+any GLUT, freeglut, or OpenGLUT program.  It serves two
+vital roles:
+.Pp
+ - It allows OpenGLUT to initialize internal structures.
+ - It allows OpenGLUT to process command-line arguments
+to control the initial window position, etc.
+.Pp
+You should take note of the interaction between
+glutInit() and the related functions such as
+glutInitWindowPosition().  OpenGLUT always uses
+the most recent configuration information, so
+if you call glutInit(), then glutInitWindowPosition(),
+you prevent the user from controlling the initial
+window position via a command-line parameter.
+.Pp
+glutInit() will remove from 
+.Bf Sy
+ pargc,
+.Ef
+ 
+.Bf Sy
+ argv
+.Ef
+ 
+any parameters that it
+recognizes in the command line.  The following
+command-line parameters are suported:
+.Pp
+ - 
+.Bf Sy
+ -display
+.Ef
+ 
+.Bf Li
+ display-id
+.Ef
+ 
+This allows connection to an alternate X server.
+ - 
+.Bf Sy
+ -geometry
+.Ef
+ 
+.Bf Li
+ geometry-spec
+.Ef
+ 
+This takes width, height, and
+window position.  The position is given as
+a signed value (negative values being distance
+from the far boundary of the screen).  For example,
+a window geometry of 5x7+11-17 is 5 pixels
+wide, 7 pixels tall, 11 pixels from the left,
+and 17 pixels from the bottom edge of the screen.
+ - 
+.Bf Sy
+ -direct
+.Ef
+ Insist on only OpenGL direct rendering.
+Direct rendering is normally requested but indirect
+is normally accepted.
+.Bf Sy
+ -direct
+.Ef
+ is not always available.
+See 
+.Bf Sy
+ -indirect.
+.Ef
+ 
+ - 
+.Bf Sy
+ -indirect
+.Ef
+ Attempt only indirect OpenGL rendering.
+.Bf Sy
+ -indirect
+.Ef
+ is always available.
+See 
+.Bf Sy
+ -direct.
+.Ef
+ 
+ - 
+.Bf Sy
+ -iconic
+.Ef
+ Open the window in iconized form.
+ - 
+.Bf Sy
+ -gldebug
+.Ef
+ Print any detected OpenGL errors via
+glutReportErrors().  Presently
+done at the bottom of glutMainLoopEvent().
+ - 
+.Bf Sy
+ -sync
+.Ef
+ Synchronize the window system communications
+heavily.
+.Pp
+Additionally, this function checks whether the
+environment variable 
+.Bf Sy
+ GLUT_FPS
+.Ef
+ is defined (only on
+UNIX_X11); if so, OpenGLUT will periodically print
+the average number of times per second that your program calls
+glutSwapBuffers().
+.Pp
+.Sh CAVEATS
+You really should always call this, even if you are a WIN32 user.  It provides a way for the user to directly inform OpenGLUT about preferences without the application needing to explicitly deal with those issues.  This is also where OpenGLUT retrieves your program's name to help disambiguate error and warning messages it may be forced to emit.
+.Pp
+Option 
+.Bf Sy
+ -sync
+.Ef
+ sets a flag, but is not actually used at this time.
+.Pp
+Lots of code does XFlush() on the X server, regardless of whether 
+.Bf Sy
+ -sync
+.Ef
+ is specified.  Much of that appears to be required in order to support direct client invocation of  glutMainLoopEvent(), regrettably. However, if one calls glutMainLoop(), instead, we might avoid gratuitous XFlush() calls.  (That last sentence isn't particularly germain to this function, but there's no better place to make this remark at this time.) Even for glutMainLoopEvent(), we may be able to coalesce many XFlush() calls.
+.Pp
+.Sh SEE ALSO
+.Xr glutInitWindowPosition 3
+.Xr glutInitWindowSize 3
+.Xr glutInitDisplayMode 3
+.Xr glutInitDisplayString 3
+.Xr glutCreateWindow 3
+.Xr glutDisplayFunc 3
+.Xr glutMainLoop 3
+.Xr glutMainLoopEvent 3
+.Xr glutReportErrors 3
+.Xr glutSwapBuffers 3
+.fl
+.sp 3

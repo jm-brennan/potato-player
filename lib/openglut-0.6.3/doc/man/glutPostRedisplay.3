@@ -1,0 +1,34 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTPOSTREDISPLAY 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutPostRedisplay
+.Nd Mark the current window as needing a redisplay.
+.Sh LIBRARY
+OpenGLUT - window
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutPostRedisplay "void"
+.Sh DESCRIPTION
+Whenever circumstances indicate that your window is
+in need of being redisplayed, you may call glutPostRedisplay()
+to tell OpenGLUT that you want to redraw your graphics.
+Multiple calls to this function may be coalesced by OpenGLUT
+to avoid excessive invocation of your drawing support.
+.Pp
+The ultimate effect of this function is to call your
+Display callback for the 
+.Bf Li
+ current window
+.Ef
+ .
+.Pp
+.Sh SEE ALSO
+.Xr glutPostWindowRedisplay 3
+.Xr glutPostOverlayRedisplay 3
+.Xr glutPostWindowOverlayRedisplay 3
+.Xr glutSwapBuffers 3
+.Xr glutDisplayFunc 3
+.fl
+.sp 3

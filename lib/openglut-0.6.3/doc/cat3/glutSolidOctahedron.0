@@ -1,0 +1,29 @@
+GLUTSOLIDOCTAHEDRON(3)           Local Manual           GLUTSOLIDOCTAHEDRON(3)
+
+[1mNAME[0m
+     [1mglutSolidOctahedron [22m-- Draw a solid octahedron.
+
+[1mLIBRARY[0m
+     OpenGLUT - geometry
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutSolidOctahedron[22m([4mvoid[24m);
+
+[1mDESCRIPTION[0m
+     This function draws a regular, solid 8-sided polyhedron centered at the
+     origin.  The vertices are at (+/-1, 0, 0), (0, +/-1, 0), (0, 0, +/-1).
+
+[1mCAVEATS[0m
+     We visit the same vertices the same number of times as in the wire octa-
+     hedron, but the order is different.
+
+[1mSEE ALSO[0m
+     glutWireOctahedron(3)
+
+
+
+
+                                     Epoch

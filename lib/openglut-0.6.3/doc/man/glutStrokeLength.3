@@ -1,0 +1,70 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTSTROKELENGTH 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutStrokeLength
+.Nd Returns model space width of a string in a given font.
+.Sh LIBRARY
+OpenGLUT - fonts
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  float
+.Fn glutStrokeLength "void *fontID" "const unsigned char *string"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ fontID
+.Ef
+    A GLUT stroked font identifier.
+.Pp
+.Bf Em
+ string
+.Ef
+    A C-style (NUL-terminated) string.
+.Sh DESCRIPTION
+This function reports the sum of the widths of the
+characters in a 
+.Bf Sy
+ string,
+.Ef
+ using the font metrics of
+a given 
+.Bf Sy
+ font.
+.Ef
+ 
+.Pp
+Like glutStrokeString(), glutStrokeLength() respects
+newlines in the input.
+.Pp
+Returns 0 if:
+ - The 
+.Bf Sy
+ fontID
+.Ef
+ is out of range.
+ - The 
+.Bf Sy
+ string
+.Ef
+ is 
+.Bf Sy
+ NULL.
+.Ef
+ 
+ - All characters in the 
+.Bf Sy
+ string
+.Ef
+ are zero-width.
+.Pp
+.Sh CAVEATS
+Refer to glutStrokeWidth() for notes on the nature of this function's return value, and for comparisons to old GLUT and freeglut.
+.Pp
+.Sh SEE ALSO
+.Xr glutStrokeString 3
+.Xr glutStrokeWidth 3
+.Xr glutStrokeHeight 3
+.Xr glutBitmapLength 3
+.fl
+.sp 3

@@ -1,0 +1,165 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTSPECIALFUNC 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutSpecialFunc
+.Nd Sets the Special callback for the current window
+.Sh LIBRARY
+OpenGLUT - input
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutSpecialFunc "void( *callback )( int key" "int x" "int y )"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ callback
+.Ef
+    Client function for keyboard event.
+.Sh DESCRIPTION
+Registers a 
+.Bf Sy
+ callback
+.Ef
+ for OpenGLUT to call
+when the user presses "special" keys on the keyboard.
+.Pp
+The special callback handles some additional keys that
+are not covered under plain "keyboard" events.
+The 
+.Bf Sy
+ key
+.Ef
+ that is passed to the 
+.Bf Sy
+ callback
+.Ef
+ is one of an
+enumerated set.
+The association to keys on your keyboard should
+be obvious.  Their GLUT symbol names are:
+.Pp
+ - 
+.Bf Sy
+ GLUT_KEY_F1
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_F2
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_F3
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_F4
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_F5
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_F6
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_F7
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_F8
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_F9
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_F10
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_F11
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_F12
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_LEFT
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_UP
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_RIGHT
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_DOWN
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_PAGE_UP
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_PAGE_DOWN
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_HOME
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_END
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_KEY_INSERT
+.Ef
+ 
+.Pp
+To receive other keys, see glutKeyboardFunc().
+.Pp
+This callback is bound to the 
+.Bf Li
+ current window
+.Ef
+ .
+.Pp
+.Sh CAVEATS
+Many keys are not included; nor is it possible to apply qualifiers such as the Shift or Ctrl key to these keys.
+.Pp
+Windows created via glutCreateMenuWindow() always cascade keyboard and mouse events to their parent.
+.Pp
+.Sh SEE ALSO
+.Xr glutSpecialUpFunc 3
+.Xr glutKeyboardFunc 3
+.fl
+.sp 3

@@ -1,0 +1,42 @@
+GLUTENTERGAMEMODE(3)             Local Manual             GLUTENTERGAMEMODE(3)
+
+[1mNAME[0m
+     [1mglutEnterGameMode [22m-- Enter game mode
+
+[1mLIBRARY[0m
+     OpenGLUT - gamemode
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mint[0m
+     [1mglutEnterGameMode[22m([4mvoid[24m);
+
+[1mDESCRIPTION[0m
+     Any combination of the following may apply:
+
+      - Resolution change, possibly to the requested resolution, possibly to a
+     "nearest match".
+      - Refresh frequency change.
+      - A window with a drawable area equal to the requested screen resolution
+     will be opened.
+      - The mouse may be restricted to operate within your window.
+
+[1mCAVEATS[0m
+     Varies in behavior; X users can disable the resolution change by an
+     OpenGLUT compile-time option.
+
+[1mTODO[0m
+     Documentation
+
+     OpenGLUT may be unable to restore the original settings (this has been
+     observed on WIN32).
+
+[1mSEE ALSO[0m
+     glutGameModeString(3) glutEnterGameMode(3) glutLeaveGameMode(3)
+     glutGameModeGet(3)
+
+
+
+
+                                     Epoch

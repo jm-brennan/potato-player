@@ -1,0 +1,58 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTBUTTONBOXFUNC 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutButtonBoxFunc
+.Nd Sets a button-box button callback.
+.Sh LIBRARY
+OpenGLUT - input
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutButtonBoxFunc "void( *callback )( int button" "int state )"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ callback
+.Ef
+    Client buttonbox button hook.
+.Sh DESCRIPTION
+A dials-and-buttons box has buttons numbered from 1 to
+glutDeviceGet(
+.Bf Sy
+ GLUT_NUM_BUTTON_BOX_BUTTONS),
+.Ef
+ inclusive.
+The parameters callback are the 
+.Bf Sy
+ button
+.Ef
+ and its
+.Bf Sy
+ state
+.Ef
+ as either 
+.Bf Sy
+ GLUT_UP
+.Ef
+ or 
+.Bf Sy
+ GLUT_DOWN
+.Ef
+ .
+.Pp
+The callback is bound to the 
+.Bf Li
+ current window
+.Ef
+ .
+.Pp
+.Sh CAVEATS
+OpenGLUT does not implement button-box support.
+.Pp
+Also in contrast, mouse buttons are numbered from 0 in the GLUT API.  This is a wrinkle.
+.Pp
+.Sh SEE ALSO
+.Xr glutDialsFunc 3
+.fl
+.sp 3

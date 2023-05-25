@@ -1,0 +1,50 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTRESHAPEWINDOW 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutReshapeWindow
+.Nd Request changing the size of the current window
+.Sh LIBRARY
+OpenGLUT - window
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutReshapeWindow "int width" "int height"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ width
+.Ef
+    Requested width of the current window
+.Pp
+.Bf Em
+ height
+.Ef
+   Requested height of the current window
+.Sh DESCRIPTION
+The glutReshapeWindow() function adjusts the width and height of
+the 
+.Bf Li
+ current window
+.Ef
+ , if it is an onscreen
+top-level or subwindow.  Subwindows are typically
+resized and repositioned in response to window resize events.
+.Pp
+The window system may delay or even alter your request.
+Use the glutReshapeFunc() callback registration for the window
+if you want
+.Pp
+If you try to make a subwindow smaller than its parent, the
+parent will not grow to accomodate the child.
+.Pp
+.Sh TODO
+Add support for offscreen windows.
+.Pp
+.Sh SEE ALSO
+.Xr glutInit 3
+.Xr glutInitWindowSize 3
+.Xr glutReshapeFunc 3
+.Xr glutCreateSubWindow 3
+.fl
+.sp 3

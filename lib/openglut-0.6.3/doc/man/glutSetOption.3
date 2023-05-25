@@ -1,0 +1,152 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTSETOPTION 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutSetOption
+.Nd Allows you to set some general state/option variables.
+.Sh LIBRARY
+OpenGLUT - state
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutSetOption "GLenum eWhat" "int value"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ eWhat
+.Ef
+    Enumerated parameter ID.
+.Pp
+.Bf Em
+ value
+.Ef
+    New value.
+.Sh DESCRIPTION
+Stores the 
+.Bf Sy
+ value
+.Ef
+ into a state variable named by
+.Bf Sy
+ eWhat.
+.Ef
+ 
+.Pp
+Allowable 
+.Bf Sy
+ eWhat
+.Ef
+ IDs are:
+.Pp
+ - 
+.Bf Sy
+ GLUT_ACTION_ON_WINDOW_CLOSE
+.Ef
+ 
+.br
+Controls what happens when a window is closed by the
+user or system.
+.Bf Sy
+ GLUT_ACTION_EXIT
+.Ef
+ 
+will immediately exit the application (default).
+.Bf Sy
+ GLUT_ACTION_GLUTMAINLOOP_RETURNS
+.Ef
+ 
+will immediately return from the main loop.
+.Bf Sy
+ GLUT_ACTION_CONTINUE_EXECUTION
+.Ef
+ 
+will contine execution of remaining windows.
+.Pp
+ - 
+.Bf Sy
+ GLUT_INIT_DISPLAY_MODE
+.Ef
+ 
+.br
+An alternate way to set the display mode for a
+new window.
+.Pp
+ - 
+.Bf Sy
+ GLUT_INIT_WINDOW_HEIGHT
+.Ef
+ 
+.br
+An alternate way to set the height of new windows.
+.Pp
+ - 
+.Bf Sy
+ GLUT_INIT_WINDOW_WIDTH
+.Ef
+ 
+.br
+An alternate way to set the width of new windows.
+.Pp
+ - 
+.Bf Sy
+ GLUT_INIT_WINDOW_X
+.Ef
+ 
+.br
+An alternate way to set the initial horizontal position
+of new windows.
+.Pp
+ - 
+.Bf Sy
+ GLUT_INIT_WINDOW_Y
+.Ef
+ 
+.br
+An alternate way to set the initial vertical position
+of new windows.
+.Pp
+ - 
+.Bf Sy
+ GLUT_RENDERING_CONTEXT
+.Ef
+ 
+.br
+Set to either 
+.Bf Sy
+ GLUT_CREATE_NEW_CONTEXT
+.Ef
+ or
+.Bf Sy
+ GUT_USE_CURRENT_CONTEXT
+.Ef
+ to indicate
+whether to share the current OpenGL rendering context
+with new windows.
+.Pp
+ - 
+.Bf Sy
+ GLUT_WINDOW_CURSOR
+.Ef
+ 
+.br
+Attempt to set the 
+.Bf Li
+ current window
+.Ef
+ 's current cursor
+as if by glutSetCursor().
+.Pp
+.Sh SEE ALSO
+.Xr glutGet 3
+.Xr glutDeviceGet 3
+.Xr glutGetModifiers 3
+.Xr glutLayerGet 3
+.Xr glutDestroyWindow 3
+.Xr glutMainLoop 3
+.Xr glutInitDisplayMode 3
+.Xr glutInit 3
+.Xr glutInitWindowSize 3
+.Xr glutInitWindowPosition 3
+.Xr glutSetCursor 3
+.fl
+.sp 3

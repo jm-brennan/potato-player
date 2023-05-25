@@ -1,0 +1,40 @@
+GLUTGETPROCADDRESS(3)            Local Manual            GLUTGETPROCADDRESS(3)
+
+[1mNAME[0m
+     [1mglutGetProcAddress [22m-- Determine if an OpenGLUT feature or extension is
+     available.
+
+[1mLIBRARY[0m
+     OpenGLUT - openglut
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutGetProcAddress[22m([4mconst[24m [4mchar[24m [4m*procName[24m);
+
+[1mPARAMETERS[0m
+      [4mprocName[24m     Procedure name.
+
+[1mDESCRIPTION[0m
+     Given a function name, searches for the function (or "procedure", hence
+     "Proc") in internal tables.  If the function is found, a pointer to the
+     function is returned.  If the function is not found,  [1mNULL  [22mis returned.
+
+     In addition to an internal OpenGLUT table, this function will also con-
+     sult glX (on X systems) or wgl (on WIN32 and WINCE), if the OpenGLUT ta-
+     bles do not have the requested function.  It should return any OpenGL,
+     glX, or wgl function if those functions are available.
+
+[1mCAVEATS[0m
+     The code makes no effort towards efficiency. It is advised that you cache
+     the pointer retrieved from this function if you need a certain function
+     repeatedly.
+
+[1mSEE ALSO[0m
+     glXGetProcAddress(3) wglGetProcAddress(3)
+
+
+
+
+                                     Epoch

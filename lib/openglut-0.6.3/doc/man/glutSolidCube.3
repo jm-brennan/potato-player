@@ -1,0 +1,48 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTSOLIDCUBE 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutSolidCube
+.Nd Draw a solid cube centered at the origin.
+.Sh LIBRARY
+OpenGLUT - geometry
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutSolidCube "GLdouble width"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ width
+.Ef
+       The width, height and depth of the cube.
+.Sh DESCRIPTION
+The glutSolidCube() function draws a solid-shaded cube
+with side-length given by 
+.Bf Sy
+ width.
+.Ef
+  The vertices of
+the cube are at
+(+/- 
+.Bf Sy
+ width/2,
+.Ef
+ +/- 
+.Bf Sy
+ width/2,
+.Ef
+ +/- 
+.Bf Sy
+ width/2),
+.Ef
+ 
+so that the cube is centered at the origin.
+.Pp
+.Sh AUTHORS
+Code contributed by Andreas Umbach <marvin@dataway.ch>
+.Pp
+.Sh SEE ALSO
+.Xr glutWireCube 3
+.fl
+.sp 3

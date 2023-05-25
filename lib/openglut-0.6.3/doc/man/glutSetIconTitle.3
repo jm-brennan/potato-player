@@ -1,0 +1,42 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTSETICONTITLE 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutSetIconTitle
+.Nd Requests changing the iconified title of the current window
+.Sh LIBRARY
+OpenGLUT - window
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutSetIconTitle "const char* title"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ title
+.Ef
+    New window title
+.Sh DESCRIPTION
+Requests that the window system change the title of the
+icon (or whatever) that is displayed when the
+.Bf Li
+ current window
+.Ef
+  is in iconified mode.
+.Pp
+As discussed under glutIconifyWindow(), most window systems allow
+a window to be placed in some kind of minimized, or iconified,
+state.  In that state, the normal interior of the window is
+likely to be obscured, and the only clue about the window
+contents may be the window title.
+.Pp
+.Sh CAVEATS
+Effect is system-dependant.
+.Pp
+There Exactly what "iconified" means is system dependant.  Iconification may not be supported, or the title may not be available---or legible.  Avoid putting essential information into the icon title.
+.Pp
+.Sh SEE ALSO
+.Xr glutSetWindowTitle 3
+.Xr glutIconifyWindow 3
+.fl
+.sp 3

@@ -1,0 +1,64 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTRESHAPEFUNC 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutReshapeFunc
+.Nd Sets the Reshape callback for the current window.
+.Sh LIBRARY
+OpenGLUT - windowcallback
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutReshapeFunc "void( *callback )( int w" "int h )"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ callback
+.Ef
+    Client function for reshape-window event.
+.Sh DESCRIPTION
+This registers a function with OpenGLUT, which OpenGLUT
+will invoke whenever the window is reshaped or
+resized.  Your callback is only invoked when the host
+window system has actually changed the window size.
+.Pp
+The parameters to your callback are the new width and
+height for your window.
+.Pp
+If you do not provide a reshape callback, OpenGLUT
+will simply call glViewport(0,0,
+.Bf Sy
+ w,
+.Ef
+ 
+.Bf Sy
+ h).
+.Ef
+ 
+.Pp
+This callback is bound to the 
+.Bf Li
+ current window
+.Ef
+ .
+.Pp
+To ask OpenGLUT about the present dimensions of the
+.Bf Li
+ current window
+.Ef
+ , you can use glutGet().
+.Pp
+.Sh CAVEATS
+Unlike other callbacks, GLUT has an 
+.Bf Em
+ active
+.Ef
+  default behavior if you do not set this.   (Most event types passively do nothing if you do not specify a callback to handle them.)
+.Pp
+The reshape callback should always be called, if registered, when your window is first created.
+.Pp
+.Sh SEE ALSO
+.Xr glutGet 3
+.Xr glutReshapeWindow 3
+.fl
+.sp 3

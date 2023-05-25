@@ -1,0 +1,37 @@
+GLUTGETMODIFIERS(3)              Local Manual              GLUTGETMODIFIERS(3)
+
+[1mNAME[0m
+     [1mglutGetModifiers [22m-- Returns the status of Alt, Shift, and Ctrl keys.
+
+[1mLIBRARY[0m
+     OpenGLUT - inputstate
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mint[0m
+     [1mglutGetModifiers[22m([4mvoid[24m);
+
+[1mDESCRIPTION[0m
+     According to which, if any, modifier keys are held, the return value is
+     the logical  [1mOR  [22mcombination of any of the following symbolic bitmasks:
+
+      -  [1mGLUT_ACTIVE_SHIFT[0m
+      -  [1mGLUT_ACTIVE_CTRL[0m
+      -  [1mGLUT_ACTIVE_ALT[0m
+
+     E.g., if the shift key is held, and no other modifier keys are held, this
+     function will return  [1mGLUT_ACTIVE_SHIFT.[0m
+
+[1mBUGS[0m
+     Complains if not invoked by a client callback.
+
+     Does not differentiate between the left and right forms of the modifiers.
+
+[1mSEE ALSO[0m
+     glutSetOption(3) glutGet(3) glutDeviceGet(3) glutLayerGet(3)
+
+
+
+
+                                     Epoch

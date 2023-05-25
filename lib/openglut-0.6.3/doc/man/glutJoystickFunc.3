@@ -1,0 +1,49 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTJOYSTICKFUNC 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutJoystickFunc
+.Nd Reports joystick state for the current window.
+.Sh LIBRARY
+OpenGLUT - input
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutJoystickFunc "void( *callback )( unsigned int buttons" "int xaxis" "int yaxis" "int zaxis )" "int pollInterval"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ callback
+.Ef
+      Client function for joystick events
+.Pp
+.Bf Em
+ pollInterval
+.Ef
+  Approximate (minimum) millisecond interval
+.Sh DESCRIPTION
+The callback is called roughly every 
+.Bf Sy
+ pollinterval
+.Ef
+ 
+milliseconds, and will give the joystick status.
+.Pp
+The 
+.Bf Sy
+ buttons
+.Ef
+ bitmask is a bit-wise 
+.Bf Sy
+ OR
+.Ef
+ of:
+ - GLUT_JOYSTICK_BUTTON_A
+ - GLUT_JOYSTICK_BUTTON_B
+ - GLUT_JOYSTICK_BUTTON_C
+ - GLUT_JOYSTICK_BUTTON_D
+.Pp
+The axis values are in the range [-1000,1000].
+.Pp
+.fl
+.sp 3

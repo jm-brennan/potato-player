@@ -1,0 +1,66 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTWINDOWSTATUSFUNC 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutWindowStatusFunc
+.Nd Sets the window status callback.
+.Sh LIBRARY
+OpenGLUT - windowcallback
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutWindowStatusFunc "void( *callback )( int state )"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ callback
+.Ef
+    Client window status hook.
+.Sh DESCRIPTION
+When the visibility status of your window changes,
+OpenGLUT either invokes the 
+.Bf Sy
+ callback
+.Ef
+ registered
+by this function or the
+Visibility 
+.Bf Sy
+ callback---or
+.Ef
+ neither, if you have
+not registered either callback.
+.Pp
+This differs from glutVisbilityFunc() in that the callback
+has three states, rather than two, that it may receive.
+These states are:
+.Pp
+ - 
+.Bf Sy
+ GLUT_VISIBLE
+.Ef
+       (every pixel visible)
+ - 
+.Bf Sy
+ GLUT_FULLY_COVERED
+.Ef
+ (every pixel obscured)
+ - 
+.Bf Sy
+ GLUT_HIDDEN
+.Ef
+        (intermediate)
+.Pp
+The callback is bound to the 
+.Bf Li
+ current window
+.Ef
+ .
+.Pp
+.Sh CAVEATS
+Makes glutVisibilityFunc() obsolete.
+.Pp
+.Sh SEE ALSO
+.Xr glutVisibilityFunc 3
+.fl
+.sp 3

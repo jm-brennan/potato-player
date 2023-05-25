@@ -1,0 +1,56 @@
+GLUTMOUSEFUNC(3)                 Local Manual                 GLUTMOUSEFUNC(3)
+
+[1mNAME[0m
+     [1mglutMouseFunc [22m-- Sets the mouse-button callback for the current window.
+
+[1mLIBRARY[0m
+     OpenGLUT - input
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutMouseFunc[22m([4mvoid([24m [4m*callback[24m [4m)([24m [4mint[24m [4mbutton[24m, [4mint[24m [4mstate[24m, [4mint[24m [4mx[24m, [4mint[24m [4my[24m [4m)[24m);
+
+[1mPARAMETERS[0m
+      [4mcallback[24m     Client hook for mouse-buttons.
+
+[1mDESCRIPTION[0m
+     Whenever a mouse button is pressed or released in an OpenGLUT window,
+     OpenGLUT checks if that window has a mouse-button (Mouse) callback regis-
+     tered.  If so, OpenGLUT gives the event to the handler.   [1mbutton  [22mis the
+     button number, starting from 0.   [1mstate  [22mis  [1mGLUT_UP  [22mor  [1mGLUT_DOWN  [22mto
+     indicate the button's new state.  The other parameters are the mouse co-
+     ordinates.
+
+     Mouse wheel motion can be reported as buttons.  If you do not request
+     otherwise, a wheel spun forward will act like a button clicking down, im-
+     mediately followed by clicking up.  Spinning the same wheel backward will
+     act like a different button clicking.  Mouse wheel pseudo-buttons are
+     added after all real buttons.
+
+     While the button is held and the mouse is dragged, you receive mouse-mo-
+     tion events (glutMotionFunc()), even if the mouse is dragged out of the
+     window.
+
+     This callback is bound to the  current window  .
+
+[1mCAVEATS[0m
+     Reporting the wheel as buttons is actually inherited from X. freeglut
+     added code to support this on WIN32.  OpenGLUT inherited that support
+     from freeglut.
+
+     Old GLUT defines the symbols  [1mGLUT_LEFT_BUTTON,   GLUT_RIGHT_BUTTON,  [22mand
+      [1mGLUT_MIDDLE_BUTTON.   [22mHowever, mice can have more than 3 buttons, so
+     these symbols are deprecated.
+
+     Windows created via glutCreateMenuWindow() always cascade keyboard and
+     mouse events to their parent.
+
+[1mSEE ALSO[0m
+     glutMotionFunc(3) glutPassiveMotionFunc(3) glutMouseWheelFunc(3)
+
+
+
+
+                                     Epoch

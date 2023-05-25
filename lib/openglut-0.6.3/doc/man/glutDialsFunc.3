@@ -1,0 +1,53 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTDIALSFUNC 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutDialsFunc
+.Nd Sets a dials-box button callback.
+.Sh LIBRARY
+OpenGLUT - input
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutDialsFunc "void( *callback )( int dial" "int value )"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ callback
+.Ef
+    Client dials-box dial hook.
+.Sh DESCRIPTION
+A dials-and-buttons box has dials numbered from 1 to
+glutDeviceGet(
+.Bf Sy
+ GLUT_NUM_BUTTON_BOX_DIALS),
+.Ef
+ inclusive.
+The parameters to 
+.Bf Sy
+ callback
+.Ef
+ are the 
+.Bf Sy
+ dial
+.Ef
+ and its
+.Bf Sy
+ value
+.Ef
+ the latter being an absolute rotation in
+degrees.
+.Pp
+The callback is bound to the 
+.Bf Li
+ current window
+.Ef
+ .
+.Pp
+.Sh CAVEATS
+OpenGLUT does not implement dials-box support.
+.Pp
+.Sh SEE ALSO
+.Xr glutButtonBoxFunc 3
+.fl
+.sp 3

@@ -1,0 +1,36 @@
+GLUTBITMAPLENGTH(3)              Local Manual              GLUTBITMAPLENGTH(3)
+
+[1mNAME[0m
+     [1mglutBitmapLength [22m-- Return the width of a bitmapped string, in pixels.
+
+[1mLIBRARY[0m
+     OpenGLUT - bitmapfont
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mint[0m
+     [1mglutBitmapLength[22m([4mvoid[24m [4m*font[24m, [4mconst[24m [4munsigned[24m [4mchar[24m [4m*string[24m);
+
+[1mPARAMETERS[0m
+      [4mfont[24m     A bitmapped font identifier.
+
+      [4mstring[24m   A NUL-terminated ASCII string.
+
+[1mDESCRIPTION[0m
+     Returns the maximum horizontal OpenGL raster position offset for a
+     [1mstring  [22min a bitmapped  [1mfont.[0m
+
+     As with glutBitmapString(), newlines are taken into consideration.
+
+     Returns 0 if the  [1mfont  [22mis invalid or if the  [1mstring  [22mis empty or  [1mNULL.[0m
+
+
+[1mSEE ALSO[0m
+     glutBitmapString(3) glutBitmapWidth(3) glutBitmapHeight(3)
+     glutStrokeLength(3)
+
+
+
+
+                                     Epoch

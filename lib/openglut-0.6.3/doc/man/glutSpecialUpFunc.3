@@ -1,0 +1,47 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTSPECIALUPFUNC 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutSpecialUpFunc
+.Nd Sets the special key release callback for the current window
+.Sh LIBRARY
+OpenGLUT - input
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutSpecialUpFunc "void( *callback )( int key" "int x" "int y )"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ callback
+.Ef
+    Client hook for special key releases.
+.Sh DESCRIPTION
+This function provides a way to detect the release of
+a keyboard 
+.Bf Sy
+ key.
+.Ef
+ 
+The keys are reported exactly as with
+glutSpecialFunc(), save that the 
+.Bf Sy
+ callback
+.Ef
+ registered
+via this function is used to report the event.
+.Pp
+This callback is bound to the 
+.Bf Li
+ current window
+.Ef
+ .
+.Pp
+.Sh CAVEATS
+Windows created via glutCreateMenuWindow() always cascade keyboard and mouse events to their parent.
+.Pp
+.Sh SEE ALSO
+.Xr glutSpecialFunc 3
+.Xr glutKeyboardUpFunc 3
+.fl
+.sp 3

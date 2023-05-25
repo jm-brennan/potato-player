@@ -1,0 +1,35 @@
+GLUTSPACEBALLMOTIONFUNC(3)       Local Manual       GLUTSPACEBALLMOTIONFUNC(3)
+
+[1mNAME[0m
+     [1mglutSpaceballMotionFunc [22m-- Sets a spaceball motion callback.
+
+[1mLIBRARY[0m
+     OpenGLUT - input
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutSpaceballMotionFunc[22m([4mvoid([24m [4m*callback[24m [4m)([24m [4mint[24m [4mx[24m, [4mint[24m [4my[24m, [4mint[24m [4mz[24m [4m)[24m);
+
+[1mPARAMETERS[0m
+      [4mcallback[24m     Client spaceball motion hook.
+
+[1mDESCRIPTION[0m
+     This function registers a callback for a spaceball to report position.  A
+     spaceball has six axes of freedom (three of motion and three of orienta-
+     tion), plus buttons.  The spaceball allows you to move a control point in
+     3D space with a resolution of +/- 1000 units along each of 3 axes.
+
+     The callback is bound to the  current window  .
+
+[1mCAVEATS[0m
+     OpenGLUT does not implement spaceball support.
+
+[1mSEE ALSO[0m
+     glutSpaceballRotateFunc(3) glutSpaceballButtonFunc,(3)
+
+
+
+
+                                     Epoch

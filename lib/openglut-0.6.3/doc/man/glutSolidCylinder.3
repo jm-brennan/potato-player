@@ -1,0 +1,42 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTSOLIDCYLINDER 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutSolidCylinder
+.Nd Draw a solid cylinder.
+.Sh LIBRARY
+OpenGLUT - geometry
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutSolidCylinder "GLdouble radius" "GLdouble height" "GLint slices" "GLint stacks"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ radius
+.Ef
+     Radius of the cylinder.
+.Pp
+.Bf Em
+ height
+.Ef
+     Z height.
+.Pp
+.Bf Em
+ slices
+.Ef
+     Divisions around z axis.
+.Pp
+.Bf Em
+ stacks
+.Ef
+     Divisions along z axis.
+.Sh DESCRIPTION
+glutSolidCylinder() draws a shaded cylinder,
+the center of whose base is at the origin and
+whose axis is along the positive z axis.
+.Pp
+.Sh SEE ALSO
+.Xr glutWireCylinder 3
+.fl
+.sp 3

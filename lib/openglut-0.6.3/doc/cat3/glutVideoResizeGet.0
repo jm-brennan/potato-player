@@ -1,0 +1,47 @@
+GLUTVIDEORESIZEGET(3)            Local Manual            GLUTVIDEORESIZEGET(3)
+
+[1mNAME[0m
+     [1mglutVideoResizeGet [22m-- Undocumented, unimplemented.
+
+[1mLIBRARY[0m
+     OpenGLUT - videomode
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mint[0m
+     [1mglutVideoResizeGet[22m([4mGLenum[24m [4meWhat[24m);
+
+[1mPARAMETERS[0m
+      [4meWhat[24m     An enumerated tag.
+
+[1mDESCRIPTION[0m
+     This function is undocumented.  This function is unimplemeneted (pres-
+     ently).
+
+     From GLUT 3.7's implementation, the following is a list of symbols that
+     GLUT 3.7 supported.  These are not necessarily defined in OpenGLUT at
+     this time, nor is support presently available for them:
+
+      -  [1mGLUT_VIDEO_RESIZE_POSSIBLE  [22m(feature presence)
+      -  [1mGLUT_VIDEO_RESIZE_IN_USE[0m
+      -  [1mGLUT_VIDEO_RESIZE_X_DELTA[0m
+      -  [1mGLUT_VIDEO_RESIZE_Y_DELTA[0m
+      -  [1mGLUT_VIDEO_RESIZE_WIDTH_DELTA[0m
+      -  [1mGLUT_VIDEORESIZE_HEIGHT_DELTA[0m
+      -  [1mGLUT_VIDEO_REISZE_X[0m
+      -  [1mGLUT_VIDEO_RESIZE_Y[0m
+      -  [1mGLUT_VIDEO_RESIZE_WIDTH[0m
+      -  [1mGLUT_VIDEO_RESIZE_HEIGHT[0m
+
+     A -1 should be returned for unimplemented features, and a warning
+     printed.
+
+[1mSEE ALSO[0m
+     glutVideoResizeGet(3) glutSetupVideoResizing(3) glutStopVideoResizing(3)
+     glutVideoResize(3) glutVideoPan(3)
+
+
+
+
+                                     Epoch

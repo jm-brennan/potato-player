@@ -1,0 +1,27 @@
+GLUTSETMENU(3)                   Local Manual                   GLUTSETMENU(3)
+
+[1mNAME[0m
+     [1mglutSetMenu [22m-- Set the current menu ID.
+
+[1mLIBRARY[0m
+     OpenGLUT - menus
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutSetMenu[22m([4mint[24m [4mmenuID[24m);
+
+[1mPARAMETERS[0m
+      [4mmenuID[24m     Selected menu
+
+[1mDESCRIPTION[0m
+     Set the  current menu   to the specified  [1mmenuID.[0m
+
+[1mSEE ALSO[0m
+     glutGetMenu(3)
+
+
+
+
+                                     Epoch

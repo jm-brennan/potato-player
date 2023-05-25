@@ -1,0 +1,29 @@
+GLUTREMOVEMENUITEM(3)            Local Manual            GLUTREMOVEMENUITEM(3)
+
+[1mNAME[0m
+     [1mglutRemoveMenuItem [22m-- Remove a given menu item.
+
+[1mLIBRARY[0m
+     OpenGLUT - menus
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutRemoveMenuItem[22m([4mint[24m [4mitem[24m);
+
+[1mPARAMETERS[0m
+      [4mitem[24m     Integer position down the list
+
+[1mDESCRIPTION[0m
+     Walks the list of the menu items and deletes the numbered  [1mitem  [22min the
+     list.
+
+[1mSEE ALSO[0m
+     glutAddMenuEntry(3) glutAddSubMenu(3) glutChangeToMenuEntry(3)
+     glutChangeToSubMenu(3)
+
+
+
+
+                                     Epoch

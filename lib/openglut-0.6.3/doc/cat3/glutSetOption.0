@@ -1,0 +1,64 @@
+GLUTSETOPTION(3)                 Local Manual                 GLUTSETOPTION(3)
+
+[1mNAME[0m
+     [1mglutSetOption [22m-- Allows you to set some general state/option variables.
+
+[1mLIBRARY[0m
+     OpenGLUT - state
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutSetOption[22m([4mGLenum[24m [4meWhat[24m, [4mint[24m [4mvalue[24m);
+
+[1mPARAMETERS[0m
+      [4meWhat[24m     Enumerated parameter ID.
+
+      [4mvalue[24m     New value.
+
+[1mDESCRIPTION[0m
+     Stores the  [1mvalue  [22minto a state variable named by  [1meWhat.[0m
+
+     Allowable  [1meWhat  [22mIDs are:
+
+      -  [1mGLUT_ACTION_ON_WINDOW_CLOSE[0m
+     Controls what happens when a window is closed by the user or system.
+     [1mGLUT_ACTION_EXIT  [22mwill immediately exit the application (default).
+     [1mGLUT_ACTION_GLUTMAINLOOP_RETURNS  [22mwill immediately return from the main
+     loop.   [1mGLUT_ACTION_CONTINUE_EXECUTION  [22mwill contine execution of remain-
+     ing windows.
+
+      -  [1mGLUT_INIT_DISPLAY_MODE[0m
+     An alternate way to set the display mode for a new window.
+
+      -  [1mGLUT_INIT_WINDOW_HEIGHT[0m
+     An alternate way to set the height of new windows.
+
+      -  [1mGLUT_INIT_WINDOW_WIDTH[0m
+     An alternate way to set the width of new windows.
+
+      -  [1mGLUT_INIT_WINDOW_X[0m
+     An alternate way to set the initial horizontal position of new windows.
+
+      -  [1mGLUT_INIT_WINDOW_Y[0m
+     An alternate way to set the initial vertical position of new windows.
+
+      -  [1mGLUT_RENDERING_CONTEXT[0m
+     Set to either  [1mGLUT_CREATE_NEW_CONTEXT  [22mor  [1mGUT_USE_CURRENT_CONTEXT  [22mto
+     indicate whether to share the current OpenGL rendering context with new
+     windows.
+
+      -  [1mGLUT_WINDOW_CURSOR[0m
+     Attempt to set the  current window  's current cursor as if by glut-
+     SetCursor().
+
+[1mSEE ALSO[0m
+     glutGet(3) glutDeviceGet(3) glutGetModifiers(3) glutLayerGet(3)
+     glutDestroyWindow(3) glutMainLoop(3) glutInitDisplayMode(3) glutInit(3)
+     glutInitWindowSize(3) glutInitWindowPosition(3) glutSetCursor(3)
+
+
+
+
+                                     Epoch

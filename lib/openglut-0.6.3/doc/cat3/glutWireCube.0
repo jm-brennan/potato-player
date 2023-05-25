@@ -1,0 +1,33 @@
+GLUTWIRECUBE(3)                  Local Manual                  GLUTWIRECUBE(3)
+
+[1mNAME[0m
+     [1mglutWireCube [22m-- Draw a wireframe cube centered at the origin.
+
+[1mLIBRARY[0m
+     OpenGLUT - geometry
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutWireCube[22m([4mGLdouble[24m [4mwidth[24m);
+
+[1mPARAMETERS[0m
+      [4mwidth[24m        The width, height and depth of the cube.
+
+[1mDESCRIPTION[0m
+     The glutWireCube() function draws an axis-aligned wireframe cube with a
+     specified width, height and depth. The vertices of the cube are at (+/-
+     [1mwidth/2,  [22m+/-  [1mwidth/2,  [22m+/-  [1mwidth/2),  [22mso that the cube is centered at
+     the origin.
+
+[1mAUTHORS[0m
+     Code contributed by Andreas Umbach <marvin@dataway.ch>
+
+[1mSEE ALSO[0m
+     glutSolidCube(3)
+
+
+
+
+                                     Epoch

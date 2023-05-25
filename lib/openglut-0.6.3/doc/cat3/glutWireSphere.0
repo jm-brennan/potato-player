@@ -1,0 +1,36 @@
+GLUTWIRESPHERE(3)                Local Manual                GLUTWIRESPHERE(3)
+
+[1mNAME[0m
+     [1mglutWireSphere [22m-- Draw a wireframe sphere centered at the origin.
+
+[1mLIBRARY[0m
+     OpenGLUT - geometry
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutWireSphere[22m([4mGLdouble[24m [4mradius[24m, [4mGLint[24m [4mslices[24m, [4mGLint[24m [4mstacks[24m);
+
+[1mPARAMETERS[0m
+      [4mradius[24m         Sphere radius.
+
+      [4mslices[24m         The number of divisions around the z axis. (latitudal)
+
+      [4mstacks[24m         The number of divisions along the z axis. (longitudal)
+
+[1mDESCRIPTION[0m
+     The glutWireSphere() function draws a wireframe sphere centered at the
+     origin.  The "equatorial" great circle lies in the xy-plane.
+
+[1mCAVEATS[0m
+     The number of line segments representing the spherical surface is propor-
+     tional to (slices*stacks).
+
+[1mSEE ALSO[0m
+     glutSolidSphere.(3)
+
+
+
+
+                                     Epoch

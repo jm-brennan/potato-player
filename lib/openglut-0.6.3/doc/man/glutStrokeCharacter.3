@@ -1,0 +1,72 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTSTROKECHARACTER 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutStrokeCharacter
+.Nd Draw a stroked character.
+.Sh LIBRARY
+OpenGLUT - fonts
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutStrokeCharacter "void *fontID" "int character"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ fontID
+.Ef
+    A GLUT stroked font identifier.
+.Pp
+.Bf Em
+ character
+.Ef
+ An ASCII character other than NUL.
+.Sh DESCRIPTION
+This function draws one 
+.Bf Sy
+ character
+.Ef
+ from one stroked font
+(selected by 
+.Bf Sy
+ fontID)
+.Ef
+ 
+using OpenGL 
+.Bf Sy
+ GL_LINE_STRIP.
+.Ef
+  These characters
+are drawn at the origin in model space.
+The the model space origin is translated at the end,
+according to the 
+.Bf Sy
+ character
+.Ef
+ width in 
+.Bf Sy
+ fontID.
+.Ef
+ 
+.Pp
+Does nothing if:
+ - The 
+.Bf Sy
+ fontID
+.Ef
+ is invalid.
+ - The 
+.Bf Sy
+ character
+.Ef
+ is out of the font's range.
+.Pp
+.Sh SEE ALSO
+.Xr glBegin 3
+.Xr glTranslatef 3
+.Xr glutStrokeWidth 3
+.Xr glutStrokeString 3
+.Xr glutStrokeHeight 3
+.Xr glutBitmapCharacter 3
+.fl
+.sp 3

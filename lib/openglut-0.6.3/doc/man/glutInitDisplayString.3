@@ -1,0 +1,382 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTINITDISPLAYSTRING 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutInitDisplayString
+.Nd Set the window creation display mode.
+.Sh LIBRARY
+OpenGLUT - window
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutInitDisplayString "const char *displayMode"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ displayMode
+.Ef
+    Requested display mode string.
+.Sh DESCRIPTION
+glutInitDisplayString() permits you to define a display
+mode for subsequent windows that you open.  In most
+regards, control is at least as fine as with
+glutInitDisplaymode().
+.Pp
+The 
+.Bf Sy
+ displayMode
+.Ef
+ parameter is case-sensitive, and
+tokens are separated by ASCII TABs (\\t) and SPACEs.
+.Pp
+ - 
+.Bf Sy
+ index
+.Ef
+ 
+.br
+Enables 
+.Bf Sy
+ GLUT_INDEX.
+.Ef
+ 
+.Pp
+ - 
+.Bf Sy
+ luminance
+.Ef
+ 
+.br
+Enables 
+.Bf Sy
+ GLUT_LUMINANCE.
+.Ef
+ 
+Enables 
+.Bf Sy
+ GLUT_STENCIL.
+.Ef
+ 
+.Pp
+ - 
+.Bf Sy
+ red
+.Ef
+ 
+.br
+Number of red channel bits.
+.Pp
+ - 
+.Bf Sy
+ green
+.Ef
+ 
+.br
+Number of green channel bits.
+.Pp
+ - 
+.Bf Sy
+ blue
+.Ef
+ 
+.br
+Number of blue channel bits.
+.Pp
+ - 
+.Bf Sy
+ alpha
+.Ef
+ 
+.br
+Number of alpha channel bits.
+Enables 
+.Bf Sy
+ GLUT_ALPHA.
+.Ef
+ 
+.Pp
+ - 
+.Bf Sy
+ rgb
+.Ef
+ 
+.br
+Number of 
+.Bf Sy
+ RGB
+.Ef
+ channel bits, no aplha bits.
+Enables 
+.Bf Sy
+ GLUT_RGB.
+.Ef
+ 
+.Pp
+ - 
+.Bf Sy
+ rgba
+.Ef
+ 
+.br
+Number of 
+.Bf Sy
+ RGBA
+.Ef
+ channel bits.
+Enables 
+.Bf Sy
+ GLUT_RGBA.
+.Ef
+ 
+.Pp
+ - 
+.Bf Sy
+ depth
+.Ef
+ 
+.br
+Number of depth buffer bits.
+.Pp
+ - 
+.Bf Sy
+ stencil
+.Ef
+ 
+.br
+Number of stencil buffer bits.
+.Pp
+ - 
+.Bf Sy
+ double
+.Ef
+ 
+.br
+Enables 
+.Bf Sy
+ GLUT_DOUBLE.
+.Ef
+ 
+.Pp
+ - 
+.Bf Sy
+ single
+.Ef
+ 
+.br
+Enables 
+.Bf Sy
+ GLUT_SINGLE.
+.Ef
+ 
+.Pp
+ - 
+.Bf Sy
+ stereo
+.Ef
+ 
+.br
+Enables 
+.Bf Sy
+ GLUT_STERO.
+.Ef
+ 
+.Pp
+ - 
+.Bf Sy
+ acca
+.Ef
+ 
+.br
+Number of 
+.Bf Sy
+ RGBA
+.Ef
+ accumulation bits.
+Enables 
+.Bf Sy
+ GLUT_ACCUM.
+.Ef
+ 
+.Pp
+ - 
+.Bf Sy
+ acc
+.Ef
+ 
+.br
+Number of 
+.Bf Sy
+ RGB
+.Ef
+ accumulation bits.
+Enables 
+.Bf Sy
+ GLUT_ACCUM.
+.Ef
+ 
+.Pp
+ - 
+.Bf Sy
+ samples
+.Ef
+ 
+.br
+Number of samples for GLX's 
+.Bf Sy
+ SGIS_Multisample.
+.Ef
+ 
+Enables 
+.Bf Sy
+ GLUT_MULTISAMPLE.
+.Ef
+ 
+.Pp
+ - 
+.Bf Sy
+ buffer
+.Ef
+ 
+.br
+[TODO] Sets bits in index mode?
+.Pp
+ - 
+.Bf Sy
+ conformant
+.Ef
+ 
+.br
+[TODO] Conformant with what?
+Enables 
+.Bf Sy
+ GLUT_DEPTH.
+.Ef
+ 
+.Pp
+ - 
+.Bf Sy
+ slow
+.Ef
+ 
+.br
+[TODO] Indicates if a frame-buffer is slow.
+.Pp
+ - 
+.Bf Sy
+ num
+.Ef
+ 
+.br
+[TODO] Appears to select a frame-buffer configuration
+by number from an unspecified list.  Probably
+very non-portable.
+.Pp
+A special capability  name indicating where the
+value represents the Nth frame buffer configuration
+matching the description string
+.Pp
+.Pp
+ - 
+.Bf Sy
+ win32pdf
+.Ef
+ 
+.br
+Win32 specific: Pixel Format Descriptor
+.Pp
+ - 
+.Bf Sy
+ win32pfd
+.Ef
+ 
+.br
+Win32 specific: Pixel Format Descriptor
+.Pp
+ - 
+.Bf Sy
+ xvisual
+.Ef
+ 
+.br
+X11 specific: X Visual
+.Pp
+ - 
+.Bf Sy
+ xstaticgray
+.Ef
+ 
+.br
+X11 specific: "staticgray" mode.
+.Pp
+ - 
+.Bf Sy
+ xgrayscale
+.Ef
+ 
+.br
+X11 specific: "grayscale" mode.
+.Pp
+ - 
+.Bf Sy
+ xstaticcolor
+.Ef
+ 
+.br
+X11 specific: "staticcolor" mode.
+.Pp
+ - 
+.Bf Sy
+ xpseudocolor
+.Ef
+ 
+.br
+X11 specific: "pseudocolor" mode.
+.Pp
+ - 
+.Bf Sy
+ xtruecolor
+.Ef
+ 
+.br
+X11 specific: "trueolor" mode.
+.Pp
+ - 
+.Bf Sy
+ xdirectcolor
+.Ef
+ 
+.br
+X11 specific: "directcolor" mode.
+.Pp
+.Sh CAVEATS
+Conflicting modes, such as 
+.Bf Sy
+ single
+.Ef
+ and 
+.Bf Sy
+ double
+.Ef
+ have the same interaction as for glutInitDisplayMode().
+.Pp
+.Sh TODO
+.Bf Sy
+ GLUT_BORDERLESS
+.Ef
+ and 
+.Bf Sy
+ GLUT_OFFSCREEN
+.Ef
+ are not represented.
+.Pp
+Not all features appear to be implemented.  In particular, numeric parameters and comparator specifications are lacking. See GLUT 3.7 sources for example.
+.Pp
+PyOpenGL <a href="http://pyopengl.sourceforge.net/documentation/manual/glutInitDisplayString.3GLUT.html"> glutInitDisplayString</a> documentation.
+.Pp
+.Sh SEE ALSO
+.Xr glutInit 3
+.Xr glutInitWindowPosition 3
+.Xr glutInitWindowSize 3
+.Xr glutInitDisplayMode 3
+.fl
+.sp 3

@@ -1,0 +1,54 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTSETWINDOWTITLE 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutSetWindowTitle
+.Nd Request changing the title of the current window
+.Sh LIBRARY
+OpenGLUT - window
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutSetWindowTitle "const char* title"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ title
+.Ef
+    New window title
+.Sh DESCRIPTION
+glutSetWindowTitle() requests that the window system
+change the title of the window.
+.Pp
+Normally a window system displays a title for every
+top-level window in the system.  The initial title is
+set when you call glutCreateWindow().  By means of this
+function you can set the titles for your top-level
+OpenGLUT windows.
+.Pp
+Some window systems do not provide titles for
+windows, in which case this function may have no
+useful effect.
+.Pp
+Because the effect may be delayed or lost, you
+should not count on the effect of this function.
+However, it can be a nice touch to use the window
+title bar for a one-line status bar in some cases.
+Use discretion.
+.Pp
+If you just want one title for the window over the window's
+entire life, you should set it when you open the window
+with glutCreateWindow().
+.Pp
+.Sh CAVEATS
+Only for managed, onscreen, top-level windows.
+.Pp
+Not all window systems display titles.
+.Pp
+May be ignored or delayed by window manager.
+.Pp
+.Sh SEE ALSO
+.Xr glutCreateWindow 3
+.Xr glutSetIconTitle 3
+.fl
+.sp 3

@@ -1,0 +1,26 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTREPORTERRORS 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutReportErrors
+.Nd Reports all available OpenGL errors.
+.Sh LIBRARY
+OpenGLUT - opengl
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutReportErrors "void"
+.Sh DESCRIPTION
+Displays as an OpenGLUT warning every OpenGL error
+that OpenGL remembers giving to us and which
+we have not processed.  Uses gluErrorString().
+.Pp
+This is forcibly done by OpenGLUT periodically if
+"-gldebug" is one of the strings passed into
+glutInit() via \argv.
+.Pp
+.Sh SEE ALSO
+.Xr gluErrorString 3
+.Xr glutInit 3
+.fl
+.sp 3

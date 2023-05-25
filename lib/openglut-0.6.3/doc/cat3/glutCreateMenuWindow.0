@@ -1,0 +1,48 @@
+GLUTCREATEMENUWINDOW(3)          Local Manual          GLUTCREATEMENUWINDOW(3)
+
+[1mNAME[0m
+     [1mglutCreateMenuWindow [22m-- Create a client-controlled menu window.
+
+[1mLIBRARY[0m
+     OpenGLUT - experimental
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mint[0m
+     [1mglutCreateMenuWindow[22m([4mint[24m [4mparentID[24m, [4mint[24m [4mx[24m, [4mint[24m [4my[24m, [4mint[24m [4mw[24m, [4mint[24m [4mh[24m);
+
+[1mPARAMETERS[0m
+      [4mparentID[24m     Parent window identifier.
+
+      [4mx[24m            Horizontal coordinate on the screen.
+
+      [4my[24m            Vertical coordinate on the screen.
+
+      [4mw[24m            Width of the new window.
+
+      [4mh[24m            Height of the new window.
+
+[1mDESCRIPTION[0m
+     This is a highly experimental function.  It creates a menu-like window,
+     of requested dimensions, and at a position relative to your current win-
+     dow.
+
+     The documentation for this function is currently the OpenGLUT Menu Window
+     proposal.  Variance from that proposal may generally be explained by the
+     fact that this feature is highly experimental.  It may also be explained
+     by the fact that the implementation may simply be incomplete.
+
+[1mCAVEATS[0m
+     Did you notice that this feature is highly experimental?
+
+[1mSEE ALSO[0m
+     glutCreateWindow(3) glutCreateSubWindow(3) glutDestroyWindow(3)
+     glutKeyboardFunc(3) glutKeyboardUpFunc(3) glutSpecialFunc(3)
+     glutSpecialUpFunc(3) glutMotionFunc(3) glutPassiveMotionFunc(3)
+     glutMouseFunc(3) glutMouseWheelFunc(3)
+
+
+
+
+                                     Epoch

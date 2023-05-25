@@ -1,0 +1,58 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTUSELAYER 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutUseLayer
+.Nd Allows you to switch between normal and layer mode.
+.Sh LIBRARY
+OpenGLUT - overlays
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutUseLayer "GLenum layer"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ layer
+.Ef
+    Whether to be in a layer or in the normal window.
+.Sh DESCRIPTION
+By default, OpenGLUT operates in "normal" mode, with
+respect to layers.  If you have a layer open and wish
+to operate on the layer, you must use glutUseLayer().
+.Pp
+.Bf Sy
+ layer
+.Ef
+ can take on the following values, indicating
+the layer mode to use:
+.Pp
+ - 
+.Bf Sy
+ GLUT_NORMAL
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_LAYER
+.Ef
+ 
+.Pp
+.Sh CAVEATS
+Unimplemented.
+.Pp
+It is unclear what the consequences are if you are in 
+.Bf Sy
+ GLUT_OVERLAY
+.Ef
+ mode and switch to another (or the same) window via glutSetWindow().  What if the target has a layer?  What if it doesn't?
+.Pp
+.Sh SEE ALSO
+.Xr glutEstablishOverlay 3
+.Xr glutRemoveOverlay 3
+.Xr glutPostOverlayRedisplay 3
+.Xr glutPostWindowOverlayRedisplay 3
+.Xr glutShowOverlay 3
+.Xr glutHideOverlay 3
+.fl
+.sp 3

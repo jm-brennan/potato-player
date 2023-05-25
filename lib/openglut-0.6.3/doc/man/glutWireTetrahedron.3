@@ -1,0 +1,46 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTWIRETETRAHEDRON 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutWireTetrahedron
+.Nd Draw a wireframe tetrahedron.
+.Sh LIBRARY
+OpenGLUT - geometry
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutWireTetrahedron "void"
+.Sh DESCRIPTION
+This function draws a regular, wireframe 4-sided polyhedron
+centered at the origin.
+The distance from the origin to the vertices is 1.
+.Pp
+.Sh TODO
+Merge 
+.Bf Sy
+ r0
+.Ef
+ 
+.Bf Sy
+ r1
+.Ef
+ 
+.Bf Sy
+ r2
+.Ef
+ and 
+.Bf Sy
+ r3
+.Ef
+ into one array.
+.Pp
+Put the normals into the (or an) array.
+.Pp
+Make the array static const, with file scope, and share with glutSolidTetrahedron().
+.Pp
+Maybe consolidate with the SierpinskySponge?
+.Pp
+.Sh SEE ALSO
+.Xr glutSolidTetrahedron 3
+.fl
+.sp 3

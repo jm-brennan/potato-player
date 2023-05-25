@@ -1,0 +1,66 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTSOLIDSIERPINSKISPONGE 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutSolidSierpinskiSponge
+.Nd Draw a solid Spierspinski's sponge.
+.Sh LIBRARY
+OpenGLUT - geometry
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutSolidSierpinskiSponge "int num_levels" "const GLdouble offset[ 3 ]" "GLdouble scale"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ num_levels
+.Ef
+    Recursive depth.
+.Pp
+.Bf Em
+ offset
+.Ef
+        Location vector.
+.Pp
+.Bf Em
+ scale
+.Ef
+         Relative size.
+.Sh DESCRIPTION
+This function recursively draws a few levels of
+a solid-shaded Sierpinski's Sponge.
+If 
+.Bf Sy
+ num_levels
+.Ef
+ is 0, draws 1 tetrahedron.
+The 
+.Bf Sy
+ offset
+.Ef
+ is a translation.
+The 
+.Bf Sy
+ z
+.Ef
+ axis is normal to the base.
+The sponge is centered at the origin.
+.Pp
+.Sh CAVEATS
+Runtime is exponential in 
+.Bf Sy
+ num_levels
+.Ef
+ .
+.Pp
+.Sh TODO
+Consider removing the 
+.Bf Sy
+ offset
+.Ef
+ parameter from the API (use a helper function).
+.Pp
+.Sh SEE ALSO
+.Xr glutWireSierpinskiSponge 3
+.fl
+.sp 3

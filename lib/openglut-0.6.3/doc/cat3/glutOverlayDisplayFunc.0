@@ -1,0 +1,39 @@
+GLUTOVERLAYDISPLAYFUNC(3)        Local Manual        GLUTOVERLAYDISPLAYFUNC(3)
+
+[1mNAME[0m
+     [1mglutOverlayDisplayFunc [22m-- Defines the display hook for an overlay.
+
+[1mLIBRARY[0m
+     OpenGLUT - windowcallback
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutOverlayDisplayFunc[22m([4mvoid([24m [4m*callback[24m [4m)([24m [4mvoid[24m [4m)[24m);
+
+[1mPARAMETERS[0m
+      [4mcallback[24m     Client hook for overlay redisplay.
+
+[1mDESCRIPTION[0m
+      [1mcallback  [22mis invoked by OpenGLUT to refresh an overlay, if OpenGLUT
+     thinks that this is necessary.  Generally, very similar to glutDisplay-
+     Func(), save that:
+
+      - The redisplay is triggered differently.
+      - OpenGLUT sets the layer for you.
+      - You do not need to have, and can deregister, this callback.
+
+     This callback is bound to  [4mboth[24m  the  current window   and the  layer  .
+
+[1mBUGS[0m
+     OpenGLUT does not implement layers at this time.
+
+[1mSEE ALSO[0m
+     glutDisplayFunc(3) glutPostOverlayRedisplay(3) glutEstablishOverlay(3)
+     glutUseLayer(3)
+
+
+
+
+                                     Epoch

@@ -1,0 +1,37 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTSETMENUDATA 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutSetMenuData
+.Nd Store menu user data pointer
+.Sh LIBRARY
+OpenGLUT - menus
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutSetMenuData "void *data"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ data
+.Ef
+    Client pointer data
+.Sh DESCRIPTION
+glutSetMenuData() associates an arbitrary user
+data pointer, 
+.Bf Sy
+ data,
+.Ef
+ with the 
+.Bf Li
+ current menu
+.Ef
+ .
+OpenGLUT
+does not interpret this pointer in any way, but
+merely stores it for you in the menu structure.
+.Pp
+.Sh SEE ALSO
+.Xr glutGetMenuData 3
+.fl
+.sp 3

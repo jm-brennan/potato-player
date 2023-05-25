@@ -1,0 +1,53 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTMAINLOOP 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutMainLoop
+.Nd The standard GLUT event loop entry point.
+.Sh LIBRARY
+OpenGLUT - mainloop
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutMainLoop "void"
+.Sh DESCRIPTION
+This is the main driving force for an event-driven
+OpenGLUT program.  It alternates between calling
+glutMainLoopEvent() to process pending events and then
+either sleeping or calling your idle function
+(see glutIdleFunc()).
+.Pp
+This function 
+.Bf Li
+ can
+.Ef
+  return, but GLUT's version
+of this function never returned.  And you must
+do special things to OpenGLUT to cause OpenGLUT's
+version to return.
+.Pp
+The cross-reference section for this function's
+documentation should ideally contain every
+callback, but the list would be tediously long and
+prone to omissions.
+.Pp
+.Sh CAVEATS
+For OpenGLUT developers' internal documentation: Runs until the 
+.Bf Sy
+ ExecState
+.Ef
+ changes to 
+.Bf Sy
+ GLUT_EXEC_STATE_STOP.
+.Ef
+ 
+.Pp
+.Sh BUGS
+Talking to other message systems (e.g., network layers) can be a bit bothersome under the GLUT event model.
+.Pp
+.Sh SEE ALSO
+.Xr glutMainLoopEvent 3
+.Xr glutLeaveMainLoop 3
+.Xr glutIdleFunc 3
+.fl
+.sp 3

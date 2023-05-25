@@ -1,0 +1,26 @@
+GLUTLEAVEGAMEMODE(3)             Local Manual             GLUTLEAVEGAMEMODE(3)
+
+[1mNAME[0m
+     [1mglutLeaveGameMode [22m-- Leave game mode, returning to normal desktop mode
+
+[1mLIBRARY[0m
+     OpenGLUT - gamemode
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutLeaveGameMode[22m([4mvoid[24m);
+
+[1mDESCRIPTION[0m
+[1mTODO[0m
+     Documentation
+
+[1mSEE ALSO[0m
+     glutGameModeString(3) glutEnterGameMode(3) glutLeaveGameMode(3)
+     glutGameModeGet(3)
+
+
+
+
+                                     Epoch

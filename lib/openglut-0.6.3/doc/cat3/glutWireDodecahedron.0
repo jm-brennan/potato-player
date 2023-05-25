@@ -1,0 +1,28 @@
+GLUTWIREDODECAHEDRON(3)          Local Manual          GLUTWIREDODECAHEDRON(3)
+
+[1mNAME[0m
+     [1mglutWireDodecahedron [22m-- Draw a wireframe dodecahedron.
+
+[1mLIBRARY[0m
+     OpenGLUT - geometry
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutWireDodecahedron[22m([4mvoid[24m);
+
+[1mDESCRIPTION[0m
+     This function draws a regular, wireframe 12-sided polyhedron centered at
+     the origin.  The distance from the origin to the vertices is sqrt(3).
+     The facets are pentagons.  No facet is normal any of the  [1mx,   y,  [22mor  [1mz[0m
+     axes.
+
+[1mSEE ALSO[0m
+     glutSolidDodecahedron(3) glutWireRhombicDodecahedron(3)
+     glutSolidRhombicDodecahedron(3)
+
+
+
+
+                                     Epoch

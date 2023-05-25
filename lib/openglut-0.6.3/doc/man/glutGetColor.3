@@ -1,0 +1,61 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTGETCOLOR 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutGetColor
+.Nd Gets an indexed color-mode entry's Red, Green, or Blue value.
+.Sh LIBRARY
+OpenGLUT - colormap
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  GLfloat
+.Fn glutGetColor "int color" "int component"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ color
+.Ef
+     The palette entry to fetch.
+.Pp
+.Bf Em
+ component
+.Ef
+ Whether to fetch Red, Green, or Blue.
+.Sh DESCRIPTION
+Allows you to get individual color-map entries
+in a 
+.Bf Sy
+ GLUT_INDEX
+.Ef
+ type of display.  Respects the
+current layer setting.
+.Pp
+.Bf Sy
+ component
+.Ef
+ may be any of:
+.Pp
+ - 
+.Bf Sy
+ GLUT_RED
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_GREEN
+.Ef
+ 
+ - 
+.Bf Sy
+ GLUT_BLUE
+.Ef
+ 
+.Pp
+.Sh BUGS
+Unimplemented.
+.Pp
+.Sh SEE ALSO
+.Xr glutSetColor 3
+.Xr glutCopyColorMap 3
+.fl
+.sp 3

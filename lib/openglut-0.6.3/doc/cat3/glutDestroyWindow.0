@@ -1,0 +1,35 @@
+GLUTDESTROYWINDOW(3)             Local Manual             GLUTDESTROYWINDOW(3)
+
+[1mNAME[0m
+     [1mglutDestroyWindow [22m-- Destroy a window and associated subwindows
+
+[1mLIBRARY[0m
+     OpenGLUT - window
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutDestroyWindow[22m([4mint[24m [4mwindowID[24m);
+
+[1mPARAMETERS[0m
+      [4mwindowID[24m    Window identifier
+
+[1mDESCRIPTION[0m
+     After this function is invoked, the only further event that may be deliv-
+     ered for your window is the one for its destruction.  All other events
+     should be discarded.
+
+     Once a window has been destroyed, further attempts to use the window
+     named by  [1mwindowID  [22mare undefined.  OpenGLUT generally tries to be sensi-
+     ble, and should not recycle the dead  [1mwindowID,  [22mbut you should treat a
+     destroyed window much like a pointer to deallocated memory and try not to
+     use it.
+
+[1mSEE ALSO[0m
+     glutCreateWindow(3)
+
+
+
+
+                                     Epoch

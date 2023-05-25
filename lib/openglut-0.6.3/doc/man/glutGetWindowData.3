@@ -1,0 +1,51 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTGETWINDOWDATA 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutGetWindowData
+.Nd Get the user data for the current window
+.Sh LIBRARY
+OpenGLUT - window
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void*
+.Fn glutGetWindowData "void"
+.Sh DESCRIPTION
+This function will return whatever 
+.Bf Sy
+ void*
+.Ef
+ value is
+associated with the 
+.Bf Li
+ current window
+.Ef
+  via glutSetWindowData().
+This is 
+.Bf Sy
+ NULL
+.Ef
+ if you did not associate a pointer with your window.
+This can be useful in a situation where you have a single
+callback function performing services for many windows.
+You 
+.Bf Em
+ could
+.Ef
+  keep track of the 
+.Bf Li
+ window id
+.Ef
+ s in a
+global list and search for the 
+.Bf Li
+ current window
+.Ef
+  in
+that list.  But this is quicker than searching a data
+structure, and allows you to avoid the use of globals for this.
+.Pp
+.Sh SEE ALSO
+.Xr glutSetWindowData 3
+.fl
+.sp 3

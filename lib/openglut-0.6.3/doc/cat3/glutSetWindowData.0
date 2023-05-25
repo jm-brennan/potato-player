@@ -1,0 +1,30 @@
+GLUTSETWINDOWDATA(3)             Local Manual             GLUTSETWINDOWDATA(3)
+
+[1mNAME[0m
+     [1mglutSetWindowData [22m-- Set the user data for the current window
+
+[1mLIBRARY[0m
+     OpenGLUT - window
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutSetWindowData[22m([4mvoid*[24m [4mdata[24m);
+
+[1mPARAMETERS[0m
+      [4mdata[24m     Arbitrary client-supplied pointer.
+
+[1mDESCRIPTION[0m
+     This associates an arbitrary  [1mvoid*  [22mvalue with the  current window  .
+     This is especially useful in client-side callbacks that service many win-
+     dows, if the client needs to know more about the window than OpenGLUT
+     normally will provide.
+
+[1mSEE ALSO[0m
+     glutGetWindowData(3)
+
+
+
+
+                                     Epoch

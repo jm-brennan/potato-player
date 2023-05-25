@@ -1,0 +1,44 @@
+GLUTMENUSTATUSFUNC(3)            Local Manual            GLUTMENUSTATUSFUNC(3)
+
+[1mNAME[0m
+     [1mglutMenuStatusFunc [22m-- Modern variant of glutMenuStateFunc()
+
+[1mLIBRARY[0m
+     OpenGLUT - menucallback
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutMenuStatusFunc[22m([4mvoid([24m [4m*callback[24m [4m)([24m [4mint[24m [4mstatus[24m, [4mint[24m [4mx[24m, [4mint[24m [4my[24m [4m)[24m);
+
+[1mPARAMETERS[0m
+      [4mcallback[24m     Client menu status hook.
+
+[1mDESCRIPTION[0m
+     Broadly, OpenGLUT operates in two modes.  At any given time, it is either
+     in menu mode (with a popup menu display, possibly with subitems) or it is
+     not.
+
+     When moving from non-menu to menu status,  [1mcallback  [22m(if defined) will be
+     called with  [1mGLUT_MENU_IN_USE  [22m.  Conversely, when moving from menu to
+     non-menu status,  [1mcallback  [22m(if defined) will be called with
+     [1mGLUT_MENU_NOT_IN_USE  [22m.
+
+     This differs from glutMenuStateFunc() in that  [1mcallback  [22mis also given
+     the  [1mx  [22mand  [1my  [22mcoordinates of the mouse when the menu state transition
+     took place.
+
+     This callback is bound to  [4mboth[24m   the  current window   and the  current
+     menu  .
+
+[1mBUGS[0m
+     Your callback is not actually called presently.
+
+[1mSEE ALSO[0m
+     glutMenuStateFunc(3)
+
+
+
+
+                                     Epoch

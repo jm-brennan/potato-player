@@ -1,0 +1,41 @@
+GLUTVISIBILITYFUNC(3)            Local Manual            GLUTVISIBILITYFUNC(3)
+
+[1mNAME[0m
+     [1mglutVisibilityFunc [22m-- Sets the Visibility callback for the current win-
+     dow.
+
+[1mLIBRARY[0m
+     OpenGLUT - deprecated
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutVisibilityFunc[22m([4mvoid([24m [4m*callback[24m [4m)([24m [4mint[24m [4mstatus[24m [4m)[24m);
+
+[1mPARAMETERS[0m
+      [4mcallback[24m     Client hook for visibility changes.
+
+[1mDESCRIPTION[0m
+     OpenGLUT may call this function when your window's visbility status has
+     changed.   [1mstatus  [22mcan take on two values:  [1mGLUT_NOT_VISIBLE  [22mor
+     [1mGLUT_VISIBLE  [22m.  If any pixel of your window (including descendants) is
+     visible, your window is  [1mGLUT_VISIBLE  [22m.
+
+     The callback is bound to the  current window  .
+
+[1mCAVEATS[0m
+     This is not a polling mechanism.  You are only informed of transitions
+     that OpenGLUT observes while your callback is in place.
+
+     This function appears to be superceded by glutWindowStatusFunc().
+
+     This callback is mutually exclusive of glutWindowStatusFunc().
+
+[1mSEE ALSO[0m
+     glutWindowStatusFunc(3)
+
+
+
+
+                                     Epoch

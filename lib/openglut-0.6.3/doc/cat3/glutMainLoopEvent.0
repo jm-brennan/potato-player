@@ -1,0 +1,42 @@
+GLUTMAINLOOPEVENT(3)             Local Manual             GLUTMAINLOOPEVENT(3)
+
+[1mNAME[0m
+     [1mglutMainLoopEvent [22m-- Dispatches all pending events.
+
+[1mLIBRARY[0m
+     OpenGLUT - mainloop
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutMainLoopEvent[22m([4mvoid[24m);
+
+[1mDESCRIPTION[0m
+     The general outline of this function is to first drain the queue of win-
+     dowsystem events, in most cases dispatching each as it is found.  After
+     the queue is empty, we check for timer-based events, coalesced window
+     events (e.g., redisplays), and windows that need to be closed.
+
+     The cross-reference section for this function's documentation should ide-
+     ally contain every callback, but the list would be tediously long and
+     prone to omissions.
+
+[1mCAVEATS[0m
+     Does not necessarily dispatch events that are received  after   this
+     function starts processing.
+
+     At first glance, this function may not seem to afford any new capability
+     that you couldn't get with an idle callback or glutLeaveMainLoop().  How-
+     ever there are other GLUT-like libraries that may have their own window
+     event processing loops.  Having glutMainLoopEvent() allows you to ask
+     OpenGLUT to do its work in a batch, then return to whatever processing
+     the other library (or libraries) require.
+
+[1mSEE ALSO[0m
+     glutIdleFunc(3) glutLeaveMainLoop(3) glutMainLoop(3)
+
+
+
+
+                                     Epoch

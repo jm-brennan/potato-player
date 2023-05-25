@@ -1,0 +1,27 @@
+GLUTDESTROYMENU(3)               Local Manual               GLUTDESTROYMENU(3)
+
+[1mNAME[0m
+     [1mglutDestroyMenu [22m-- Destroy a menu.
+
+[1mLIBRARY[0m
+     OpenGLUT - menus
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutDestroyMenu[22m([4mint[24m [4mmenuID[24m);
+
+[1mPARAMETERS[0m
+      [4mmenuID[24m     The menu to destroy.
+
+[1mDESCRIPTION[0m
+     Destroys a given menu object by its ID.
+
+[1mSEE ALSO[0m
+     glutCreateMenu(3)
+
+
+
+
+                                     Epoch

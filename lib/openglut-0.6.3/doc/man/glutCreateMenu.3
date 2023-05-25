@@ -1,0 +1,52 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTCREATEMENU 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutCreateMenu
+.Nd Create a new menu.
+.Sh LIBRARY
+OpenGLUT - menus
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  int
+.Fn glutCreateMenu "void( *callback )( int value )"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ callback
+.Ef
+    Client hook for the new menu.
+.Sh DESCRIPTION
+Create a menu with a callback bound to 
+.Bf Sy
+ callback,
+.Ef
+ and
+return the menu's integer id.
+.Pp
+When the user makes a selection from this menu,
+.Bf Sy
+ callback
+.Ef
+ is invoked with the parameter 
+.Bf Sy
+ value,
+.Ef
+ 
+which comes from the (
+.Bf Sy
+ label,
+.Ef
+ 
+.Bf Sy
+ value)
+.Ef
+ pair that
+is defined with glutAddMenuEntry().
+.Pp
+.Sh SEE ALSO
+.Xr glutAddMenuEntry 3
+.Xr glutAddSubMenu 3
+.Xr glutDestroyMenu 3
+.fl
+.sp 3

@@ -1,0 +1,27 @@
+GLUTWIRERHOMBICDODECAHEDRON(3)   Local Manual   GLUTWIRERHOMBICDODECAHEDRON(3)
+
+[1mNAME[0m
+     [1mglutWireRhombicDodecahedron [22m-- Draw a wireframe rhombic dodecahedron
+
+[1mLIBRARY[0m
+     OpenGLUT - geometry
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutWireRhombicDodecahedron[22m([4mvoid[24m);
+
+[1mDESCRIPTION[0m
+     This function draws a wireframe dodecahedron whose facets are rhombic and
+     whose vertices are at unit radius.  No facet lies normal to any coordi-
+     nate axes.  The polyhedron is centered at the origin.
+
+[1mSEE ALSO[0m
+     glutSolidRhombicDodecahedron(3) glutWireDodecahedron(3)
+     glutSolidDodecahedron(3)
+
+
+
+
+                                     Epoch

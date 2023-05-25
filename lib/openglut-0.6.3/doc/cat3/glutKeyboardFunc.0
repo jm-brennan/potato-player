@@ -1,0 +1,43 @@
+GLUTKEYBOARDFUNC(3)              Local Manual              GLUTKEYBOARDFUNC(3)
+
+[1mNAME[0m
+     [1mglutKeyboardFunc [22m-- Sets the Keyboard callback for the current window.
+
+[1mLIBRARY[0m
+     OpenGLUT - input
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutKeyboardFunc[22m([4mvoid([24m [4m*[24m [4mcallback[24m [4m)([24m [4munsigned[24m [4mchar[24m [4mkey[24m, [4mint[24m [4mx[24m, [4mint[24m [4my[24m [4m)[24m);
+
+[1mPARAMETERS[0m
+      [4mcallback[24m     Client function for keyboard event.
+
+[1mDESCRIPTION[0m
+     This callback registration allows you to handle traditional ASCII key-
+     board input.  A general rule of thumb is that if a key has a common ASCII
+     code, then OpenGLUT assigns that code to the key and calls the Keyboard
+     [1mcallback  [22mwith the ASCII code in the  [1mkey  [22mparameter.  For other keys,
+     you must use glutSpecialFunc().  Not all keys can be reported by OpenG-
+     LUT.
+
+     As a convenience, the mouse coordinates, relative to your window, are
+     also returned.
+
+     This callback is bound to the  current window  .
+
+[1mCAVEATS[0m
+     This function is not very international-friendly.
+
+     Windows created via glutCreateMenuWindow() always cascade keyboard and
+     mouse events to their parent.
+
+[1mSEE ALSO[0m
+     glutKeyboardUpFunc(3) glutSpecialFunc(3)
+
+
+
+
+                                     Epoch

@@ -1,0 +1,28 @@
+GLUTIGNOREKEYREPEAT(3)           Local Manual           GLUTIGNOREKEYREPEAT(3)
+
+[1mNAME[0m
+     [1mglutIgnoreKeyRepeat [22m-- Set autorepeat status.
+
+[1mLIBRARY[0m
+     OpenGLUT - inputstate
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutIgnoreKeyRepeat[22m([4mint[24m [4mignore[24m);
+
+[1mPARAMETERS[0m
+      [4mignore[24m     Whether to ignore autorepeated keys.
+
+[1mDESCRIPTION[0m
+     If  [1mignore  [22mis non-zero, then auto-repeat is disabled for keyboard call-
+     backs for the  current window  .
+
+[1mSEE ALSO[0m
+     glutSetKeyRepeat(3)
+
+
+
+
+                                     Epoch

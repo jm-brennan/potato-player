@@ -1,0 +1,32 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTDETACHMENU 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutDetachMenu
+.Nd Detach menu from the current window.
+.Sh LIBRARY
+OpenGLUT - menus
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutDetachMenu "int button"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ button
+.Ef
+    Mouse button to unbind from.
+.Sh DESCRIPTION
+If the given 
+.Bf Sy
+ button
+.Ef
+ has a menu bound to it,
+this breaks the assocation.
+.Pp
+.Sh SEE ALSO
+.Xr glutCreateMenu 3
+.Xr glutDestroyMenu 3
+.Xr glutAttachMenu 3
+.fl
+.sp 3

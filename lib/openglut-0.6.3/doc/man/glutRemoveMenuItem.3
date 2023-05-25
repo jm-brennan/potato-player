@@ -1,0 +1,33 @@
+.\" Copyright 2004, the OpenGLUT contributors
+.Dt GLUTREMOVEMENUITEM 3 LOCAL
+.Dd
+.Sh NAME
+.Nm glutRemoveMenuItem
+.Nd Remove a given menu item.
+.Sh LIBRARY
+OpenGLUT - menus
+.Sh SYNOPSIS
+.In openglut.h
+.Ft  void
+.Fn glutRemoveMenuItem "int item"
+.Sh PARAMETERS
+.Pp
+.Bf Em
+ item
+.Ef
+    Integer position down the list
+.Sh DESCRIPTION
+Walks the list of the menu items and deletes
+the numbered 
+.Bf Sy
+ item
+.Ef
+ in the list.
+.Pp
+.Sh SEE ALSO
+.Xr glutAddMenuEntry 3
+.Xr glutAddSubMenu 3
+.Xr glutChangeToMenuEntry 3
+.Xr glutChangeToSubMenu 3
+.fl
+.sp 3

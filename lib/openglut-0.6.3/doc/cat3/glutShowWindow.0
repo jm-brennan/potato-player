@@ -1,0 +1,34 @@
+GLUTSHOWWINDOW(3)                Local Manual                GLUTSHOWWINDOW(3)
+
+[1mNAME[0m
+     [1mglutShowWindow [22m-- Request that the <i>current window</i> be visible
+
+[1mLIBRARY[0m
+     OpenGLUT - window
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutShowWindow[22m([4mvoid[24m);
+
+[1mDESCRIPTION[0m
+     glutShowWindow() requests that the window system make the  current window
+       visible.
+
+     This is generally not necessary.  When you create a window, it will nor-
+     mally become visible.  Unless you specifically hide it, it will remain
+     visible.  Though visible, of course, it may be covered by other windows;
+     that would be an issue for window stacking order not visibility.
+
+     When, and if, your window's visibility status changes, you may find out
+     via a glutWindowStatusFunc() callback.
+
+[1mSEE ALSO[0m
+     glutHideWindow(3) glutPopWindow(3) glutPushWindow(3)
+     glutWindowStatusFunc(3)
+
+
+
+
+                                     Epoch

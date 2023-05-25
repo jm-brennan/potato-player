@@ -1,0 +1,38 @@
+GLUTSETWINDOWSTAYONTOP(3)        Local Manual        GLUTSETWINDOWSTAYONTOP(3)
+
+[1mNAME[0m
+     [1mglutSetWindowStayOnTop [22m-- Set stay on top mode for current window
+
+[1mLIBRARY[0m
+     OpenGLUT - experimental
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutSetWindowStayOnTop[22m([4mint[24m [4menable[24m);
+
+[1mPARAMETERS[0m
+      [4menable[24m  Either  [1mGL_TRUE  [22mor  [1mGL_FALSE[0m
+
+[1mDESCRIPTION[0m
+[1mCAVEATS[0m
+     Does not work on all window managers.
+
+     Sends the Icewm style message to all window managers (KDE, twm, blackbox,
+     ratpoison, amiwm, and whatever others you have).  Can we detect Icewm re-
+     liably and only send the Icewm formatted message for Icewm?  Possibbly
+     harmless as it stands, but looks wrong.
+
+[1mTODO[0m
+     Can a glutGet() be defined to tell us whether a window can be made to
+     stay on top?  Or whether a window has (successfully) been marked for
+     staying on top?
+
+     Should walk the tree of menus and glutPopWindow() (or all windows that
+     are of menu-window type?).
+
+     Investigate making a workalike variant using glutPopWindow() to mimic the
+     feature where not directly supported.
+
+                                     Epoch

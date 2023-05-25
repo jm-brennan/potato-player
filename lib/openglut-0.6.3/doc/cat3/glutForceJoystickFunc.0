@@ -1,0 +1,31 @@
+GLUTFORCEJOYSTICKFUNC(3)         Local Manual         GLUTFORCEJOYSTICKFUNC(3)
+
+[1mNAME[0m
+     [1mglutForceJoystickFunc [22m-- Forces a joystick poll and callback.
+
+[1mLIBRARY[0m
+     OpenGLUT - input
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutForceJoystickFunc[22m([4mvoid[24m);
+
+[1mDESCRIPTION[0m
+     Forces the OpenGLUT joystick code to poll your joystick(s) and to call
+     your joystick callbacks with the result.  The operation completes, in-
+     cluding callbacks, before glutForceJoystickFunc() returns.
+
+[1mBUGS[0m
+     The original WINCE import used a #if to turn this function off.  That is
+     wrong.  The proper way to handle the joystick code is to generate "null"
+     events.  The WINCE code needs to be fixed in og_joystick.c, not here.
+
+[1mSEE ALSO[0m
+     glutJoystickFunc(3)
+
+
+
+
+                                     Epoch

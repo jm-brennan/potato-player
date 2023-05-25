@@ -1,0 +1,45 @@
+GLUTICONIFYWINDOW(3)             Local Manual             GLUTICONIFYWINDOW(3)
+
+[1mNAME[0m
+     [1mglutIconifyWindow [22m-- Iconify the current window
+
+[1mLIBRARY[0m
+     OpenGLUT - window
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutIconifyWindow[22m([4mvoid[24m);
+
+[1mDESCRIPTION[0m
+     Most window systems have some kind of ``minimized'' or ``iconified''
+     state for windows.  All systems currently supported by OpenGLUT do so.
+     The exact meaning of iconification is somewhat system-dependant, but this
+     makes a request of the window system to place the window into this state.
+
+     Graphic output is usually suspended in this form.  User input may be par-
+     tially or wholly suspended.
+
+     If and when your window is iconified by the window system, it may be uni-
+     conified at any time by the system.  This usually happens at the request
+     of a user.  Because of this, you should not use this function to hide a
+     window.  Rather, it is to help unclutter the user's display, and is more
+     or less consensual with the user.  Use glutHideWindow() if you want to
+     hide the window entirely.
+
+[1mCAVEATS[0m
+     Applies only to onscreen, top-level windows.
+
+     Not guaranteed to have any effect; effect may be arbitrarily delayed.
+
+     There is no callback that specifically tells you when (or if) your window
+     is iconified.
+
+[1mSEE ALSO[0m
+     glutSetIconTitle(3) glutHideWindow(3) glutShowWindow(3)
+
+
+
+
+                                     Epoch

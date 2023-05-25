@@ -1,0 +1,102 @@
+GLUTINITDISPLAYMODE(3)           Local Manual           GLUTINITDISPLAYMODE(3)
+
+[1mNAME[0m
+     [1mglutInitDisplayMode [22m-- Set the window creation display mode.
+
+[1mLIBRARY[0m
+     OpenGLUT - window
+
+[1mSYNOPSIS[0m
+     [1m#include <openglut.h>[0m
+
+     [4mvoid[0m
+     [1mglutInitDisplayMode[22m([4munsigned[24m [4mint[24m [4mdisplayMode[24m);
+
+[1mPARAMETERS[0m
+      [4mdisplayMode[24m     Requested display mode bitmask.
+
+[1mDESCRIPTION[0m
+     glutInitDisplayMode() allows you to control the mode for subsequent
+     OpenGLUT windows.
+
+     Allowable  [1mdisplayMode  [22mis a combination of:
+
+      -  [1mGLUT_RGB[0m
+     Red, green, blue framebuffer.
+
+      -  [1mGLUT_RGBA[0m
+     Red, green, blue, alpha framebuffer.
+
+      -  [1mGLUT_INDEX[0m
+     Indexed color framebuffer.
+
+      -  [1mGLUT_SINGLE[0m
+     Single-buffered mode.
+
+      -  [1mGLUT_DOUBLE[0m
+     Double-buffered mode.
+
+      -  [1mGLUT_ACCUM[0m
+     Accumulation buffer.
+
+      -  [1mGLUT_ALPHA[0m
+     Alpha channel.
+
+      -  [1mGLUT_DEPTH[0m
+     Depth buffering.
+
+      -  [1mGLUT_STENCIL[0m
+     Stencil buffering.
+
+      -  [1mGLUT_MULTISAMPLE[0m
+     Multisampling mode. (not always available)
+
+      -  [1mGLUT_STEREO[0m
+     Left and right framebuffers.
+
+      -  [1mGLUT_LUMINANCE[0m
+     Greyscale color mode.
+
+     Additionally, the following  experimental   features are implemented:
+
+      -  [1mGLUT_OFFSCREEN[0m
+     Offscreen windows are very much like onscreen windows that have been
+     dragged off of the edge of the screen.  The biggest issue is that off-
+     screen windows do not support subwindows.  Other than that, onscreen win-
+     dows that are dragged off of the edge may not store graphics that you
+     render (while  [1mGLUT_OFFSCREEN  [22mwindows do), and there is no way to drag
+     an offscreen window onscreen for user interaction.
+
+      -  [1mGLUT_BORDERLESS[0m
+     Borderless windows are very experimental, and their precise behavior is
+     not set in stone.  See also glutCreateMenuWindow().
+
+     The following are  defaults  :
+
+      -  [1mGLUT_RGB[0m
+      -  [1mGLUT_SINGLE[0m
+
+[1mCAVEATS[0m
+     Some display mode features were introduced by OpenGLUT.
+
+     Not all features or combinations of features are valid for all platforms.
+
+     There is no way to change the display mode of an open window.
+
+[1mBUGS[0m
+      [1mGLUT_OFFSCREEN  [22mwindows do not work with nVidia cards/drivers.  (Both
+     Win32 and X11)
+
+      [1mGLUT_BORDERLESS  [22mseems to vary by the window manager on X11, though twm
+     (for example) performs very similarly to WIN32. But KDE's window manager
+     (for example) does not let you send keystrokes to borderless windows
+     without OpenGLUT hacks.
+
+[1mSEE ALSO[0m
+     glutCreateMenuWindow(3) glutInit(3) glutInitWindowSize(3)
+     glutInitWindowPosition(3) glutInitDisplayString(3) glutSwapBuffers(3)
+
+
+
+
+                                     Epoch
