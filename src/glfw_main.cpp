@@ -34,6 +34,7 @@ int main(int argc, char *argv[]) {
     glfwWindowHint(GLFW_SAMPLES, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 
     // @TODO call with glfwGetPrimaryMonitor() to do fullscreen, use cl args?
     GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Potato Player", nullptr, nullptr);
@@ -43,7 +44,7 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-    center_window(window);
+    //center_window(window);
     glfwMakeContextCurrent(window);
 
     //glfwSetKeyCallback(window, key_callback);
@@ -93,6 +94,7 @@ void main_loop(GLFWwindow* window) {
         //game1.update((float)dt);
         //im->update_new_inputs(); // resolve newKeyDowns to keyDowns, same for mouse
 
+        printf("setting color\n");
         GLEC(glClearColor(0.19f, 0.65f, 0.32f, 1.0f));
         GLEC(glClear(GL_COLOR_BUFFER_BIT));
         //game1.render();
