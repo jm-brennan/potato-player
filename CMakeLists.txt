@@ -23,7 +23,7 @@ set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 set(SOURCES 
-"${SRC_DIR}/glfw_main.cpp"
+"${SRC_DIR}/example_main.cpp"
 #"${SRC_DIR}/gpio.cpp"
 #"${SRC_DIR}/gpio.h"
 "${SRC_DIR}/utils.h"
