@@ -3,6 +3,7 @@
 #include <thread>
 
 #include <glad/glad.h>
+#define GLFW_INCLUDE_ES2
 #include <GLFW/glfw3.h>
 
 #include "definitions.h"
@@ -51,7 +52,7 @@ int main(int argc, char *argv[]) {
     //glfwSetMouseButtonCallback(window, mouse_button_callback);
     //glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     
-    glfwSwapInterval(1);
+    //glfwSwapInterval(1);
 
     if (!gladLoadGLES2Loader((GLADloadproc)glfwGetProcAddress)) {
         printf("ERROR::GLAD init\n");
