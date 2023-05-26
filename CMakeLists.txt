@@ -23,7 +23,7 @@ set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 set(SOURCES 
-"${SRC_DIR}/example_main.cpp"
+"${SRC_DIR}/example_main2.cpp"
 #"${SRC_DIR}/gpio.cpp"
 #"${SRC_DIR}/gpio.h"
 "${SRC_DIR}/utils.h"
@@ -58,7 +58,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE "GLFW_INCLUDE_NONE")
 
 # glad
 set(GLAD_DIR "${LIB_DIR}/glad")
-add_library("glad" "${GLAD_DIR}/src/glad.c")
+add_library("glad" "${GLAD_DIR}/src/gles2.c")
 target_include_directories("glad" PRIVATE "${GLAD_DIR}/include")
 target_include_directories(${PROJECT_NAME} PRIVATE "${GLAD_DIR}/include")
 target_link_libraries(${PROJECT_NAME} "glad" "${CMAKE_DL_LIBS}")
