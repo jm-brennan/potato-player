@@ -76,8 +76,8 @@ target_link_libraries(${PROJECT_NAME} "glad" "${CMAKE_DL_LIBS}")
 #target_link_libraries(${PROJECT_NAME} PRIVATE "${FLAC_Lib}")
 
 # glm
-#set(GLM_INCLUDE_DIR "${INCLUDE_DIR}/glm")
-#target_include_directories(${PROJECT_NAME} PRIVATE "${GLM_INCLUDE_DIR}")
+set(GLM_INCLUDE_DIR "${LIB_DIR}/glm")
+target_include_directories(${PROJECT_NAME} PRIVATE "${GLM_INCLUDE_DIR}")
 
 # GLFW
 #set(GLFW_DIR "${LIB_DIR}/glfw-3.3.2")

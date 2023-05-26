@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
     //glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     
     //glfwSwapInterval(1);
-    if (!gladLoadGLES2((GLADloadproc)glfwGetProcAddress)) {
+    if (!gladLoadGLES2Loader((GLADloadproc)glfwGetProcAddress)) {
         printf("ERROR::GLAD init\n");
         return -1;
     }
