@@ -1,54 +1,44 @@
-#include <GL/openglut.h>
-#include "definitions.h"
+#define GLAD_GLES2_IMPLEMENTATION
+#include <glad/gles2.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
-static void display(void)
+#include <iostream>
+
+using namespace glm;
+using namespace std;
+
+static void glfw_error_callback(int error, const char* description)
 {
-    const double t = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
-    const double a = t*90.0;
-
-    GLEC(glClearColor(0.19f, 0.65f, 0.32f, 1.0f));
-    GLEC(glClear(GL_COLOR_BUFFER_BIT));
-
-    glutSwapBuffers();
+    cerr << "GLFW Error: " << description << "\n";
 }
 
 int main() {
-    glutInitWindowSize(640,480);
-    glutInitWindowPosition(40,40);
-    glutInit(nullptr, nullptr);
-    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+    glfwSetErrorCallback(glfw_error_callback);
 
-    glutCreateWindow("OpenGLUT Window");
+    if (!glfwInit()) {
+        cerr << "Could not initialize GLFW\n";
+        return 1;
+    }
 
-    glutDisplayFunc(display);
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
+    GLFWwindow* window = glfwCreateWindow(640, 480, "OpenGL ES 2.0 Triangle (EGL)", NULL, NULL);
 
-   /*  glutReshapeFunc(resize);
-    glutDisplayFunc(display);
-    glutKeyboardFunc(key);
-    glutSpecialFunc(special);
-    glutIdleFunc(idle); */
+    if (!window) {
+        // apparently if window creation fails, it may be worthwhile to retry after
+        // setting glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
 
-    GLEC(glClearColor(0.19f, 0.65f, 0.32f, 1.0f));
-    //glEnable(GL_CULL_FACE);
-    //glCullFace(GL_BACK);
+        glfwTerminate();
+        cerr << "Could not create window\n";
+        return 1;
+    }
 
-    //glEnable(GL_DEPTH_TEST);
-    //glDepthFunc(GL_LESS);
-
-    //glEnable(GL_LIGHT0);
-    //glEnable(GL_NORMALIZE);
-    //glEnable(GL_COLOR_MATERIAL);
-
-    //glLightfv(GL_LIGHT0, GL_AMBIENT,  light_ambient);
-    //glLightfv(GL_LIGHT0, GL_DIFFUSE,  light_diffuse);
-    //glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-    //glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-    //glMaterialfv(GL_FRONT, GL_AMBIENT,   mat_ambient);
-    //glMaterialfv(GL_FRONT, GL_DIFFUSE,   mat_diffuse);
-    //glMaterialfv(GL_FRONT, GL_SPECULAR,  mat_specular);
-    //glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess);
-
-    glutMainLoop();
+    glfwMakeContextCurrent(window);
+    gladLoadGLES2(glfwGetProcAddress);
+    glfwSwapInterval(1);
 
 }
