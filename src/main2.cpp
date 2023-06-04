@@ -92,10 +92,13 @@ int main(void)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
     #else
-
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     #endif
 
-    
+    glfwWindowHint(GLFW_SAMPLES, 4);
+
     GLFWwindow* window = glfwCreateWindow(640, 480, "OpenGL ES 2.0 Triangle (EGL)", NULL, NULL);
     if (!window)
     {
@@ -108,7 +111,7 @@ int main(void)
     #ifdef USE_OPENGL_ES
     gladLoadGLES2(glfwGetProcAddress);
     #else
-
+    gladLoadGL(glfwGetProcAddress);
     #endif
     
     glfwSwapInterval(1);

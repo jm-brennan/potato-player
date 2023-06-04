@@ -19,9 +19,6 @@
 using namespace glm;
 using namespace std;
 
-
-using namespace glm;
-
 typedef struct Vertex
 {
     vec2 pos;
