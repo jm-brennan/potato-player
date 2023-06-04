@@ -6,6 +6,14 @@ set (CMAKE_CXX_STANDARD 11)
 
 set(CMAKE_BUILD_TYPE Debug)
 
+option(USE_OPENGL_ES "Whether to use OpenGL ES" OFF)
+
+if(USE_OPENGL_ES)
+  add_definitions(-DUSE_OPENGL_ES)
+endif()
+
+
+
 # use, i.e. don't skip the full RPATH for the build tree
 #set(CMAKE_SKIP_BUILD_RPATH FALSE)
  
@@ -23,7 +31,7 @@ set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 set(SOURCES 
-"${SRC_DIR}/audio_main.cpp"
+"${SRC_DIR}/main.cpp"
 "${SRC_DIR}/miniaudio.h"
 
 #"${SRC_DIR}/gpio.cpp"
@@ -59,8 +67,13 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE "GLFW_INCLUDE_NONE")
 
 
 # glad
-set(GLAD_DIR "${LIB_DIR}/glad")
-add_library("glad" "${GLAD_DIR}/src/gles2.c")
+if(USE_OPENGL_ES)
+    set(GLAD_DIR "${LIB_DIR}/glad_es")
+    add_library("glad" "${GLAD_DIR}/src/gles2.c")
+else()
+    set(GLAD_DIR "${LIB_DIR}/glad")
+    add_library("glad" "${GLAD_DIR}/src/gl.c")
+endif()
 target_include_directories("glad" PRIVATE "${GLAD_DIR}/include")
 target_include_directories(${PROJECT_NAME} PRIVATE "${GLAD_DIR}/include")
 target_link_libraries(${PROJECT_NAME} "glad" "${CMAKE_DL_LIBS}")
