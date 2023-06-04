@@ -31,7 +31,7 @@ set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 set(SOURCES 
-"${SRC_DIR}/main.cpp"
+"${SRC_DIR}/main2.cpp"
 "${SRC_DIR}/miniaudio.h"
 
 #"${SRC_DIR}/gpio.cpp"
