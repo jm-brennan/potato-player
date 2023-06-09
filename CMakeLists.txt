@@ -31,7 +31,8 @@ set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 set(SOURCES 
-"${SRC_DIR}/main2.cpp"
+#"${SRC_DIR}/main2.cpp"
+"${SRC_DIR}/tagreader_main.cpp"
 "${SRC_DIR}/miniaudio.h"
 
 #"${SRC_DIR}/gpio.cpp"
@@ -91,8 +92,32 @@ target_link_libraries(${PROJECT_NAME} "glad" "${CMAKE_DL_LIBS}")
 #target_link_libraries(${PROJECT_NAME} PRIVATE "${FLAC_Lib}")
 
 # glm
-set(GLM_INCLUDE_DIR "${LIB_DIR}/glm")
-target_include_directories(${PROJECT_NAME} PRIVATE "${GLM_INCLUDE_DIR}")
+set(GLM_DIR "${LIB_DIR}/glm")
+target_include_directories(${PROJECT_NAME} PRIVATE "${GLM_DIR}")
+
+
+set(TAGLIB_DIR "${LIB_DIR}/taglib-1.13")
+#include_directories(
+#    ${TAGLIB_DIR}
+#    ${TAGLIB_DIR}/toolkit
+#)
+add_subdirectory("${TAGLIB_DIR}")
+
+# Link your executable with the TagLib library
+target_link_libraries(${PROJECT_NAME} tag)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    "${TAGLIB_DIR}"
+    "${TAGLIB_DIR}/taglib"
+    "${TAGLIB_DIR}/taglib/toolkit"
+    "${TAGLIB_DIR}/taglib/ape"
+    "${TAGLIB_DIR}/taglib/mpeg"
+    "${TAGLIB_DIR}/taglib/mpeg/id3v1"
+    "${TAGLIB_DIR}/taglib/mpeg/id3v2"
+    "${TAGLIB_DIR}/taglib/mpeg/id3v2/frames"
+    "${TAGLIB_DIR}/bindings/c/"
+)
+
 
 # GLFW
 #set(GLFW_DIR "${LIB_DIR}/glfw-3.3.2")

@@ -82,8 +82,6 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     #endif
 
-    glfwWindowHint(GLFW_SAMPLES, 4);
-
     GLFWwindow* window = glfwCreateWindow(640, 480, "Potato Player", NULL, NULL);
 
     if (!window) {
