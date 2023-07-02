@@ -1,0 +1,5 @@
+#pragma once
+//#define ROOT_DIR "@CMAKE_SOURCE_DIR@/"
+#define SHADER_DIR "@CMAKE_SOURCE_DIR@/src/shaders/"
+//#define FONT_DIR "@CMAKE_SOURCE_DIR@/resources/fonts/"
+//#define TEXTURE_DIR "@CMAKE_SOURCE_DIR@/textures/"

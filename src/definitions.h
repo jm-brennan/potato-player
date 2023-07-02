@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include <glad/glad.h>
+#include "gladInclude.h"
 //#include <GL/openglut.h>
 
 #define GLEC(x) gl_clear_error();\

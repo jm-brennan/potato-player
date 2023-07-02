@@ -29,15 +29,22 @@ endif()
 # Source files
 set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
-set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
+
+configure_file("${SRC_DIR}/paths.h.in" "${SRC_DIR}/paths.h")
 set(SOURCES 
-#"${SRC_DIR}/main2.cpp"
-"${SRC_DIR}/tagreader_main.cpp"
+"${SRC_DIR}/main2.cpp"
+#"${SRC_DIR}/tagreader_main.cpp"
 "${SRC_DIR}/miniaudio.h"
+"${SRC_DIR}/Camera.h"
+"${SRC_DIR}/Camera.cpp"
+"${SRC_DIR}/ShaderManager.h"
+"${SRC_DIR}/ShaderManager.cpp"
+
 
 #"${SRC_DIR}/gpio.cpp"
 #"${SRC_DIR}/gpio.h"
 "${SRC_DIR}/utils.h"
+"${SRC_DIR}/gladInclude.h"
 )
 
 #list(APPEND CMAKE_PREFIX_PATH "${LIB_DIR}/SFML-2.5.1")
@@ -46,7 +53,6 @@ set(SOURCES
 # Executable definition and properties
 add_executable(${PROJECT_NAME} ${SOURCES} ${INCLUDES})
 target_include_directories(${PROJECT_NAME} PRIVATE "${SRC_DIR}")
-target_include_directories(${PROJECT_NAME} PRIVATE "${INCLUDE_DIR}")
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 
 #find_package(OpenGL REQUIRED)
