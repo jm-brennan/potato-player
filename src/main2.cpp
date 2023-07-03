@@ -76,18 +76,29 @@ int main(void)
 
     ShaderManager::create_shader_from_string(vShaderStr, fShaderStr, SHADER::COLOR);
 
+    GLfloat vVerticies[] = {0.0f, 0.5f, 0.0f,
+                            -0.5, -0.5f, 0.0f,
+                            0.5f, -0.5f, 0.0f};
+
     while (!glfwWindowShouldClose(window)) {
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT);
-
-        
-
         glClearColor(0.19f, 0.65f, 0.32f, 1.0f);
+
+        ShaderManager::use(COLOR);
+
+        GLEC(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vVerticies));
+        GLEC(glEnableVertexAttribArray(0));
+        GLEC(glDrawArrays(GL_TRIANGLES, 0, 3));
+
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+    ShaderManager::delete_shaders();
+
     glfwDestroyWindow(window);
     glfwTerminate();
     exit(EXIT_SUCCESS);

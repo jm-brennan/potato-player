@@ -43,7 +43,6 @@ set(SOURCES
 
 #"${SRC_DIR}/gpio.cpp"
 #"${SRC_DIR}/gpio.h"
-"${SRC_DIR}/utils.h"
 "${SRC_DIR}/gladInclude.h"
 )
 

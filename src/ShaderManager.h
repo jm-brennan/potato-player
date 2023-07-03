@@ -15,8 +15,8 @@ using namespace glm;
 
 enum SHADER {
     COLOR,
-    IMAGE,
-    TEXT,
+    //IMAGE,
+    //TEXT,
 
     NUM_SHADERS
 };

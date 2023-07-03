@@ -5,7 +5,7 @@
 
 std::array<uint, SHADER::NUM_SHADERS> shaders;
 
-int compile_shader(std::string shaderFilename, int shaderType);
+uint compile_shader(std::string shaderFilename, GLint shaderType);
 std::string load_shader_file(std::string filename);
 
 void ShaderManager::create_shader_from_string(std::string vShaderStr, std::string fShaderStr, SHADER s) {
@@ -63,7 +63,7 @@ void ShaderManager::set_mat4(SHADER s, const char* name, const mat4& matrix) {
 }
 
 
-int compile_shader(std::string shaderStr, int shaderType) {
+uint compile_shader(std::string shaderStr, GLint shaderType) {
     uint id = glCreateShader(shaderType);
     const char* cShaderStr = shaderStr.c_str();
     GLEC(glShaderSource(id, 1, &cShaderStr, nullptr));
