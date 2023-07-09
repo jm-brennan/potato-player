@@ -21,6 +21,10 @@ enum SHADER {
     NUM_SHADERS
 };
 
+struct ColorShaderInfo {
+    uint mvpLoc = 0;
+};
+
 class ShaderManager {
 public:
     static void create_shader_from_string(std::string vShaderStr, std::string fShaderStr, SHADER s);

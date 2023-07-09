@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.1)
 project(potato-player)
 include(CMakePrintHelpers)
 
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_BUILD_TYPE Debug)
 
@@ -32,27 +34,30 @@ set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 
 configure_file("${SRC_DIR}/paths.h.in" "${SRC_DIR}/paths.h")
 set(SOURCES 
-"${SRC_DIR}/main2.cpp"
+"${SRC_DIR}/player.cpp"
+#"${SRC_DIR}/main2.cpp"
 #"${SRC_DIR}/tagreader_main.cpp"
 "${SRC_DIR}/miniaudio.h"
 "${SRC_DIR}/Camera.h"
 "${SRC_DIR}/Camera.cpp"
 "${SRC_DIR}/ShaderManager.h"
 "${SRC_DIR}/ShaderManager.cpp"
-
-
 #"${SRC_DIR}/gpio.cpp"
 #"${SRC_DIR}/gpio.h"
 "${SRC_DIR}/gladInclude.h"
 )
 
-#list(APPEND CMAKE_PREFIX_PATH "${LIB_DIR}/SFML-2.5.1")
 
+#list(APPEND CMAKE_PREFIX_PATH "${LIB_DIR}/SFML-2.5.1")
 
 # Executable definition and properties
 add_executable(${PROJECT_NAME} ${SOURCES} ${INCLUDES})
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 target_include_directories(${PROJECT_NAME} PRIVATE "${SRC_DIR}")
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
+
+# nlohmann json lib
+target_include_directories(${PROJECT_NAME} PRIVATE "/home/jacob/src/potato-player/lib/nlohmann/single_include")
 
 #find_package(OpenGL REQUIRED)
 #find_package(GLUT REQUIRED)

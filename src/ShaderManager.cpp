@@ -34,8 +34,7 @@ void ShaderManager::create_shader_from_file(std::string vShaderFile, std::string
 }
 
 void ShaderManager::use(SHADER s) {
-    uint id = shaders[s];
-    GLEC(glUseProgram(id));
+    GLEC(glUseProgram(shaders[s]));
 }
 
 void ShaderManager::delete_shaders() {
@@ -43,25 +42,6 @@ void ShaderManager::delete_shaders() {
         GLEC(glDeleteProgram(shader));
     }
 }
-
-void ShaderManager::set_float(SHADER s, const char* name, float value) {
-    uint id = shaders[s];
-    GLEC(glUseProgram(id));
-    GLEC(glUniform1f(glGetUniformLocation(id, name), value));
-}
-
-void ShaderManager::set_vec4(SHADER s, const char* name, const vec4& vec) {
-    uint id = shaders[s];
-    GLEC(glUseProgram(id));
-    GLEC(glUniform4fv(glGetUniformLocation(id, name), 1, value_ptr(vec)));
-}
-
-void ShaderManager::set_mat4(SHADER s, const char* name, const mat4& matrix) {
-    uint id = shaders[s];
-    GLEC(glUseProgram(id));
-    GLEC(glUniformMatrix4fv(glGetUniformLocation(id, name), 1, false, value_ptr(matrix)));
-}
-
 
 uint compile_shader(std::string shaderStr, GLint shaderType) {
     uint id = glCreateShader(shaderType);

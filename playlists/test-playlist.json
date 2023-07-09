@@ -1,0 +1,9 @@
+{
+    "id": 47,
+    "name": "test playlist",
+    "tracks": [
+        "song1.mp3",
+        "dir1/song2.mp3",
+        "dir2"
+    ]
+}
