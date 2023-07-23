@@ -6,6 +6,17 @@
 
 void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
 {
+    printf("data callback called with %d frames\n", frameCount);
+
+    ma_uint64 cursor;
+
+    ma_result result = ma_data_source_get_cursor_in_pcm_frames(pDevice->pUserData, &cursor);
+    if (result != MA_SUCCESS) {
+        return;  // Failed to retrieve the cursor.
+    }
+
+    printf("cursor currently at frame %d\n", cursor);
+
     ma_decoder* pDecoder = (ma_decoder*)pDevice->pUserData;
     if (pDecoder == NULL) {
         return;
@@ -33,6 +44,17 @@ int play(fs::path audioPath)
         printf("Could not load file: %s\n", audioPath.c_str());
         return -2;
     }
+
+    ma_uint64 length;
+
+    result = ma_data_source_get_length_in_pcm_frames(&decoder, &length);
+    if (result != MA_SUCCESS) {
+        return -10;  // Failed to retrieve the length.
+    }
+
+    printf("source is %d frames long\n", length);
+
+
 
     deviceConfig = ma_device_config_init(ma_device_type_playback);
     deviceConfig.playback.format   = decoder.outputFormat;

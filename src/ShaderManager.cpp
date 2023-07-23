@@ -37,6 +37,10 @@ void ShaderManager::use(SHADER s) {
     GLEC(glUseProgram(shaders[s]));
 }
 
+uint ShaderManager::program(SHADER s) {
+    return shaders[s];
+}
+
 void ShaderManager::delete_shaders() {
     for (uint shader : shaders) {
         GLEC(glDeleteProgram(shader));

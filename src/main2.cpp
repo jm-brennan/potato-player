@@ -64,56 +64,59 @@ int main(void)
     glfwSwapInterval(1);
 
     string vShaderStr = 
-        "attribute vec3 vPos;\n"
-        "attribute vec2 aTexCoord;\n"
-        "varying vec2 TexCoord;\n"
+        "attribute vec2 a_position;\n"
+        "attribute vec2 a_texCoord;\n"
+        "varying vec2 v_texCoord;\n"
         "void main()\n"
         "{\n"
-        "   gl_Position = vPos;\n"
-        "   TexCoord = aTexCoord;\n"
+        "   gl_Position = vec4(a_position, 0.0, 0.0);\n"
+        "   v_texCoord = a_texCoord;\n"
         "}\n";
 
     string fShaderStr =
         "precision mediump float;\n"
-        "varying vec2 TexCoord;\n"
-        "uniform sampler2D ourTexture;\n"
+        "varying vec2 v_texCoord;\n"
+        "uniform sampler2D s_texture;\n"
         "void main()\n"
         "{\n"
-        "   gl_FragColor = texture2D(ourTexture, TexCoord);\n"
+        "   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n"
         "}\n";
 
-    ShaderManager::create_shader_from_string(vShaderStr, fShaderStr, SHADER::COLOR);
+        //"   gl_FragColor = texture2D(s_texture, v_texCoord);\n"
+    ShaderManager::create_shader_from_string(vShaderStr, fShaderStr, SHADER::TEXTURE);
 
     float vertices[] = {
         // positions        // texture coords
-         0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
-         0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f, 0.0f, 1.0f  // top left 
+         0.5f,  0.5f, 1.0f, 1.0f, // top right
+         0.5f, -0.5f, 1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, // bottom left
+        -0.5f,  0.5f, 0.0f, 1.0f  // top left 
     };
-    unsigned int indices[] = {
+    uint indices[] = {
         0, 1, 3, // first triangle
         1, 2, 3  // second triangle
     };
-    unsigned int VBO, VAO, EBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
 
-    glBindVertexArray(VAO);
+    uint vao, ebo;
+    GLEC(glGenBuffers(1, &vao));
+    GLEC(glGenBuffers(1, &ebo));
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    GLEC(glBindBuffer(GL_ARRAY_BUFFER, vao));
+    GLEC(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
+    GLEC(glBufferData(GL_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
 
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    // texture coord attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(2);
+    GLEC(glEnableVertexAttribArray(0));
+    GLEC(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4, vertices));
+    GLEC(glBindAttribLocation(ShaderManager::program(TEXTURE), 0, "v_position"));
+
+    GLEC(glEnableVertexAttribArray(1));
+    GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4, vertices + 2));
+    GLEC(glBindAttribLocation(ShaderManager::program(TEXTURE), 1, "v_texCoord"));
+
+
+
 
     // load and create a texture 
     // -------------------------
@@ -132,7 +135,7 @@ int main(void)
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
     // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-    unsigned char *data = stbi_load("/home/jacob/src/potato-player/res/image.jpg", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load("/home/jacob/src/potato-player/res/awesomeface.png", &width, &height, &nrChannels, 0);
     if (data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -144,14 +147,6 @@ int main(void)
     }
     stbi_image_free(data);
 
-    // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
-    // -------------------------------------------------------------------------------------------
-    ourShader.use(); // don't forget to activate/use the shader before setting uniforms!
-    // either set it manually like so:
-    glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0);
-
-
-
     while (!glfwWindowShouldClose(window)) {
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
@@ -159,11 +154,12 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.19f, 0.65f, 0.32f, 1.0f);
 
-        ShaderManager::use(COLOR);
-        glBindTexture(GL_TEXTURE_2D, texture1);
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        ShaderManager::use(TEXTURE);
+        GLEC(glActiveTexture(GL_TEXTURE0));
+        GLEC(glBindTexture(GL_TEXTURE_2D, texture1));
+        GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXTURE), "s_texture"), 0));
 
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
