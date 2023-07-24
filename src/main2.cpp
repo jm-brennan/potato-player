@@ -69,7 +69,7 @@ int main(void)
         "varying vec2 v_texCoord;\n"
         "void main()\n"
         "{\n"
-        "   gl_Position = vec4(a_position, 0.0, 0.0);\n"
+        "   gl_Position = vec4(a_position, 0.0, 1.0);\n"
         "   v_texCoord = a_texCoord;\n"
         "}\n";
 
@@ -79,16 +79,15 @@ int main(void)
         "uniform sampler2D s_texture;\n"
         "void main()\n"
         "{\n"
-        "   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n"
+        "   gl_FragColor = texture2D(s_texture, v_texCoord);\n"
         "}\n";
 
-        //"   gl_FragColor = texture2D(s_texture, v_texCoord);\n"
     ShaderManager::create_shader_from_string(vShaderStr, fShaderStr, SHADER::TEXTURE);
 
     float vertices[] = {
         // positions        // texture coords
          0.5f,  0.5f, 1.0f, 1.0f, // top right
-         0.5f, -0.5f, 1.0f, 0.0f, // bottom right
+         0.5f, -0.5f, 1.0f, 0.0f, // bottom Bright
         -0.5f, -0.5f, 0.0f, 0.0f, // bottom left
         -0.5f,  0.5f, 0.0f, 1.0f  // top left 
     };
@@ -97,26 +96,23 @@ int main(void)
         1, 2, 3  // second triangle
     };
 
-    uint vao, ebo;
-    GLEC(glGenBuffers(1, &vao));
+    uint vbo, ebo;
+    GLEC(glGenBuffers(1, &vbo));
     GLEC(glGenBuffers(1, &ebo));
 
-    GLEC(glBindBuffer(GL_ARRAY_BUFFER, vao));
+    GLEC(glBindBuffer(GL_ARRAY_BUFFER, vbo));
     GLEC(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
 
     GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
-    GLEC(glBufferData(GL_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
+    GLEC(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
 
     GLEC(glEnableVertexAttribArray(0));
-    GLEC(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4, vertices));
-    GLEC(glBindAttribLocation(ShaderManager::program(TEXTURE), 0, "v_position"));
+    GLEC(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)0));
+    GLEC(glBindAttribLocation(ShaderManager::program(TEXTURE), 0, "a_position"));
 
     GLEC(glEnableVertexAttribArray(1));
-    GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4, vertices + 2));
-    GLEC(glBindAttribLocation(ShaderManager::program(TEXTURE), 1, "v_texCoord"));
-
-
-
+    GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)(2*sizeof(GL_FLOAT))));
+    GLEC(glBindAttribLocation(ShaderManager::program(TEXTURE), 1, "a_texCoord"));
 
     // load and create a texture 
     // -------------------------
@@ -132,13 +128,13 @@ int main(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // load image, create texture and generate mipmaps
-    int width, height, nrChannels;
+    int texWidth, texHeight, nrChannels;
     stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
     // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-    unsigned char *data = stbi_load("/home/jacob/src/potato-player/res/awesomeface.png", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load("/home/jacob/src/potato-player/res/awesomeface.png", &texWidth, &texHeight, &nrChannels, 0);
     if (data)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -146,6 +142,9 @@ int main(void)
         std::cout << "Failed to load texture" << std::endl;
     }
     stbi_image_free(data);
+
+        ShaderManager::use(TEXTURE);
+    GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXTURE), "s_texture"), 0));
 
     while (!glfwWindowShouldClose(window)) {
         int width, height;
@@ -157,7 +156,6 @@ int main(void)
         ShaderManager::use(TEXTURE);
         GLEC(glActiveTexture(GL_TEXTURE0));
         GLEC(glBindTexture(GL_TEXTURE_2D, texture1));
-        GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXTURE), "s_texture"), 0));
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
