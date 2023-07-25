@@ -9,6 +9,14 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include<id3v2tag.h>
+#include<mpegfile.h>
+#include<id3v2frame.h>
+#include<id3v2header.h>
+#include <attachedpictureframe.h>
+#include<cstdio>
+#include<string.h>
+
 #include "ShaderManager.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -114,6 +122,7 @@ int main(void)
     GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)(2*sizeof(GL_FLOAT))));
     GLEC(glBindAttribLocation(ShaderManager::program(TEXTURE), 1, "a_texCoord"));
 
+
     // load and create a texture 
     // -------------------------
     uint texture1;
@@ -131,17 +140,60 @@ int main(void)
     int texWidth, texHeight, nrChannels;
     stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
     // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-    unsigned char *data = stbi_load("/home/jacob/src/potato-player/res/awesomeface.png", &texWidth, &texHeight, &nrChannels, 0);
-    if (data)
+    static const char *IdPicture = "APIC" ;
+    TagLib::MPEG::File mpegFile("../tracks/I Know We'll Be Fine.mp3");
+    TagLib::ID3v2::Tag *id3v2tag = mpegFile.ID3v2Tag();
+    TagLib::ID3v2::FrameList Frame ;
+    TagLib::ID3v2::AttachedPictureFrame *PicFrame ;
+    void *RetImage = NULL, *SrcImage ;
+    unsigned long Size ;
+
+    FILE *jpegFile;
+    jpegFile = fopen("FromId3.jpg","wb");
+
+    if ( id3v2tag )
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
+        // picture frame
+        Frame = id3v2tag->frameListMap()[IdPicture] ;
+        if (!Frame.isEmpty() )
+        {
+        for(TagLib::ID3v2::FrameList::ConstIterator it = Frame.begin(); it != Frame.end(); ++it)
+        {
+            PicFrame = (TagLib::ID3v2::AttachedPictureFrame *)(*it) ;
+            //  if ( PicFrame->type() ==
+            //TagLib::ID3v2::AttachedPictureFrame::FrontCover)
+            {
+            // extract image (in it’s compressed form)
+            Size = PicFrame->picture().size() ;
+            SrcImage = malloc ( Size ) ;
+            if ( SrcImage )
+            {
+                unsigned char *data = stbi_load_from_memory((stbi_uc*)PicFrame->picture().data(), Size, &texWidth, &texHeight, &nrChannels, 0);
+                if (data)
+                {
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+                    glGenerateMipmap(GL_TEXTURE_2D);
+                }
+                else
+                {
+                    std::cout << "Failed to load texture" << std::endl;
+                }
+                //memcpy ( SrcImage, PicFrame->picture().data(), Size ) ;
+                //fwrite(SrcImage,Size,1, jpegFile);
+                //fclose(jpegFile);
+                //free( SrcImage ) ;
+            }
+            
+            }
+        }
+        }
     }
     else
     {
-        std::cout << "Failed to load texture" << std::endl;
+        cout<< "id3v2 not present";
     }
-    stbi_image_free(data);
+    
+    //stbi_image_free(data);
 
         ShaderManager::use(TEXTURE);
     GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXTURE), "s_texture"), 0));

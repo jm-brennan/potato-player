@@ -32,8 +32,7 @@
 
 using namespace std;
 
-int main(int argc, char *argv[])
-{
+int checkout_tags(int argc, char *argv[]) {
   for(int i = 1; i < argc; i++) {
 
     cout << "******************** \"" << argv[i] << "\" ********************" << endl;
@@ -86,4 +85,66 @@ int main(int argc, char *argv[])
     }
   }
   return 0;
+}
+
+
+
+#include<id3v2tag.h>
+#include<mpegfile.h>
+#include<id3v2frame.h>
+#include<id3v2header.h>
+#include <attachedpictureframe.h>
+#include<cstdio>
+#include<string.h>
+int make_picture_file()
+{
+
+  static const char *IdPicture = "APIC" ;
+  TagLib::MPEG::File mpegFile("../tracks/I Know We'll Be Fine.mp3");
+  TagLib::ID3v2::Tag *id3v2tag = mpegFile.ID3v2Tag();
+  TagLib::ID3v2::FrameList Frame ;
+  TagLib::ID3v2::AttachedPictureFrame *PicFrame ;
+  void *RetImage = NULL, *SrcImage ;
+  unsigned long Size ;
+
+  FILE *jpegFile;
+  jpegFile = fopen("FromId3.jpg","wb");
+
+  if ( id3v2tag )
+  {
+    // picture frame
+    Frame = id3v2tag->frameListMap()[IdPicture] ;
+    if (!Frame.isEmpty() )
+    {
+      for(TagLib::ID3v2::FrameList::ConstIterator it = Frame.begin(); it != Frame.end(); ++it)
+      {
+        PicFrame = (TagLib::ID3v2::AttachedPictureFrame *)(*it) ;
+        //  if ( PicFrame->type() ==
+        //TagLib::ID3v2::AttachedPictureFrame::FrontCover)
+        {
+          // extract image (in it’s compressed form)
+          Size = PicFrame->picture().size() ;
+          SrcImage = malloc ( Size ) ;
+          if ( SrcImage )
+          {
+            memcpy ( SrcImage, PicFrame->picture().data(), Size ) ;
+            fwrite(SrcImage,Size,1, jpegFile);
+            fclose(jpegFile);
+            free( SrcImage ) ;
+          }
+         
+        }
+      }
+    }
+  }
+  else
+  {
+     cout<< "id3v2 not present";
+  }
+  return(0);
+}
+
+
+int main(int argc, char *argv[]) {
+  make_picture_file();
 }
