@@ -21,9 +21,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#include "Text.h"
+
 //#include "Camera.h"
 
-using namespace glm;
 using namespace std;
 
 static void glfw_error_callback(int error, const char* description)
@@ -81,7 +82,7 @@ int main(void)
         "   v_texCoord = a_texCoord;\n"
         "}\n";
 
-    string fShaderStr =
+    string textureF_ShaderStr =
         "precision mediump float;\n"
         "varying vec2 v_texCoord;\n"
         "uniform sampler2D s_texture;\n"
@@ -89,8 +90,20 @@ int main(void)
         "{\n"
         "   gl_FragColor = texture2D(s_texture, v_texCoord);\n"
         "}\n";
+    
+    string textF_ShaderStr =
+        "precision mediump float;\n"
+        "varying vec2 v_texCoord;\n"
+        "uniform sampler2D s_texture;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0) * vec4(1.0, 1.0, 1.0, texture2D(s_texture, v_texCoord).r);\n"
+        "}\n";
 
-    ShaderManager::create_shader_from_string(vShaderStr, fShaderStr, SHADER::TEXTURE);
+    //ShaderManager::create_shader_from_string(vShaderStr, textureF_ShaderStr, SHADER::TEXTURE);
+    ShaderManager::create_shader_from_string(vShaderStr, textF_ShaderStr, SHADER::TEXT);
+
+    /* ShaderManager::use(TEXTURE);
 
     float vertices[] = {
         // positions        // texture coords
@@ -121,9 +134,10 @@ int main(void)
     GLEC(glEnableVertexAttribArray(1));
     GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)(2*sizeof(GL_FLOAT))));
     GLEC(glBindAttribLocation(ShaderManager::program(TEXTURE), 1, "a_texCoord"));
+    GLEC(glLinkProgram(ShaderManager::program(TEXTURE))); */
 
 
-    // load and create a texture 
+    /* // load and create a texture 
     // -------------------------
     uint texture1;
     // texture 1
@@ -151,65 +165,59 @@ int main(void)
     FILE *jpegFile;
     jpegFile = fopen("FromId3.jpg","wb");
 
-    if ( id3v2tag )
-    {
+    if ( id3v2tag ) {
         // picture frame
         Frame = id3v2tag->frameListMap()[IdPicture] ;
-        if (!Frame.isEmpty() )
-        {
-        for(TagLib::ID3v2::FrameList::ConstIterator it = Frame.begin(); it != Frame.end(); ++it)
-        {
-            PicFrame = (TagLib::ID3v2::AttachedPictureFrame *)(*it) ;
-            //  if ( PicFrame->type() ==
-            //TagLib::ID3v2::AttachedPictureFrame::FrontCover)
-            {
-            // extract image (in it’s compressed form)
-            Size = PicFrame->picture().size() ;
-            SrcImage = malloc ( Size ) ;
-            if ( SrcImage )
-            {
-                unsigned char *data = stbi_load_from_memory((stbi_uc*)PicFrame->picture().data(), Size, &texWidth, &texHeight, &nrChannels, 0);
-                if (data)
-                {
-                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-                    glGenerateMipmap(GL_TEXTURE_2D);
+        if (!Frame.isEmpty()) {
+            for(TagLib::ID3v2::FrameList::ConstIterator it = Frame.begin(); it != Frame.end(); ++it) {
+                PicFrame = (TagLib::ID3v2::AttachedPictureFrame *)(*it) ;
+                //  if ( PicFrame->type() ==
+                //TagLib::ID3v2::AttachedPictureFrame::FrontCover)
+                // extract image (in it’s compressed form)
+                Size = PicFrame->picture().size() ;
+                SrcImage = malloc ( Size ) ;
+                if ( SrcImage ) {
+                    unsigned char *data = stbi_load_from_memory((stbi_uc*)PicFrame->picture().data(), Size, &texWidth, &texHeight, &nrChannels, 0);
+                    if (data) {
+                        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+                        glGenerateMipmap(GL_TEXTURE_2D);
+                    }
+                    else {
+                        std::cout << "Failed to load texture" << std::endl;
+                    }
+                    //memcpy ( SrcImage, PicFrame->picture().data(), Size ) ;
+                    //fwrite(SrcImage,Size,1, jpegFile);
+                    //fclose(jpegFile);
+                    //free( SrcImage ) ;
                 }
-                else
-                {
-                    std::cout << "Failed to load texture" << std::endl;
-                }
-                //memcpy ( SrcImage, PicFrame->picture().data(), Size ) ;
-                //fwrite(SrcImage,Size,1, jpegFile);
-                //fclose(jpegFile);
-                //free( SrcImage ) ;
             }
-            
-            }
-        }
         }
     }
-    else
-    {
+    else {
         cout<< "id3v2 not present";
-    }
+    } */
     
     //stbi_image_free(data);
 
-        ShaderManager::use(TEXTURE);
-    GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXTURE), "s_texture"), 0));
+    FontData fontData = create_font("MonoLisa-Regular.ttf");
+    TextStrip textStrip;
+    textStrip.points = layout_text("Hello, world!", fontData); // quads are starting at 0,0
+    generate_text_strip_buffers(textStrip);
+
+    ShaderManager::use(TEXT);
+    GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXT), "s_texture"), 0));
 
     while (!glfwWindowShouldClose(window)) {
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(0.19f, 0.65f, 0.32f, 1.0f);
+        glClearColor(0.0f, 0.2f, 0.23f, 1.0f);
 
-        ShaderManager::use(TEXTURE);
-        GLEC(glActiveTexture(GL_TEXTURE0));
-        GLEC(glBindTexture(GL_TEXTURE_2D, texture1));
-
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        vec2 location = vec2(0.0, 0.0);
+        render_text(textStrip, location, fontData);
+        
+        glDrawElements(GL_TRIANGLES, (textStrip.points.size() / 4) * 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

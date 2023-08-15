@@ -11,12 +11,10 @@
 //#include "utils/paths.h"
 #include "definitions.h"
 
-using namespace glm;
-
 enum SHADER {
     COLOR,
     TEXTURE,
-    //TEXT,
+    TEXT,
 
     NUM_SHADERS
 };

@@ -4,6 +4,8 @@
 #include "gladInclude.h"
 //#include <GL/openglut.h>
 
+using namespace glm; // bad practice but its nice
+
 #define GLEC(x) gl_clear_error();\
     x;\
     gl_log_call(#x, __FILE__, __LINE__)

@@ -43,6 +43,8 @@ set(SOURCES
 "${SRC_DIR}/Camera.cpp"
 "${SRC_DIR}/ShaderManager.h"
 "${SRC_DIR}/ShaderManager.cpp"
+"${SRC_DIR}/Text.h"
+"${SRC_DIR}/Text.cpp"
 #"${SRC_DIR}/gpio.cpp"
 #"${SRC_DIR}/gpio.h"
 "${SRC_DIR}/gladInclude.h"
@@ -151,7 +153,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 # TODO can compile a much leaner version of freetype apparantly to just do ttf stuff
 # freetype
-#set(FREETYPE_DIR "${LIB_DIR}/freetype-2.10.2")
-#add_subdirectory("${FREETYPE_DIR}")
-#target_include_directories(${PROJECT_NAME} PRIVATE "${FREETYPE_DIR}/include/freetype")
-#target_link_libraries(${PROJECT_NAME} "freetype" "${CMAKE_DL_LIBS}")
+set(FREETYPE_DIR "${LIB_DIR}/freetype-2.10.2")
+add_subdirectory("${FREETYPE_DIR}")
+target_include_directories(${PROJECT_NAME} PRIVATE "${FREETYPE_DIR}/include/freetype")
+target_link_libraries(${PROJECT_NAME} "freetype" "${CMAKE_DL_LIBS}")
