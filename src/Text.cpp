@@ -55,21 +55,24 @@ FontData create_font(std::string font) {
     GLEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
     GLEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 
+    std::cout << "atlast size " << vec_string(result.atlasSize) << "\n";
+
+    // TODO learn if this is really needed
     GLEC(glPixelStorei(GL_UNPACK_ALIGNMENT, 1)); // disable byte-alignment restriction since only using 1 byte to store bitmap
     GLEC(glTexImage2D(
         GL_TEXTURE_2D, 
         0, 
-        GL_ALPHA, 
+        GL_LUMINANCE, 
         atlasWidth, 
         atlasHeight, 
         0, 
-        GL_ALPHA, 
+        GL_LUMINANCE, 
         GL_UNSIGNED_BYTE, 
         nullptr
     ));
 
 
-    unsigned int glyphStart = 0;
+    uint glyphStart = 0;
     for (unsigned char c = 0; c < 128; c++) {
         if (FT_Load_Char(face, c, FT_LOAD_RENDER)) continue;
         GLEC(glTexSubImage2D(
@@ -79,7 +82,7 @@ FontData create_font(std::string font) {
             0, 
             face->glyph->bitmap.width,
             face->glyph->bitmap.rows,
-            GL_ALPHA,
+            GL_LUMINANCE,
             GL_UNSIGNED_BYTE,
             face->glyph->bitmap.buffer
         ));
@@ -106,7 +109,7 @@ std::vector<TexturePoint> layout_text(const std::string& layoutString, FontData&
     vec2 pos; // start at 0,0
 
     std::vector<TexturePoint> points;
-    points.resize(layoutString.size() * 4); // 4 points per quad since we use indexing
+    points.resize(layoutString.size() * 6); // 6 points per quad since we dont use indexing
 
     uint i = 0; // to index into points array
     for (const char& c : layoutString) {
@@ -116,30 +119,43 @@ std::vector<TexturePoint> layout_text(const std::string& layoutString, FontData&
         float y = pos.y + (font.atlasSize.y - glyph.size.y) + (glyph.size.y - glyph.bearing.y);
         float w = glyph.size.x;
         float h = glyph.size.y;
+
+        double scaleFactor = 400.0;
+        x /= scaleFactor;
+        y /= scaleFactor;
+        w /= scaleFactor;
+        h /= scaleFactor;
         
         points[i++] = (TexturePoint){vec2(x, y),        vec2(glyph.texCoord.x, glyph.texCoord.y)};
         points[i++] = (TexturePoint){vec2(x, y+h),      vec2(glyph.texCoord.x, glyph.texCoord.y + (h / font.atlasSize.y))};
         points[i++] = (TexturePoint){vec2(x + w, y+h),  vec2(glyph.texCoord.x + (w / font.atlasSize.x), glyph.texCoord.y + (h / font.atlasSize.y))};
+
+        points[i++] = (TexturePoint){vec2(x, y),        vec2(glyph.texCoord.x, glyph.texCoord.y)};
+        points[i++] = (TexturePoint){vec2(x + w, y+h),  vec2(glyph.texCoord.x + (w / font.atlasSize.x), glyph.texCoord.y + (h / font.atlasSize.y))};
         points[i++] = (TexturePoint){vec2(x + w, y),    vec2(glyph.texCoord.x + (w / font.atlasSize.x), glyph.texCoord.y)};
         pos += glyph.advance;
     }
+
+    /* for (const TexturePoint& point : points) {
+        std::cout << "[" << point.vertex.x << ", " << point.vertex.y << "]\n";
+    } */
 
     return points;
 }
 
 void generate_text_strip_buffers(TextStrip& textStrip) {
     GLEC(glGenBuffers(1, &textStrip.vertexBufferID));
-    GLEC(glGenBuffers(1, &textStrip.indexBufferID));
+    //GLEC(glGenBuffers(1, &textStrip.indexBufferID));
 
     GLEC(glBindBuffer(GL_ARRAY_BUFFER, textStrip.vertexBufferID));
     GLEC(glBufferData(GL_ARRAY_BUFFER, textStrip.points.size() * sizeof(TexturePoint), textStrip.points.data(), GL_STATIC_DRAW));
 
-
+/* 
     std::vector<uint> indices;
     // divide by 4 to find number of quads, then multiply by 6 for 6 indices per quad
     indices.resize((textStrip.points.size() / 4) * 6);
 
-    const uint INDICES_PER_ITERATION = 6;
+    const uint INDICES_PER_ITERATION = 4;
     uint i = 0;
     while (i <= indices.size() - INDICES_PER_ITERATION) {
         // first triangle relative indices 0, 1, 3
@@ -156,7 +172,7 @@ void generate_text_strip_buffers(TextStrip& textStrip) {
     }
 
     GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, textStrip.indexBufferID));
-    GLEC(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint), indices.data(), GL_STATIC_DRAW));
+    GLEC(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint), indices.data(), GL_STATIC_DRAW)); */
 
     GLEC(glEnableVertexAttribArray(0));
     GLEC(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)0));
@@ -180,8 +196,8 @@ void render_text(TextStrip& textStrip, vec2 location, FontData& font) {
 	//GLEC(glBindVertexArray(textStrip.vertexBufferID));
 	//GLEC(glBindBuffer(GL_ARRAY_BUFFER, textStrip.indexBufferID));
 
-    glDrawElements(GL_TRIANGLES, (textStrip.points.size() / 4) * 6, GL_UNSIGNED_INT, 0);
-
+    //glDrawElements(GL_TRIANGLES, (textStrip.points.size() / 4) * 6, GL_UNSIGNED_INT, 0);
+    GLEC(glDrawArrays(GL_TRIANGLES, 0, textStrip.points.size()));
 	/* GLEC(glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0));
 
     GLEC(glEnableVertexAttribArray(0));

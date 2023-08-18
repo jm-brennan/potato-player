@@ -78,7 +78,7 @@ int main(void)
         "varying vec2 v_texCoord;\n"
         "void main()\n"
         "{\n"
-        "   gl_Position = vec4(a_position, 0.0, 1.0);\n"
+        "   gl_Position = vec4(a_position.x, -a_position.y, 0.0, 1.0);\n"
         "   v_texCoord = a_texCoord;\n"
         "}\n";
 
@@ -97,7 +97,7 @@ int main(void)
         "uniform sampler2D s_texture;\n"
         "void main()\n"
         "{\n"
-        "   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0) * vec4(1.0, 1.0, 1.0, texture2D(s_texture, v_texCoord).r);\n"
+        "   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0) * vec4(1.0, 1.0, 1.0, texture2D(s_texture, v_texCoord).a);\n"
         "}\n";
 
     //ShaderManager::create_shader_from_string(vShaderStr, textureF_ShaderStr, SHADER::TEXTURE);
@@ -205,7 +205,13 @@ int main(void)
     generate_text_strip_buffers(textStrip);
 
     ShaderManager::use(TEXT);
-    GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXT), "s_texture"), 0));
+    
+    //glm::mat4 projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
+
+    //GLEC(glUniformMatrix4fv(glGetUniformLocation(ShaderManager::program(TEXT), "projection"), 1, false, value_ptr(projection)));
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 
     while (!glfwWindowShouldClose(window)) {
         int width, height;
@@ -217,7 +223,7 @@ int main(void)
         vec2 location = vec2(0.0, 0.0);
         render_text(textStrip, location, fontData);
         
-        glDrawElements(GL_TRIANGLES, (textStrip.points.size() / 4) * 6, GL_UNSIGNED_INT, 0);
+        //glDrawElements(GL_TRIANGLES, (textStrip.points.size() / 4) * 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

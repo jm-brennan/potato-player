@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <string>
 #include "gladInclude.h"
 //#include <GL/openglut.h>
 
@@ -27,3 +28,9 @@ static bool gl_log_call(const char* function, const char* file, int line) {
 static const float PI = 3.14159f;
 static const float PI_HALF = 1.570795;
 static const float PI_2 = 6.28318f;
+
+inline std::string vec_string(const vec2& vec) {
+    std::string result;
+    result += "[" + std::to_string(vec.x) + ", " + std::to_string(vec.y) + "]";
+    return result;
+}
