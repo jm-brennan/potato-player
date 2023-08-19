@@ -32,3 +32,13 @@ FontData create_font(std::string font);
 std::vector<TexturePoint> layout_text(const std::string& layoutString, FontData& font);
 void generate_text_strip_buffers(TextStrip& textStrip);
 void render_text(TextStrip& textStrip, vec2 location, FontData& font);
+
+
+inline std::string text_glyph_string(const TextGlyph& glyph) {
+    std::string result;
+    result += "Texture coordinate: " + vec_string(glyph.texCoord) 
+            + " size: " + vec_string(glyph.size)
+            + " advance: " + vec_string(glyph.advance)
+            + " bearing: " + vec_string(glyph.bearing);
+    return result;
+}

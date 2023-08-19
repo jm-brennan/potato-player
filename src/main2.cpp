@@ -97,8 +97,10 @@ int main(void)
         "uniform sampler2D s_texture;\n"
         "void main()\n"
         "{\n"
-        "   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0) * vec4(1.0, 1.0, 1.0, texture2D(s_texture, v_texCoord).a);\n"
+        "   gl_FragColor = vec4(1.0, 1.0, 1.0, texture2D(s_texture, v_texCoord).a);\n"
         "}\n";
+
+        
 
     //ShaderManager::create_shader_from_string(vShaderStr, textureF_ShaderStr, SHADER::TEXTURE);
     ShaderManager::create_shader_from_string(vShaderStr, textF_ShaderStr, SHADER::TEXT);
@@ -137,13 +139,14 @@ int main(void)
     GLEC(glLinkProgram(ShaderManager::program(TEXTURE))); */
 
 
-    /* // load and create a texture 
+    // load and create a texture 
     // -------------------------
     uint texture1;
     // texture 1
     // ---------
     glGenTextures(1, &texture1);
     glBindTexture(GL_TEXTURE_2D, texture1); 
+    std::cout << "kc created texture id " << texture1 << "\n";
      // set the texture wrapping parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -188,21 +191,27 @@ int main(void)
                     //memcpy ( SrcImage, PicFrame->picture().data(), Size ) ;
                     //fwrite(SrcImage,Size,1, jpegFile);
                     //fclose(jpegFile);
-                    //free( SrcImage ) ;
+                    free( SrcImage ) ;
                 }
             }
         }
     }
     else {
         cout<< "id3v2 not present";
-    } */
+    }
     
     //stbi_image_free(data);
 
     FontData fontData = create_font("MonoLisa-Regular.ttf");
     TextStrip textStrip;
     textStrip.points = layout_text("Hello, world!", fontData); // quads are starting at 0,0
+    for (const TexturePoint& point : textStrip.points) {
+        std::cout << vec_string(point.vertex) << ", " << vec_string(point.texture) << "\n";
+    }
     generate_text_strip_buffers(textStrip);
+
+    glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 
     ShaderManager::use(TEXT);
     
@@ -210,8 +219,6 @@ int main(void)
 
     //GLEC(glUniformMatrix4fv(glGetUniformLocation(ShaderManager::program(TEXT), "projection"), 1, false, value_ptr(projection)));
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 
     while (!glfwWindowShouldClose(window)) {
         int width, height;
@@ -220,10 +227,16 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.0f, 0.2f, 0.23f, 1.0f);
 
+        
         vec2 location = vec2(0.0, 0.0);
         render_text(textStrip, location, fontData);
+
+        //ShaderManager::use(TEXTURE);
+        //GLEC(glActiveTexture(GL_TEXTURE0));
+        //GLEC(glBindTexture(GL_TEXTURE_2D, texture1));
+
+        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         
-        //glDrawElements(GL_TRIANGLES, (textStrip.points.size() / 4) * 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

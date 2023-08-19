@@ -46,6 +46,7 @@ FontData create_font(std::string font) {
 
     GLEC(glActiveTexture(GL_TEXTURE0));
     GLEC(glGenTextures(1, &result.atlasTextureID));
+    std::cout << "created texture buffer id " << result.atlasTextureID << "\n";
     GLEC(glBindTexture(GL_TEXTURE_2D, result.atlasTextureID));
 
     // clamp to edge to prevent artifacts during scale
@@ -59,14 +60,15 @@ FontData create_font(std::string font) {
 
     // TODO learn if this is really needed
     GLEC(glPixelStorei(GL_UNPACK_ALIGNMENT, 1)); // disable byte-alignment restriction since only using 1 byte to store bitmap
+   
     GLEC(glTexImage2D(
         GL_TEXTURE_2D, 
         0, 
-        GL_LUMINANCE, 
+        GL_ALPHA, 
         atlasWidth, 
         atlasHeight, 
         0, 
-        GL_LUMINANCE, 
+        GL_ALPHA, 
         GL_UNSIGNED_BYTE, 
         nullptr
     ));
@@ -82,7 +84,7 @@ FontData create_font(std::string font) {
             0, 
             face->glyph->bitmap.width,
             face->glyph->bitmap.rows,
-            GL_LUMINANCE,
+            GL_ALPHA,
             GL_UNSIGNED_BYTE,
             face->glyph->bitmap.buffer
         ));
@@ -100,6 +102,10 @@ FontData create_font(std::string font) {
 
     FT_Done_Face(face);
     FT_Done_FreeType(library);
+
+   /*  for (uint i = 0; i < result.glyphs.size(); ++i) {
+        std::cout << "Character: " << static_cast<char>(i) << " glyph: " << text_glyph_string(result.glyphs[i]) << "\n";
+    } */
 
     return result;
 }
@@ -125,20 +131,15 @@ std::vector<TexturePoint> layout_text(const std::string& layoutString, FontData&
         y /= scaleFactor;
         w /= scaleFactor;
         h /= scaleFactor;
-        
-        points[i++] = (TexturePoint){vec2(x, y),        vec2(glyph.texCoord.x, glyph.texCoord.y)};
-        points[i++] = (TexturePoint){vec2(x, y+h),      vec2(glyph.texCoord.x, glyph.texCoord.y + (h / font.atlasSize.y))};
-        points[i++] = (TexturePoint){vec2(x + w, y+h),  vec2(glyph.texCoord.x + (w / font.atlasSize.x), glyph.texCoord.y + (h / font.atlasSize.y))};
 
         points[i++] = (TexturePoint){vec2(x, y),        vec2(glyph.texCoord.x, glyph.texCoord.y)};
-        points[i++] = (TexturePoint){vec2(x + w, y+h),  vec2(glyph.texCoord.x + (w / font.atlasSize.x), glyph.texCoord.y + (h / font.atlasSize.y))};
-        points[i++] = (TexturePoint){vec2(x + w, y),    vec2(glyph.texCoord.x + (w / font.atlasSize.x), glyph.texCoord.y)};
+        points[i++] = (TexturePoint){vec2(x, y+h),      vec2(glyph.texCoord.x, glyph.texCoord.y + (glyph.size.y / font.atlasSize.y))};
+        points[i++] = (TexturePoint){vec2(x + w, y+h),  vec2(glyph.texCoord.x + (glyph.size.x / font.atlasSize.x), glyph.texCoord.y + (glyph.size.y / font.atlasSize.y))};
+        points[i++] = (TexturePoint){vec2(x, y),        vec2(glyph.texCoord.x, glyph.texCoord.y)};
+        points[i++] = (TexturePoint){vec2(x + w, y+h),  vec2(glyph.texCoord.x + (glyph.size.x / font.atlasSize.x), glyph.texCoord.y + (glyph.size.y / font.atlasSize.y))};
+        points[i++] = (TexturePoint){vec2(x + w, y),    vec2(glyph.texCoord.x + (glyph.size.x / font.atlasSize.x), glyph.texCoord.y)};
         pos += glyph.advance;
     }
-
-    /* for (const TexturePoint& point : points) {
-        std::cout << "[" << point.vertex.x << ", " << point.vertex.y << "]\n";
-    } */
 
     return points;
 }
@@ -184,18 +185,26 @@ void generate_text_strip_buffers(TextStrip& textStrip) {
     GLEC(glLinkProgram(ShaderManager::program(TEXT)));
 }
 
-
 void render_text(TextStrip& textStrip, vec2 location, FontData& font) {
     ShaderManager::use(TEXT);
     GLEC(glActiveTexture(GL_TEXTURE0));
     GLEC(glBindTexture(GL_TEXTURE_2D, font.atlasTextureID));
+    
+    //GLEC(glBindTexture(GL_TEXTURE_2D, 1));
+    //std::cout << "binding texture id " << font.atlasTextureID << "\n";
+    GLEC(glBindBuffer(GL_ARRAY_BUFFER, textStrip.vertexBufferID));
+    //std::cout << "binding vertex id " << textStrip.vertexBufferID << "\n";
 
-    // convert points to a buffer
+    //GLEC(glEnableVertexAttribArray(0));
+    //GLEC(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)0));
+    //GLEC(glEnableVertexAttribArray(1));
+    //GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)(2*sizeof(GL_FLOAT))));
 
     //GLEC(glBindTexture(GL_TEXTURE_2D, font.atlasTextureID));
 	//GLEC(glBindVertexArray(textStrip.vertexBufferID));
 	//GLEC(glBindBuffer(GL_ARRAY_BUFFER, textStrip.indexBufferID));
 
+    ShaderManager::use(TEXT);
     //glDrawElements(GL_TRIANGLES, (textStrip.points.size() / 4) * 6, GL_UNSIGNED_INT, 0);
     GLEC(glDrawArrays(GL_TRIANGLES, 0, textStrip.points.size()));
 	/* GLEC(glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0));
