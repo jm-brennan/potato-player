@@ -8,11 +8,13 @@
 #include "definitions.h"
 #include "gladInclude.h"
 #include "Texture.h"
+#include "Model.h"
+
 
 struct TextStrip {
     std::vector<TexturePoint> points;
     uint vertexBufferID = 0;
-    uint indexBufferID = 0;
+    //uint indexBufferID = 0;
 };
 
 struct TextGlyph {
@@ -28,10 +30,15 @@ struct FontData {
     std::vector<TextGlyph> glyphs;
 };
 
+struct Text {
+    TextStrip textStrip;
+    Model model;
+};
+
 FontData create_font(std::string font);
 std::vector<TexturePoint> layout_text(const std::string& layoutString, FontData& font);
 void generate_text_strip_buffers(TextStrip& textStrip);
-void render_text(TextStrip& textStrip, vec2 location, FontData& font);
+void render_text(Text& text, FontData& font);
 
 
 inline std::string text_glyph_string(const TextGlyph& glyph) {

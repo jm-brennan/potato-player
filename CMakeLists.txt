@@ -45,6 +45,7 @@ set(SOURCES
 "${SRC_DIR}/ShaderManager.cpp"
 "${SRC_DIR}/Text.h"
 "${SRC_DIR}/Text.cpp"
+"${SRC_DIR}/Model.h"
 #"${SRC_DIR}/gpio.cpp"
 #"${SRC_DIR}/gpio.h"
 "${SRC_DIR}/gladInclude.h"

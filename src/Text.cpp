@@ -5,6 +5,8 @@
 #include "definitions.h"
 #include "paths.h"
 
+#include <glm/gtx/rotate_vector.hpp>
+
 using namespace glm;
 
 FontData create_font(std::string font) {
@@ -46,17 +48,17 @@ FontData create_font(std::string font) {
 
     GLEC(glActiveTexture(GL_TEXTURE0));
     GLEC(glGenTextures(1, &result.atlasTextureID));
-    std::cout << "created texture buffer id " << result.atlasTextureID << "\n";
+    std::cout << "Font texture buffer id " << result.atlasTextureID << " for " << font << "\n";
     GLEC(glBindTexture(GL_TEXTURE_2D, result.atlasTextureID));
 
     // clamp to edge to prevent artifacts during scale
     GLEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
     GLEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
-    // linear filtering is good for text
+    // linear filtering is good for text aparently
     GLEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
     GLEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 
-    std::cout << "atlast size " << vec_string(result.atlasSize) << "\n";
+    std::cout << "atlas size " << vec_string(result.atlasSize) << "\n";
 
     // TODO learn if this is really needed
     GLEC(glPixelStorei(GL_UNPACK_ALIGNMENT, 1)); // disable byte-alignment restriction since only using 1 byte to store bitmap
@@ -103,10 +105,6 @@ FontData create_font(std::string font) {
     FT_Done_Face(face);
     FT_Done_FreeType(library);
 
-   /*  for (uint i = 0; i < result.glyphs.size(); ++i) {
-        std::cout << "Character: " << static_cast<char>(i) << " glyph: " << text_glyph_string(result.glyphs[i]) << "\n";
-    } */
-
     return result;
 }
 
@@ -145,35 +143,16 @@ std::vector<TexturePoint> layout_text(const std::string& layoutString, FontData&
 }
 
 void generate_text_strip_buffers(TextStrip& textStrip) {
+    ShaderManager::use(TEXT);
     GLEC(glGenBuffers(1, &textStrip.vertexBufferID));
-    //GLEC(glGenBuffers(1, &textStrip.indexBufferID));
+
+    std::cout << "text strip size " << sizeof(TexturePoint)
+             << "\nnum points " << textStrip.points.size()
+             << "\n";
 
     GLEC(glBindBuffer(GL_ARRAY_BUFFER, textStrip.vertexBufferID));
+    std::cout << "text strip vertex buffer id " << textStrip.vertexBufferID << "\n";
     GLEC(glBufferData(GL_ARRAY_BUFFER, textStrip.points.size() * sizeof(TexturePoint), textStrip.points.data(), GL_STATIC_DRAW));
-
-/* 
-    std::vector<uint> indices;
-    // divide by 4 to find number of quads, then multiply by 6 for 6 indices per quad
-    indices.resize((textStrip.points.size() / 4) * 6);
-
-    const uint INDICES_PER_ITERATION = 4;
-    uint i = 0;
-    while (i <= indices.size() - INDICES_PER_ITERATION) {
-        // first triangle relative indices 0, 1, 3
-        indices[i]   = i;
-        indices[i+1] = i + 1;
-        indices[i+2] = i + 3;
-
-        // second triangle relative indices 1, 2, 3
-        indices[i+3] = i + 1;
-        indices[i+4] = i + 2;
-        indices[i+5] = i + 3;
-
-        i += INDICES_PER_ITERATION;
-    }
-
-    GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, textStrip.indexBufferID));
-    GLEC(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint), indices.data(), GL_STATIC_DRAW)); */
 
     GLEC(glEnableVertexAttribArray(0));
     GLEC(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)0));
@@ -183,36 +162,25 @@ void generate_text_strip_buffers(TextStrip& textStrip) {
     GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)(2*sizeof(GL_FLOAT))));
     GLEC(glBindAttribLocation(ShaderManager::program(TEXT), 1, "a_texCoord"));
     GLEC(glLinkProgram(ShaderManager::program(TEXT)));
+
+    GLEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 
-void render_text(TextStrip& textStrip, vec2 location, FontData& font) {
+void render_text(Text& text, FontData& font) {
     ShaderManager::use(TEXT);
     GLEC(glActiveTexture(GL_TEXTURE0));
     GLEC(glBindTexture(GL_TEXTURE_2D, font.atlasTextureID));
-    
-    //GLEC(glBindTexture(GL_TEXTURE_2D, 1));
-    //std::cout << "binding texture id " << font.atlasTextureID << "\n";
-    GLEC(glBindBuffer(GL_ARRAY_BUFFER, textStrip.vertexBufferID));
-    //std::cout << "binding vertex id " << textStrip.vertexBufferID << "\n";
+    GLEC(glBindBuffer(GL_ARRAY_BUFFER, text.textStrip.vertexBufferID));
 
-    //GLEC(glEnableVertexAttribArray(0));
-    //GLEC(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)0));
-    //GLEC(glEnableVertexAttribArray(1));
-    //GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)(2*sizeof(GL_FLOAT))));
+    std::cout << "render texture id " << font.atlasTextureID << "\n";
+    std::cout << "render bind buffer id " << text.textStrip.vertexBufferID << "\n";
 
-    //GLEC(glBindTexture(GL_TEXTURE_2D, font.atlasTextureID));
-	//GLEC(glBindVertexArray(textStrip.vertexBufferID));
-	//GLEC(glBindBuffer(GL_ARRAY_BUFFER, textStrip.indexBufferID));
+    // TODO probably we dont need to recalculate this every frame but its easier for now at least
+    glm::mat4 mvp(1.0f);
+    mvp = translate(mvp, vec3(text.model.pos, 0.0f));
 
-    ShaderManager::use(TEXT);
-    //glDrawElements(GL_TRIANGLES, (textStrip.points.size() / 4) * 6, GL_UNSIGNED_INT, 0);
-    GLEC(glDrawArrays(GL_TRIANGLES, 0, textStrip.points.size()));
-	/* GLEC(glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0));
+    GLEC(glUniformMatrix4fv(glGetUniformLocation(ShaderManager::program(TEXT), "m_mvp"), 1, false, value_ptr(mvp)));
 
-    GLEC(glEnableVertexAttribArray(0));
-    GLEC(glBufferData(GL_ARRAY_BUFFER, coordsSize*4*4, (float*)coords, GL_DYNAMIC_DRAW));
-    GLEC(glDrawArrays(GL_TRIANGLES, 0, coordsSize));
-    
-    GLEC(glBindVertexArray(0));
-    GLEC(glBindTexture(GL_TEXTURE_2D, 0)); */
+    GLEC(glDrawArrays(GL_TRIANGLES, 0, text.textStrip.points.size()));
+
 }

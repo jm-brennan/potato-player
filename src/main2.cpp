@@ -72,13 +72,25 @@ int main(void)
     
     glfwSwapInterval(1);
 
-    string vShaderStr = 
+    string vShaderScreenSpaceStr = 
         "attribute vec2 a_position;\n"
         "attribute vec2 a_texCoord;\n"
         "varying vec2 v_texCoord;\n"
         "void main()\n"
         "{\n"
-        "   gl_Position = vec4(a_position.x, -a_position.y, 0.0, 1.0);\n"
+        "   gl_Position = vec4(a_position.x, a_position.y, 0.0, 1.0);\n"
+        "   v_texCoord = a_texCoord;\n"
+        "}\n";
+    
+    string vShaderNegativeY_WorldSpaceStr = 
+        "attribute vec2 a_position;\n"
+        "attribute vec2 a_texCoord;\n"
+        "varying vec2 v_texCoord;\n"
+        "uniform mat4 m_mvp;\n"
+        "mat4 m;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_Position = m_mvp * vec4(a_position.x, -a_position.y, 0.0, 1.0);\n"
         "   v_texCoord = a_texCoord;\n"
         "}\n";
 
@@ -102,10 +114,11 @@ int main(void)
 
         
 
-    //ShaderManager::create_shader_from_string(vShaderStr, textureF_ShaderStr, SHADER::TEXTURE);
-    ShaderManager::create_shader_from_string(vShaderStr, textF_ShaderStr, SHADER::TEXT);
+    //ShaderManager::create_shader_from_string(vShaderScreenSpaceStr, textureF_ShaderStr, SHADER::TEXTURE);
+    ShaderManager::create_shader_from_string(vShaderNegativeY_WorldSpaceStr, textF_ShaderStr, SHADER::TEXT);
 
     /* ShaderManager::use(TEXTURE);
+    GLEC(glActiveTexture(GL_TEXTURE1));
 
     float vertices[] = {
         // positions        // texture coords
@@ -136,9 +149,11 @@ int main(void)
     GLEC(glEnableVertexAttribArray(1));
     GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)(2*sizeof(GL_FLOAT))));
     GLEC(glBindAttribLocation(ShaderManager::program(TEXTURE), 1, "a_texCoord"));
-    GLEC(glLinkProgram(ShaderManager::program(TEXTURE))); */
+    GLEC(glLinkProgram(ShaderManager::program(TEXTURE)));
 
 
+
+    ShaderManager::use(TEXTURE);
     // load and create a texture 
     // -------------------------
     uint texture1;
@@ -165,8 +180,8 @@ int main(void)
     void *RetImage = NULL, *SrcImage ;
     unsigned long Size ;
 
-    FILE *jpegFile;
-    jpegFile = fopen("FromId3.jpg","wb");
+    //FILE *jpegFile;
+    //jpegFile = fopen("FromId3.jpg","wb");
 
     if ( id3v2tag ) {
         // picture frame
@@ -199,27 +214,35 @@ int main(void)
     else {
         cout<< "id3v2 not present";
     }
-    
-    //stbi_image_free(data);
+    GLEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
+    GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
-    FontData fontData = create_font("MonoLisa-Regular.ttf");
-    TextStrip textStrip;
-    textStrip.points = layout_text("Hello, world!", fontData); // quads are starting at 0,0
-    for (const TexturePoint& point : textStrip.points) {
-        std::cout << vec_string(point.vertex) << ", " << vec_string(point.texture) << "\n";
-    }
-    generate_text_strip_buffers(textStrip);
 
-    glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+    GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXTURE), "s_texture"), 1));
+ */
+
 
     ShaderManager::use(TEXT);
+    GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXT), "s_texture"), 0));
+    std::cout << "Creating fonts\n";
+    FontData monolisaFontData = create_font("MonoLisa-Regular.ttf");
+    FontData opensansFontData = create_font("OpenSans-Regular.ttf");
+
+    std::cout << "\ngenerating text strip buffers\n";
+
+    Text helloWorld;
+    helloWorld.textStrip.points = layout_text("Hello, world! fk", monolisaFontData); // quads are starting at 0,0
+    generate_text_strip_buffers(helloWorld.textStrip);
     
-    //glm::mat4 projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
+    Text othertext;
+    othertext.textStrip.points = layout_text("Other text?", opensansFontData); // quads are starting at 0,0
+    othertext.model.pos = vec2(-.5f, -.5f);
+    generate_text_strip_buffers(othertext.textStrip);
 
-    //GLEC(glUniformMatrix4fv(glGetUniformLocation(ShaderManager::program(TEXT), "projection"), 1, false, value_ptr(projection)));
 
-
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+    
     while (!glfwWindowShouldClose(window)) {
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
@@ -228,14 +251,16 @@ int main(void)
         glClearColor(0.0f, 0.2f, 0.23f, 1.0f);
 
         
-        vec2 location = vec2(0.0, 0.0);
-        render_text(textStrip, location, fontData);
+        render_text(helloWorld, monolisaFontData);
+        render_text(othertext, opensansFontData);
 
-        //ShaderManager::use(TEXTURE);
-        //GLEC(glActiveTexture(GL_TEXTURE0));
-        //GLEC(glBindTexture(GL_TEXTURE_2D, texture1));
-
-        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        /* ShaderManager::use(TEXTURE);
+        GLEC(glActiveTexture(GL_TEXTURE1));
+        GLEC(glBindTexture(GL_TEXTURE_2D, texture1));
+        GLEC(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+        GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)); */
         
 
         glfwSwapBuffers(window);
