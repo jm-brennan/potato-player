@@ -139,6 +139,10 @@ std::vector<TexturePoint> layout_text(const std::string& layoutString, FontData&
         pos += glyph.advance;
     }
 
+    /* for (TexturePoint tp : points) {
+        std::cout << vec_string(tp.vertex) << " : " << vec_string(tp.texture) << "\n";
+    } */
+
     return points;
 }
 
@@ -154,16 +158,10 @@ void generate_text_strip_buffers(TextStrip& textStrip) {
     std::cout << "text strip vertex buffer id " << textStrip.vertexBufferID << "\n";
     GLEC(glBufferData(GL_ARRAY_BUFFER, textStrip.points.size() * sizeof(TexturePoint), textStrip.points.data(), GL_STATIC_DRAW));
 
-    GLEC(glEnableVertexAttribArray(0));
-    GLEC(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)0));
-    GLEC(glBindAttribLocation(ShaderManager::program(TEXT), 0, "a_position"));
+    for (TexturePoint tp : textStrip.points) {
+        std::cout << vec_string(tp.vertex) << " : " << vec_string(tp.texture) << "\n";
+    }
 
-    GLEC(glEnableVertexAttribArray(1));
-    GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)(2*sizeof(GL_FLOAT))));
-    GLEC(glBindAttribLocation(ShaderManager::program(TEXT), 1, "a_texCoord"));
-    GLEC(glLinkProgram(ShaderManager::program(TEXT)));
-
-    GLEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 
 void render_text(Text& text, FontData& font) {
@@ -172,8 +170,16 @@ void render_text(Text& text, FontData& font) {
     GLEC(glBindTexture(GL_TEXTURE_2D, font.atlasTextureID));
     GLEC(glBindBuffer(GL_ARRAY_BUFFER, text.textStrip.vertexBufferID));
 
-    std::cout << "render texture id " << font.atlasTextureID << "\n";
-    std::cout << "render bind buffer id " << text.textStrip.vertexBufferID << "\n";
+    GLEC(glEnableVertexAttribArray(0));
+    GLEC(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)0));
+    GLEC(glBindAttribLocation(ShaderManager::program(TEXT), 0, "a_position"));
+
+    GLEC(glEnableVertexAttribArray(1));
+    GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)(2*sizeof(GL_FLOAT))));
+    GLEC(glBindAttribLocation(ShaderManager::program(TEXT), 1, "a_texCoord"));
+    //GLEC(glLinkProgram(ShaderManager::program(TEXT)));
+
+    GLEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
     // TODO probably we dont need to recalculate this every frame but its easier for now at least
     glm::mat4 mvp(1.0f);

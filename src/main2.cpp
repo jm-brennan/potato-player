@@ -72,6 +72,9 @@ int main(void)
     
     glfwSwapInterval(1);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     string vShaderScreenSpaceStr = 
         "attribute vec2 a_position;\n"
         "attribute vec2 a_texCoord;\n"
@@ -114,10 +117,10 @@ int main(void)
 
         
 
-    //ShaderManager::create_shader_from_string(vShaderScreenSpaceStr, textureF_ShaderStr, SHADER::TEXTURE);
+    ShaderManager::create_shader_from_string(vShaderScreenSpaceStr, textureF_ShaderStr, SHADER::TEXTURE);
     ShaderManager::create_shader_from_string(vShaderNegativeY_WorldSpaceStr, textF_ShaderStr, SHADER::TEXT);
 
-    /* ShaderManager::use(TEXTURE);
+    ShaderManager::use(TEXTURE);
     GLEC(glActiveTexture(GL_TEXTURE1));
 
     float vertices[] = {
@@ -152,13 +155,13 @@ int main(void)
     GLEC(glLinkProgram(ShaderManager::program(TEXTURE)));
 
 
-
     ShaderManager::use(TEXTURE);
     // load and create a texture 
     // -------------------------
     uint texture1;
     // texture 1
     // ---------
+    GLEC(glActiveTexture(GL_TEXTURE1));
     glGenTextures(1, &texture1);
     glBindTexture(GL_TEXTURE_2D, texture1); 
     std::cout << "kc created texture id " << texture1 << "\n";
@@ -219,7 +222,7 @@ int main(void)
 
 
     GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXTURE), "s_texture"), 1));
- */
+
 
 
     ShaderManager::use(TEXT);
@@ -231,18 +234,15 @@ int main(void)
     std::cout << "\ngenerating text strip buffers\n";
 
     Text helloWorld;
-    helloWorld.textStrip.points = layout_text("Hello, world! fk", monolisaFontData); // quads are starting at 0,0
+    helloWorld.model.pos = vec2(.5f, .5f);
+    helloWorld.textStrip.points = layout_text("one", monolisaFontData); // quads are starting at 0,0
     generate_text_strip_buffers(helloWorld.textStrip);
     
     Text othertext;
-    othertext.textStrip.points = layout_text("Other text?", opensansFontData); // quads are starting at 0,0
+    othertext.textStrip.points = layout_text("two", opensansFontData); // quads are starting at 0,0
     othertext.model.pos = vec2(-.5f, -.5f);
     generate_text_strip_buffers(othertext.textStrip);
 
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
-    
     while (!glfwWindowShouldClose(window)) {
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
@@ -254,13 +254,22 @@ int main(void)
         render_text(helloWorld, monolisaFontData);
         render_text(othertext, opensansFontData);
 
-        /* ShaderManager::use(TEXTURE);
+        ShaderManager::use(TEXTURE);
         GLEC(glActiveTexture(GL_TEXTURE1));
         GLEC(glBindTexture(GL_TEXTURE_2D, texture1));
         GLEC(glBindBuffer(GL_ARRAY_BUFFER, vbo));
         GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
+
+        GLEC(glEnableVertexAttribArray(0));
+        GLEC(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)0));
+        GLEC(glBindAttribLocation(ShaderManager::program(TEXTURE), 0, "a_position"));
+
+        GLEC(glEnableVertexAttribArray(1));
+        GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)(2*sizeof(GL_FLOAT))));
+        GLEC(glBindAttribLocation(ShaderManager::program(TEXTURE), 1, "a_texCoord"));
+        //GLEC(glLinkProgram(ShaderManager::program(TEXTURE)));
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)); */
+        GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
         
 
         glfwSwapBuffers(window);
