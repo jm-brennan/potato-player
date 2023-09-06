@@ -9,7 +9,7 @@
 #include "gladInclude.h"
 #include "Texture.h"
 #include "Model.h"
-
+#include "Camera.h"
 
 struct TextStrip {
     std::vector<TexturePoint> points;
@@ -38,7 +38,7 @@ struct Text {
 FontData create_font(std::string font);
 std::vector<TexturePoint> layout_text(const std::string& layoutString, FontData& font);
 void generate_text_strip_buffers(TextStrip& textStrip);
-void render_text(Text& text, FontData& font);
+void render_text(Text& text, FontData& font, Camera& camera);
 
 
 inline std::string text_glyph_string(const TextGlyph& glyph) {

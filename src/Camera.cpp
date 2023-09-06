@@ -1,41 +1,37 @@
 #include "Camera.h"
 
-Camera::Camera(float screenWidth, float screenHeight, vec3 pos, vec3 lookat, vec3 up) 
-    : screenWidth(screenWidth), screenHeight(screenHeight), pos(pos), lookAt(lookAt), up(up) {
-    
-    calculate_projection();
-    calculate_view(pos, lookat, up);
-    
-    //screenToWorld = inverse(view) * inverse(projection);
-    printf("created view mat: %s\n", glm::to_string(view).c_str());
-    printf("created projection mat: %s\n", glm::to_string(projection).c_str());
+#include <glm/gtc/matrix_transform.hpp>
+
+void calculate_projection(Camera& camera);
+void calculate_view(Camera& camera);
+
+void calculate_view_projection(Camera& camera) {
+    calculate_projection(camera);
+    calculate_view(camera);
+    camera.viewProjection = camera.projection * camera.view;
 }
 
-void Camera::update_bounds(float newScreenWidth, float newScreenHeight) {
-    screenWidth = newScreenWidth;
-    screenHeight = newScreenHeight;
-    calculate_projection();
-    //screenToWorld = inverse(view) * inverse(projection);
-}
+void calculate_projection(Camera& camera) {
+    float halfScreemWidth  = camera.screenWidth;
+    float halfScreemHeight = camera.screenHeight;
 
-void Camera::calculate_projection() {
-    projection = ortho(
-        0.0f,       // left  
-        screenWidth,       // right 
-        screenHeight,       // top   
-        0.0f,       // bottom
-        0.0f,       // near clip
-        100.0f      // far clip
+    camera.projection = glm::ortho(
+        0.0f,  
+        camera.screenWidth, 
+        0.0f,
+        camera.screenHeight,   
+        0.1f,
+        100.0f
     );
+
 }
 
-void Camera::calculate_view(vec3 pos, vec3 lookat, vec3 up) {
-    view = glm::lookAt(
-        pos,
-        lookat,
-        up
+void calculate_view(Camera& camera) {
+    camera.view = glm::lookAt(
+        camera.pos,
+        camera.lookAt,
+        camera.up
     );
-}
 
-mat4 Camera::get_projection() { return projection; }
-mat4 Camera::get_view() { return view; }
+    //camera.view = mat4(1.0f);
+}

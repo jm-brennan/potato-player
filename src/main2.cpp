@@ -22,8 +22,7 @@
 #include "stb_image.h"
 
 #include "Text.h"
-
-//#include "Camera.h"
+#include "Camera.h"
 
 using namespace std;
 
@@ -55,7 +54,7 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     #endif
 
-    GLFWwindow* window = glfwCreateWindow(640, 480, "window", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(800, 480, "window", nullptr, nullptr);
     if (!window) {
         glfwTerminate();
         exit(EXIT_FAILURE);
@@ -75,13 +74,22 @@ int main(void)
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    string vShaderScreenSpaceStr = 
+    Camera camera;
+    camera.screenWidth = 800;
+    camera.screenHeight = 480;
+    camera.pos = vec3(0.0, 0.0, 3.0);
+    camera.lookAt = vec3(0.0, 0.0, 0.0);
+    camera.up = vec3(0.0, 1.0, 0.0);
+    calculate_view_projection(camera);
+
+    string vShaderTextureStr = 
         "attribute vec2 a_position;\n"
         "attribute vec2 a_texCoord;\n"
         "varying vec2 v_texCoord;\n"
+        "uniform mat4 m_mvp;\n"
         "void main()\n"
         "{\n"
-        "   gl_Position = vec4(a_position.x, a_position.y, 0.0, 1.0);\n"
+        "   gl_Position = m_mvp * vec4(a_position.x, a_position.y, 0.0, 1.0);\n"
         "   v_texCoord = a_texCoord;\n"
         "}\n";
     
@@ -90,10 +98,9 @@ int main(void)
         "attribute vec2 a_texCoord;\n"
         "varying vec2 v_texCoord;\n"
         "uniform mat4 m_mvp;\n"
-        "mat4 m;\n"
         "void main()\n"
         "{\n"
-        "   gl_Position = m_mvp * vec4(a_position.x, -a_position.y, 0.0, 1.0);\n"
+        "   gl_Position = m_mvp * vec4(a_position.x, a_position.y, 0.0, 1.0);\n"
         "   v_texCoord = a_texCoord;\n"
         "}\n";
 
@@ -117,18 +124,25 @@ int main(void)
 
         
 
-    ShaderManager::create_shader_from_string(vShaderScreenSpaceStr, textureF_ShaderStr, SHADER::TEXTURE);
-    ShaderManager::create_shader_from_string(vShaderNegativeY_WorldSpaceStr, textF_ShaderStr, SHADER::TEXT);
+    ShaderManager::create_shader_from_string(vShaderTextureStr, textureF_ShaderStr, SHADER::TEXTURE);
+    ShaderManager::create_shader_from_string(vShaderTextureStr, textF_ShaderStr, SHADER::TEXT);
 
     ShaderManager::use(TEXTURE);
     GLEC(glActiveTexture(GL_TEXTURE1));
 
+    /* float vertices[] = {
+        // positions        // texture coords
+        760.0f, 440.0f, 1.0f, 1.0f, // top right
+        760.0f, 160.0f, 1.0f, 0.0f, // bottom Bright
+        480.0f, 160.0f, 0.0f, 0.0f, // bottom left
+        480.0f, 440.0f, 0.0f, 1.0f  // top left 
+    }; */
     float vertices[] = {
         // positions        // texture coords
-         0.5f,  0.5f, 1.0f, 1.0f, // top right
-         0.5f, -0.5f, 1.0f, 0.0f, // bottom Bright
-        -0.5f, -0.5f, 0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f, 1.0f  // top left 
+        1.0f, 1.0f, 1.0f, 1.0f, // top right
+        1.0f, 0.0, 1.0f, 0.0f, // bottom Bright
+        0.0f, 0.0f, 0.0f, 0.0f, // bottom left
+        0.0f, 1.0f, 0.0f, 1.0f  // top left 
     };
     uint indices[] = {
         0, 1, 3, // first triangle
@@ -234,13 +248,13 @@ int main(void)
     std::cout << "\ngenerating text strip buffers\n";
 
     Text helloWorld;
-    helloWorld.model.pos = vec2(.5f, .5f);
+    helloWorld.model.pos = vec2(40.0f, 360.0f);
     helloWorld.textStrip.points = layout_text("one", monolisaFontData); // quads are starting at 0,0
     generate_text_strip_buffers(helloWorld.textStrip);
     
     Text othertext;
     othertext.textStrip.points = layout_text("two", opensansFontData); // quads are starting at 0,0
-    othertext.model.pos = vec2(-.5f, -.5f);
+    othertext.model.pos = vec2(40.0f, 160.0f);
     generate_text_strip_buffers(othertext.textStrip);
 
     while (!glfwWindowShouldClose(window)) {
@@ -248,11 +262,11 @@ int main(void)
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(0.0f, 0.2f, 0.23f, 1.0f);
+        glClearColor(0.23f, 0.24f, 0.26f, 1.0f);
 
         
-        render_text(helloWorld, monolisaFontData);
-        render_text(othertext, opensansFontData);
+        render_text(helloWorld, monolisaFontData, camera);
+        render_text(othertext, opensansFontData, camera);
 
         ShaderManager::use(TEXTURE);
         GLEC(glActiveTexture(GL_TEXTURE1));
@@ -268,6 +282,14 @@ int main(void)
         GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)(2*sizeof(GL_FLOAT))));
         GLEC(glBindAttribLocation(ShaderManager::program(TEXTURE), 1, "a_texCoord"));
         //GLEC(glLinkProgram(ShaderManager::program(TEXTURE)));
+        
+        glm::mat4 model = glm::mat4(1.0f);
+        model = translate(model, vec3(480.0f, 160.0, 0.0f));
+        model = glm::scale(model, glm::vec3(280.0, 280.0, 1.0));
+        mat4 mvp = mat4(1.0f);
+        mvp = camera.viewProjection * model;
+
+        GLEC(glUniformMatrix4fv(glGetUniformLocation(ShaderManager::program(TEXTURE), "m_mvp"), 1, false, value_ptr(mvp)));
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
         

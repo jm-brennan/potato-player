@@ -124,7 +124,7 @@ std::vector<TexturePoint> layout_text(const std::string& layoutString, FontData&
         float w = glyph.size.x;
         float h = glyph.size.y;
 
-        double scaleFactor = 400.0;
+        double scaleFactor = 1.0;
         x /= scaleFactor;
         y /= scaleFactor;
         w /= scaleFactor;
@@ -164,7 +164,7 @@ void generate_text_strip_buffers(TextStrip& textStrip) {
 
 }
 
-void render_text(Text& text, FontData& font) {
+void render_text(Text& text, FontData& font, Camera& camera) {
     ShaderManager::use(TEXT);
     GLEC(glActiveTexture(GL_TEXTURE0));
     GLEC(glBindTexture(GL_TEXTURE_2D, font.atlasTextureID));
@@ -182,8 +182,13 @@ void render_text(Text& text, FontData& font) {
     GLEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
     // TODO probably we dont need to recalculate this every frame but its easier for now at least
-    glm::mat4 mvp(1.0f);
-    mvp = translate(mvp, vec3(text.model.pos, 0.0f));
+    glm::mat4 model(1.0f);
+    
+    model = translate(model, vec3(text.model.pos.x, text.model.pos.y, 0.0f));
+
+    glm::mat4 mvp = camera.viewProjection * model;
+
+    //std::cout << "vp:\n" << mat_string(camera.viewProjection) << "\n";
 
     GLEC(glUniformMatrix4fv(glGetUniformLocation(ShaderManager::program(TEXT), "m_mvp"), 1, false, value_ptr(mvp)));
 
