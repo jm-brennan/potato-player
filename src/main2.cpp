@@ -55,7 +55,7 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     #endif
 
-    GLFWwindow* window = glfwCreateWindow(800, 480, "window", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(800, 480, "window", glfwGetPrimaryMonitor(), nullptr);
     if (!window) {
         glfwTerminate();
         exit(EXIT_FAILURE);
