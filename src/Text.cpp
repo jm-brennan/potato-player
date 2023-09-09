@@ -123,12 +123,6 @@ void layout_text(const std::string& layoutString, Text& text, FontData& font) {
         float w = glyph.size.x;
         float h = glyph.size.y;
 
-        double scaleFactor = 1.0;
-        x /= scaleFactor;
-        y /= scaleFactor;
-        w /= scaleFactor;
-        h /= scaleFactor;
-
         text.textStrip.points[i++] = (TexturePoint){vec2(x, y),       vec2(glyph.texCoord.x, glyph.texCoord.y + (glyph.size.y / font.atlasSize.y))};
         text.textStrip.points[i++] = (TexturePoint){vec2(x, y+h),     vec2(glyph.texCoord.x, glyph.texCoord.y)};
         text.textStrip.points[i++] = (TexturePoint){vec2(x + w, y+h), vec2(glyph.texCoord.x + (glyph.size.x / font.atlasSize.x), glyph.texCoord.y)};
@@ -137,7 +131,7 @@ void layout_text(const std::string& layoutString, Text& text, FontData& font) {
         text.textStrip.points[i++] = (TexturePoint){vec2(x + w, y),   vec2(glyph.texCoord.x + (glyph.size.x / font.atlasSize.x), glyph.texCoord.y + (glyph.size.y / font.atlasSize.y))};
         pos += glyph.advance;
 
-        text.textStrip.width += w;
+        text.textStrip.width += glyph.advance.x;
     }
 
 

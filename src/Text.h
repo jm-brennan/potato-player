@@ -13,7 +13,7 @@
 
 struct TextStrip {
     std::vector<TexturePoint> points;
-    uint width = 0;
+    float width = 0.0;
     uint vertexBufferID = 0;
     //uint indexBufferID = 0;
 };
