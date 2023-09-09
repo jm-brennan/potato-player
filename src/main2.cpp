@@ -109,7 +109,7 @@ int main(void)
         "uniform sampler2D s_texture;\n"
         "void main()\n"
         "{\n"
-        "   gl_FragColor = vec4(0.0, 1.0, 1.0, texture2D(s_texture, v_texCoord).a);\n"
+        "   gl_FragColor = vec4(1.0, 1.0, 1.0, texture2D(s_texture, v_texCoord).a);\n"
         "}\n";
         
 
@@ -157,7 +157,7 @@ int main(void)
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(0.23f, 0.24f, 0.26f, 1.0f);
+        glClearColor(0.13f, 0.14f, 0.15f, 1.0f);
 
         render_image(albumArt, camera);
 
