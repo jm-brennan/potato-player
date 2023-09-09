@@ -8,7 +8,7 @@ struct Image {
     uint vertexBufferID;
     uint elementBufferID;
     Model model;
-    float size = 0.0;
+    vec2 size;
 };
 
 void generate_image_buffers(Image& image);

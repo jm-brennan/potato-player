@@ -55,7 +55,8 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     #endif
 
-    GLFWwindow* window = glfwCreateWindow(800, 480, "window", glfwGetPrimaryMonitor(), nullptr);
+    //glfwGetPrimaryMonitor()
+    GLFWwindow* window = glfwCreateWindow(800, 480, "window", nullptr, nullptr);
     if (!window) {
         glfwTerminate();
         exit(EXIT_FAILURE);
@@ -120,7 +121,7 @@ int main(void)
 
     Image albumArt;
     albumArt.model.pos = vec2(40.0, 40.0);
-    albumArt.size = 296.0;
+    albumArt.size = vec2(316.0);
 
     generate_image_buffers(albumArt);
     set_image_texture_from_audio_file(albumArt, "../tracks/I Know We'll Be Fine.mp3");
@@ -130,26 +131,27 @@ int main(void)
     ShaderManager::use(TEXT);
     GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXT), "s_texture"), 0));
     std::cout << "Creating fonts\n";
-    FontData monolisaFontData = create_font("MonoLisa-Regular.ttf", 64);
-    FontData opensansFontData = create_font("OpenSans-Regular.ttf", 32);
+    //FontData monolisaFontData = create_font("MonoLisa-Regular.ttf", 64);
+    FontData opensansSmallFontData = create_font("OpenSans-Regular.ttf", 32);
+    FontData opensansLargeFontData = create_font("OpenSans-Regular.ttf", 64);
 
     std::cout << "\ngenerating text strip buffers\n";
 
     Text songTitle;
-    layout_text("Song Name Here", songTitle, monolisaFontData); // quads are starting at 0,0
+    layout_text("Song Name Here", songTitle, opensansLargeFontData); // quads are starting at 0,0
     float xpos = (800.0 / 2.0) - (songTitle.textStrip.width / 2.0);
     std::cout << "xpos " << xpos << "\n";
-    songTitle.model.pos = vec2(xpos, 376.0f);
+    songTitle.model.pos = vec2(xpos, 396.0f);
     generate_text_strip_buffers(songTitle.textStrip);
     
     Text albumTitle;
-    layout_text("Album name", albumTitle, opensansFontData); // quads are starting at 0,0
-    albumTitle.model.pos = vec2(376.0f, 200.0f);
+    layout_text("Album name", albumTitle, opensansSmallFontData); // quads are starting at 0,0
+    albumTitle.model.pos = vec2(396.0f, 200.0f);
     generate_text_strip_buffers(albumTitle.textStrip);
     
     Text artistName;
-    layout_text("Artist name", artistName, opensansFontData); // quads are starting at 0,0
-    artistName.model.pos = vec2(376.0f, 120.0f);
+    layout_text("Artist name", artistName, opensansSmallFontData); // quads are starting at 0,0
+    artistName.model.pos = vec2(396.0f, 120.0f);
     generate_text_strip_buffers(artistName.textStrip);
 
     while (!glfwWindowShouldClose(window)) {
@@ -161,9 +163,9 @@ int main(void)
 
         render_image(albumArt, camera);
 
-        render_text(songTitle, monolisaFontData, camera);
-        render_text(albumTitle, opensansFontData, camera);
-        render_text(artistName, opensansFontData, camera);
+        render_text(songTitle, opensansLargeFontData, camera);
+        render_text(albumTitle, opensansSmallFontData, camera);
+        render_text(artistName, opensansSmallFontData, camera);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

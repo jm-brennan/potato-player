@@ -123,7 +123,7 @@ void render_image(Image& image, Camera& camera) {
     
     glm::mat4 model = glm::mat4(1.0f);
     model = translate(model, vec3(image.model.pos.x, image.model.pos.y, 0.0f));
-    model = glm::scale(model, glm::vec3(image.size, image.size, 1.0));
+    model = glm::scale(model, glm::vec3(image.size.x, image.size.y, 1.0));
 
     mat4 mvp = mat4(1.0f);
     mvp = camera.viewProjection * model;
