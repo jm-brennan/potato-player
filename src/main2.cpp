@@ -118,13 +118,14 @@ int main(void)
     ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderTextStr, SHADER::TEXT);
 
     ShaderManager::use(IMAGE);
-    GLEC(glActiveTexture(GL_TEXTURE1));
 
     Image albumArt;
     albumArt.model.pos = vec2(480.0, 160.0);
     albumArt.size = 280.0;
 
-    float vertices[] = {
+    generate_image_buffers(albumArt);
+    set_image_texture_from_audio_file(albumArt, "../tracks/I Know We'll Be Fine.mp3");
+    /* float vertices[] = {
         // positions        // texture coords
         1.0f, 1.0f, 1.0f, 1.0f, // top right
         1.0f, 0.0, 1.0f, 0.0f, // bottom Bright
@@ -152,19 +153,18 @@ int main(void)
     GLEC(glEnableVertexAttribArray(1));
     GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)(2*sizeof(GL_FLOAT))));
     GLEC(glBindAttribLocation(ShaderManager::program(IMAGE), 1, "a_texCoord"));
-    GLEC(glLinkProgram(ShaderManager::program(IMAGE)));
+    GLEC(glLinkProgram(ShaderManager::program(IMAGE))); */
 
 
-    ShaderManager::use(IMAGE);
+    /* ShaderManager::use(IMAGE);
     // load and create a texture 
     // -------------------------
-    uint texture1;
     // texture 1
     // ---------
     GLEC(glActiveTexture(GL_TEXTURE1));
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1); 
-    std::cout << "kc created texture id " << texture1 << "\n";
+    glGenTextures(1, &albumArt.textureID);
+    glBindTexture(GL_TEXTURE_2D, albumArt.textureID); 
+    std::cout << "kc created texture id " << albumArt.textureID << "\n";
      // set the texture wrapping parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -218,7 +218,7 @@ int main(void)
         cout<< "id3v2 not present";
     }
     GLEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
-    GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+    GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)); */
 
 
     GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
@@ -250,10 +250,10 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.23f, 0.24f, 0.26f, 1.0f);
 
-        //render_image(albumArt, camera);
-        ShaderManager::use(IMAGE);
+        render_image(albumArt, camera);
+        /* ShaderManager::use(IMAGE);
         GLEC(glActiveTexture(GL_TEXTURE1));
-        GLEC(glBindTexture(GL_TEXTURE_2D, texture1));
+        GLEC(glBindTexture(GL_TEXTURE_2D, albumArt.textureID));
         GLEC(glBindBuffer(GL_ARRAY_BUFFER, albumArt.vertexBufferID));
         GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, albumArt.elementBufferID));
 
@@ -274,7 +274,7 @@ int main(void)
 
         GLEC(glUniformMatrix4fv(glGetUniformLocation(ShaderManager::program(IMAGE), "m_mvp"), 1, false, value_ptr(mvp)));
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+        GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)); */
 
         render_text(songTitle, monolisaFontData, camera);
         render_text(albumTitle, opensansFontData, camera);
