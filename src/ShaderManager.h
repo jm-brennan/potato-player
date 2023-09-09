@@ -12,8 +12,7 @@
 #include "definitions.h"
 
 enum SHADER {
-    COLOR,
-    TEXTURE,
+    IMAGE,
     TEXT,
 
     NUM_SHADERS

@@ -9,7 +9,7 @@
 
 using namespace glm;
 
-FontData create_font(std::string font) {
+FontData create_font(std::string font, uint size) {
     FontData result;
     result.glyphs.resize(128);
 
@@ -26,7 +26,7 @@ FontData create_font(std::string font) {
         return result;
     }
 
-    if (FT_Set_Pixel_Sizes(face, 0, 32)) {
+    if (FT_Set_Pixel_Sizes(face, 0, size)) {
         printf("ERROR::FreeType pixel size\n");
     }
 
@@ -108,19 +108,18 @@ FontData create_font(std::string font) {
     return result;
 }
 
-std::vector<TexturePoint> layout_text(const std::string& layoutString, FontData& font) {
+void layout_text(const std::string& layoutString, Text& text, FontData& font) {
 
-    vec2 pos; // start at 0,0
+    vec2 pos = vec2(0.0f, 0.0f);
 
-    std::vector<TexturePoint> points;
-    points.resize(layoutString.size() * 6); // 6 points per quad since we dont use indexing
+    text.textStrip.points.resize(layoutString.size() * 6); // 6 points per quad since we dont use indexing
 
     uint i = 0; // to index into points array
     for (const char& c : layoutString) {
         TextGlyph& glyph = font.glyphs[c];
 
         float x = pos.x + glyph.bearing.x;
-        float y = pos.y + (font.atlasSize.y - glyph.size.y) + (glyph.size.y - glyph.bearing.y);
+        float y = pos.y - (glyph.size.y - glyph.bearing.y);//+ (font.atlasSize.y - glyph.size.y) + (glyph.size.y - glyph.bearing.y);
         float w = glyph.size.x;
         float h = glyph.size.y;
 
@@ -130,20 +129,22 @@ std::vector<TexturePoint> layout_text(const std::string& layoutString, FontData&
         w /= scaleFactor;
         h /= scaleFactor;
 
-        points[i++] = (TexturePoint){vec2(x, y),        vec2(glyph.texCoord.x, glyph.texCoord.y)};
-        points[i++] = (TexturePoint){vec2(x, y+h),      vec2(glyph.texCoord.x, glyph.texCoord.y + (glyph.size.y / font.atlasSize.y))};
-        points[i++] = (TexturePoint){vec2(x + w, y+h),  vec2(glyph.texCoord.x + (glyph.size.x / font.atlasSize.x), glyph.texCoord.y + (glyph.size.y / font.atlasSize.y))};
-        points[i++] = (TexturePoint){vec2(x, y),        vec2(glyph.texCoord.x, glyph.texCoord.y)};
-        points[i++] = (TexturePoint){vec2(x + w, y+h),  vec2(glyph.texCoord.x + (glyph.size.x / font.atlasSize.x), glyph.texCoord.y + (glyph.size.y / font.atlasSize.y))};
-        points[i++] = (TexturePoint){vec2(x + w, y),    vec2(glyph.texCoord.x + (glyph.size.x / font.atlasSize.x), glyph.texCoord.y)};
+        text.textStrip.points[i++] = (TexturePoint){vec2(x, y),       vec2(glyph.texCoord.x, glyph.texCoord.y + (glyph.size.y / font.atlasSize.y))};
+        text.textStrip.points[i++] = (TexturePoint){vec2(x, y+h),     vec2(glyph.texCoord.x, glyph.texCoord.y)};
+        text.textStrip.points[i++] = (TexturePoint){vec2(x + w, y+h), vec2(glyph.texCoord.x + (glyph.size.x / font.atlasSize.x), glyph.texCoord.y)};
+        text.textStrip.points[i++] = (TexturePoint){vec2(x, y),       vec2(glyph.texCoord.x, glyph.texCoord.y + (glyph.size.y / font.atlasSize.y))};
+        text.textStrip.points[i++] = (TexturePoint){vec2(x + w, y+h), vec2(glyph.texCoord.x + (glyph.size.x / font.atlasSize.x), glyph.texCoord.y)};
+        text.textStrip.points[i++] = (TexturePoint){vec2(x + w, y),   vec2(glyph.texCoord.x + (glyph.size.x / font.atlasSize.x), glyph.texCoord.y + (glyph.size.y / font.atlasSize.y))};
         pos += glyph.advance;
+
+        text.textStrip.width += w;
     }
+
 
     /* for (TexturePoint tp : points) {
         std::cout << vec_string(tp.vertex) << " : " << vec_string(tp.texture) << "\n";
     } */
 
-    return points;
 }
 
 void generate_text_strip_buffers(TextStrip& textStrip) {

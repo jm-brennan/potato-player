@@ -23,6 +23,7 @@
 
 #include "Text.h"
 #include "Camera.h"
+#include "Image.h"
 
 using namespace std;
 
@@ -93,18 +94,7 @@ int main(void)
         "   v_texCoord = a_texCoord;\n"
         "}\n";
     
-    string vShaderNegativeY_WorldSpaceStr = 
-        "attribute vec2 a_position;\n"
-        "attribute vec2 a_texCoord;\n"
-        "varying vec2 v_texCoord;\n"
-        "uniform mat4 m_mvp;\n"
-        "void main()\n"
-        "{\n"
-        "   gl_Position = m_mvp * vec4(a_position.x, a_position.y, 0.0, 1.0);\n"
-        "   v_texCoord = a_texCoord;\n"
-        "}\n";
-
-    string textureF_ShaderStr =
+    string fShaderTextureStr =
         "precision mediump float;\n"
         "varying vec2 v_texCoord;\n"
         "uniform sampler2D s_texture;\n"
@@ -113,30 +103,27 @@ int main(void)
         "   gl_FragColor = texture2D(s_texture, v_texCoord);\n"
         "}\n";
     
-    string textF_ShaderStr =
+    string fShaderTextStr =
         "precision mediump float;\n"
         "varying vec2 v_texCoord;\n"
         "uniform sampler2D s_texture;\n"
         "void main()\n"
         "{\n"
-        "   gl_FragColor = vec4(1.0, 1.0, 1.0, texture2D(s_texture, v_texCoord).a);\n"
+        "   gl_FragColor = vec4(0.0, 1.0, 1.0, texture2D(s_texture, v_texCoord).a);\n"
         "}\n";
 
         
 
-    ShaderManager::create_shader_from_string(vShaderTextureStr, textureF_ShaderStr, SHADER::TEXTURE);
-    ShaderManager::create_shader_from_string(vShaderTextureStr, textF_ShaderStr, SHADER::TEXT);
+    ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderTextureStr, SHADER::IMAGE);
+    ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderTextStr, SHADER::TEXT);
 
-    ShaderManager::use(TEXTURE);
+    ShaderManager::use(IMAGE);
     GLEC(glActiveTexture(GL_TEXTURE1));
 
-    /* float vertices[] = {
-        // positions        // texture coords
-        760.0f, 440.0f, 1.0f, 1.0f, // top right
-        760.0f, 160.0f, 1.0f, 0.0f, // bottom Bright
-        480.0f, 160.0f, 0.0f, 0.0f, // bottom left
-        480.0f, 440.0f, 0.0f, 1.0f  // top left 
-    }; */
+    Image albumArt;
+    albumArt.model.pos = vec2(480.0, 160.0);
+    albumArt.size = 280.0;
+
     float vertices[] = {
         // positions        // texture coords
         1.0f, 1.0f, 1.0f, 1.0f, // top right
@@ -149,27 +136,26 @@ int main(void)
         1, 2, 3  // second triangle
     };
 
-    uint vbo, ebo;
-    GLEC(glGenBuffers(1, &vbo));
-    GLEC(glGenBuffers(1, &ebo));
+    GLEC(glGenBuffers(1, &albumArt.vertexBufferID));
+    GLEC(glGenBuffers(1, &albumArt.elementBufferID));
 
-    GLEC(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+    GLEC(glBindBuffer(GL_ARRAY_BUFFER, albumArt.vertexBufferID));
     GLEC(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
 
-    GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
+    GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, albumArt.elementBufferID));
     GLEC(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
 
     GLEC(glEnableVertexAttribArray(0));
     GLEC(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)0));
-    GLEC(glBindAttribLocation(ShaderManager::program(TEXTURE), 0, "a_position"));
+    GLEC(glBindAttribLocation(ShaderManager::program(IMAGE), 0, "a_position"));
 
     GLEC(glEnableVertexAttribArray(1));
     GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)(2*sizeof(GL_FLOAT))));
-    GLEC(glBindAttribLocation(ShaderManager::program(TEXTURE), 1, "a_texCoord"));
-    GLEC(glLinkProgram(ShaderManager::program(TEXTURE)));
+    GLEC(glBindAttribLocation(ShaderManager::program(IMAGE), 1, "a_texCoord"));
+    GLEC(glLinkProgram(ShaderManager::program(IMAGE)));
 
 
-    ShaderManager::use(TEXTURE);
+    ShaderManager::use(IMAGE);
     // load and create a texture 
     // -------------------------
     uint texture1;
@@ -235,27 +221,27 @@ int main(void)
     GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
 
-    GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXTURE), "s_texture"), 1));
+    GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
 
 
 
     ShaderManager::use(TEXT);
     GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXT), "s_texture"), 0));
     std::cout << "Creating fonts\n";
-    FontData monolisaFontData = create_font("MonoLisa-Regular.ttf");
-    FontData opensansFontData = create_font("OpenSans-Regular.ttf");
+    FontData monolisaFontData = create_font("MonoLisa-Regular.ttf", 48);
+    FontData opensansFontData = create_font("OpenSans-Regular.ttf", 32);
 
     std::cout << "\ngenerating text strip buffers\n";
 
-    Text helloWorld;
-    helloWorld.model.pos = vec2(40.0f, 360.0f);
-    helloWorld.textStrip.points = layout_text("one", monolisaFontData); // quads are starting at 0,0
-    generate_text_strip_buffers(helloWorld.textStrip);
+    Text songTitle;
+    songTitle.model.pos = vec2(40.0f, 360.0f);
+    layout_text("Song Name Here", songTitle, monolisaFontData); // quads are starting at 0,0
+    generate_text_strip_buffers(songTitle.textStrip);
     
-    Text othertext;
-    othertext.textStrip.points = layout_text("two", opensansFontData); // quads are starting at 0,0
-    othertext.model.pos = vec2(40.0f, 160.0f);
-    generate_text_strip_buffers(othertext.textStrip);
+    Text albumTitle;
+    layout_text("Album name here", albumTitle, opensansFontData); // quads are starting at 0,0
+    albumTitle.model.pos = vec2(40.0f, 160.0f);
+    generate_text_strip_buffers(albumTitle.textStrip);
 
     while (!glfwWindowShouldClose(window)) {
         int width, height;
@@ -264,35 +250,34 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.23f, 0.24f, 0.26f, 1.0f);
 
-        
-        render_text(helloWorld, monolisaFontData, camera);
-        render_text(othertext, opensansFontData, camera);
-
-        ShaderManager::use(TEXTURE);
+        //render_image(albumArt, camera);
+        ShaderManager::use(IMAGE);
         GLEC(glActiveTexture(GL_TEXTURE1));
         GLEC(glBindTexture(GL_TEXTURE_2D, texture1));
-        GLEC(glBindBuffer(GL_ARRAY_BUFFER, vbo));
-        GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
+        GLEC(glBindBuffer(GL_ARRAY_BUFFER, albumArt.vertexBufferID));
+        GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, albumArt.elementBufferID));
 
         GLEC(glEnableVertexAttribArray(0));
         GLEC(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)0));
-        GLEC(glBindAttribLocation(ShaderManager::program(TEXTURE), 0, "a_position"));
+        GLEC(glBindAttribLocation(ShaderManager::program(IMAGE), 0, "a_position"));
 
         GLEC(glEnableVertexAttribArray(1));
         GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)(2*sizeof(GL_FLOAT))));
-        GLEC(glBindAttribLocation(ShaderManager::program(TEXTURE), 1, "a_texCoord"));
-        //GLEC(glLinkProgram(ShaderManager::program(TEXTURE)));
+        GLEC(glBindAttribLocation(ShaderManager::program(IMAGE), 1, "a_texCoord"));
         
         glm::mat4 model = glm::mat4(1.0f);
-        model = translate(model, vec3(480.0f, 160.0, 0.0f));
-        model = glm::scale(model, glm::vec3(280.0, 280.0, 1.0));
+        model = translate(model, vec3(albumArt.model.pos.x, albumArt.model.pos.y, 0.0f));
+        model = glm::scale(model, glm::vec3(albumArt.size, albumArt.size, 1.0));
+
         mat4 mvp = mat4(1.0f);
         mvp = camera.viewProjection * model;
 
-        GLEC(glUniformMatrix4fv(glGetUniformLocation(ShaderManager::program(TEXTURE), "m_mvp"), 1, false, value_ptr(mvp)));
+        GLEC(glUniformMatrix4fv(glGetUniformLocation(ShaderManager::program(IMAGE), "m_mvp"), 1, false, value_ptr(mvp)));
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
-        
+
+        render_text(songTitle, monolisaFontData, camera);
+        render_text(albumTitle, opensansFontData, camera);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -13,6 +13,7 @@
 
 struct TextStrip {
     std::vector<TexturePoint> points;
+    uint width = 0;
     uint vertexBufferID = 0;
     //uint indexBufferID = 0;
 };
@@ -35,8 +36,8 @@ struct Text {
     Model model;
 };
 
-FontData create_font(std::string font);
-std::vector<TexturePoint> layout_text(const std::string& layoutString, FontData& font);
+FontData create_font(std::string font, uint size);
+void layout_text(const std::string& layoutString, Text& text, FontData& font);
 void generate_text_strip_buffers(TextStrip& textStrip);
 void render_text(Text& text, FontData& font, Camera& camera);
 
