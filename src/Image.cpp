@@ -13,6 +13,7 @@
 #include "stb_image.h"
 
 void generate_image_buffers(Image& image) {
+    ShaderManager::use(IMAGE);
     GLEC(glActiveTexture(GL_TEXTURE1));
     float vertices[] = {
         // positions        // texture coords
@@ -106,7 +107,7 @@ void set_image_texture_from_audio_file(Image& image, std::string audioFileName) 
     GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }
 
-void render_image(Image& image, Camera& camera) {
+void render_image(const Image& image, const Camera& camera) {
     ShaderManager::use(IMAGE);
     GLEC(glActiveTexture(GL_TEXTURE1));
     GLEC(glBindTexture(GL_TEXTURE_2D, image.textureID));

@@ -1,78 +1,50 @@
+#include "gladInclude.h"
 
-#ifdef USE_OPENGL_ES
-#define GLAD_GLES2_IMPLEMENTATION
-#include <glad/gles2.h>
-#else
-#include <glad/gl.h>
-#endif
-
+#include <string>
+#include <iostream>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
-#include <iostream>
+#include <id3v2tag.h>
+#include <mpegfile.h>
+#include <id3v2frame.h>
+#include <id3v2header.h>
+#include <attachedpictureframe.h>
+#include <cstdio>
+#include <string.h>
+#include <thread>
 
-using namespace glm;
+#include "ShaderManager.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+#include "AudioFile.h"
+
 using namespace std;
-
-typedef struct Vertex
-{
-    vec2 pos;
-    vec3 col;
-} Vertex;
-
-static const Vertex vertices[3] =
-{
-    { { -0.6f, -0.4f }, { 1.f, 0.f, 0.f } },
-    { {  0.6f, -0.4f }, { 0.f, 1.f, 0.f } },
-    { {   0.f,  0.6f }, { 0.f, 0.f, 1.f } }
-};
-
-static const char* vertex_shader_text =
-"#version 100\n"
-"precision mediump float;\n"
-"uniform mat4 MVP;\n"
-"attribute vec3 vCol;\n"
-"attribute vec2 vPos;\n"
-"varying vec3 color;\n"
-"void main()\n"
-"{\n"
-"    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
-"    color = vCol;\n"
-"}\n";
-static const char* fragment_shader_text =
-"#version 100\n"
-"precision mediump float;\n"
-"varying vec3 color;\n"
-"void main()\n"
-"{\n"
-"    gl_FragColor = vec4(color, 1.0);\n"
-"}\n";
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
-}
 
 static void glfw_error_callback(int error, const char* description)
 {
-    cerr << "GLFW Error: " << description << "\n";
+    fprintf(stderr, "GLFW Error: %s\n", description);
 }
-
-int main() {
+static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+    }
+}
+int main(void)
+{
     glfwSetErrorCallback(glfw_error_callback);
-
     if (!glfwInit()) {
-        cerr << "Could not initialize GLFW\n";
-        return 1;
+        exit(EXIT_FAILURE);
     }
 
     #ifdef USE_OPENGL_ES
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
@@ -82,82 +54,119 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     #endif
 
-    GLFWwindow* window = glfwCreateWindow(640, 480, "Potato Player", NULL, NULL);
-
+    //glfwGetPrimaryMonitor()
+    GLFWwindow* window = glfwCreateWindow(800, 480, "window", nullptr, nullptr);
     if (!window) {
-        // apparently if window creation fails, it may be worthwhile to retry after
-        // setting glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
-
         glfwTerminate();
-        cerr << "Could not create window\n";
-        return 1;
+        exit(EXIT_FAILURE);
     }
 
+    glfwSetKeyCallback(window, glfw_key_callback);
     glfwMakeContextCurrent(window);
+    
     #ifdef USE_OPENGL_ES
     gladLoadGLES2(glfwGetProcAddress);
     #else
     gladLoadGL(glfwGetProcAddress);
     #endif
-
+    
     glfwSwapInterval(1);
 
-    GLuint vertex_buffer;
-    glGenBuffers(1, &vertex_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);  
-    const GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_shader, 1, &vertex_shader_text, NULL);
-    glCompileShader(vertex_shader);
-    const GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &fragment_shader_text, NULL);
-    glCompileShader(fragment_shader);
-    const GLuint program = glCreateProgram();
-    glAttachShader(program, vertex_shader);
-    glAttachShader(program, fragment_shader);
-    glLinkProgram(program);
-    const GLint mvp_location = glGetUniformLocation(program, "MVP");      
-    const GLint vpos_location = glGetAttribLocation(program, "vPos");
-    const GLint vcol_location = glGetAttribLocation(program, "vCol");
-    glEnableVertexAttribArray(vpos_location);
-    glEnableVertexAttribArray(vcol_location);
-    glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE,
-                          sizeof(Vertex), (void*) offsetof(Vertex, pos));
-    glVertexAttribPointer(vcol_location, 3, GL_FLOAT, GL_FALSE,
-                          sizeof(Vertex), (void*) offsetof(Vertex, col));
-    while (!glfwWindowShouldClose(window))
-    {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    Camera camera;
+    camera.screenWidth = 800;
+    camera.screenHeight = 480;
+    camera.pos = vec3(0.0, 0.0, 3.0);
+    camera.lookAt = vec3(0.0, 0.0, 0.0);
+    camera.up = vec3(0.0, 1.0, 0.0);
+    calculate_view_projection(camera);
+
+    string vShaderTextureStr = 
+        "attribute vec2 a_position;\n"
+        "attribute vec2 a_texCoord;\n"
+        "varying vec2 v_texCoord;\n"
+        "uniform mat4 m_mvp;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_Position = m_mvp * vec4(a_position.x, a_position.y, 0.0, 1.0);\n"
+        "   v_texCoord = a_texCoord;\n"
+        "}\n";
+    
+    string fShaderTextureStr =
+        "precision mediump float;\n"
+        "varying vec2 v_texCoord;\n"
+        "uniform sampler2D s_texture;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_FragColor = texture2D(s_texture, v_texCoord);\n"
+        "}\n";
+    
+    string fShaderTextStr =
+        "precision mediump float;\n"
+        "varying vec2 v_texCoord;\n"
+        "uniform sampler2D s_texture;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_FragColor = vec4(1.0, 1.0, 1.0, texture2D(s_texture, v_texCoord).a);\n"
+        "}\n";
+        
+
+    ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderTextStr, SHADER::TEXT);
+
+    ShaderManager::use(TEXT);
+    GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXT), "s_texture"), 0));
+    std::cout << "Creating fonts\n";
+    FontData smallFont = create_font("Poppins-Light.ttf", 32);
+    FontData largeFont = create_font("Poppins-Medium.ttf", 64);
+
+
+    ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderTextureStr, SHADER::IMAGE);
+
+    AudioFile audio1;
+    init(audio1, "../tracks/I Know We'll Be Fine.mp3");
+    generate_display_objects(audio1, largeFont, smallFont);
+
+    ShaderManager::use(IMAGE);
+    GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
+
+
+    std::cout << "\ngenerating text strip buffers\n";
+
+    const float FPS = 30.0f;
+    const double FRAME_TIME = 1.0f / FPS;
+    double dt = 0.0f;
+    double currentTime = glfwGetTime();
+    double newTime;
+    double sleepTime;
+    while (!glfwWindowShouldClose(window)) {
+        newTime = glfwGetTime();
+        dt = newTime - currentTime;
+        currentTime = newTime;
+        glfwPollEvents();
+
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
-        const float ratio = width / (float) height;
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT);
-        //mat4x4 m, p, mvp;
-        mat4 m = mat4( 1.0 );
-        mat4 p = mat4( 1.0 );
+        glClearColor(0.13f, 0.14f, 0.15f, 1.0f);
 
-        m = rotate(m, (float)glfwGetTime(), vec3(0.0f, 0.0f, 1.0f));
+        render_audio_file_display(audio1, largeFont, smallFont, camera);
 
-        p = ortho(-1.0f, 1.0f, -1.0f, 1.0f);
-
-        mat4 mvp = p * m;
-
-
-        //mat4x4_identity(m);
-        //mat4x4_rotate_Z(m, m, (float) glfwGetTime());
-        //mat4x4_ortho(p, -ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-        //mat4x4_mul(mvp, p, m);
-        glUseProgram(program);
-        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*) &mvp);
-        
-        glClearColor(0.19f, 0.65f, 0.32f, 1.0f);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
         glfwSwapBuffers(window);
-        glfwPollEvents();
+
+        newTime = glfwGetTime();
+        //timeTaken += (newTime - currentTime);
+        //numLoops++;
+        sleepTime = FRAME_TIME - (newTime - currentTime);
+        if (sleepTime > 0) {
+            std::this_thread::sleep_for(std::chrono::microseconds((int)(sleepTime * 1000000)));
+        }
     }
+    ShaderManager::delete_shaders();
+
     glfwDestroyWindow(window);
     glfwTerminate();
     exit(EXIT_SUCCESS);
-
-
 }

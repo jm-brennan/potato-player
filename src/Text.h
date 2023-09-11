@@ -32,14 +32,16 @@ struct FontData {
 };
 
 struct Text {
+    std::string str;
     TextStrip textStrip;
     Model model;
 };
 
+void init(Text& text, const std::string& str);
 FontData create_font(std::string font, uint size);
-void layout_text(const std::string& layoutString, Text& text, FontData& font);
+void layout_text(Text& text, const FontData& font);
 void generate_text_strip_buffers(TextStrip& textStrip);
-void render_text(Text& text, FontData& font, Camera& camera);
+void render_text(const Text& text, const FontData& font, const Camera& camera);
 
 
 inline std::string text_glyph_string(const TextGlyph& glyph) {

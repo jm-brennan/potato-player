@@ -108,15 +108,19 @@ FontData create_font(std::string font, uint size) {
     return result;
 }
 
-void layout_text(const std::string& layoutString, Text& text, FontData& font) {
+void init(Text& text, const std::string& str) {
+    text.str = str;
+}
+
+void layout_text(Text& text, const FontData& font) {
 
     vec2 pos = vec2(0.0f, 0.0f);
 
-    text.textStrip.points.resize(layoutString.size() * 6); // 6 points per quad since we dont use indexing
+    text.textStrip.points.resize(text.str.size() * 6); // 6 points per quad since we dont use indexing
 
     uint i = 0; // to index into points array
-    for (const char& c : layoutString) {
-        TextGlyph& glyph = font.glyphs[c];
+    for (const char& c : text.str) {
+        const TextGlyph& glyph = font.glyphs[c];
 
         float x = pos.x + glyph.bearing.x;
         float y = pos.y - (glyph.size.y - glyph.bearing.y);//+ (font.atlasSize.y - glyph.size.y) + (glyph.size.y - glyph.bearing.y);
@@ -159,7 +163,7 @@ void generate_text_strip_buffers(TextStrip& textStrip) {
 
 }
 
-void render_text(Text& text, FontData& font, Camera& camera) {
+void render_text(const Text& text, const FontData& font, const Camera& camera) {
     ShaderManager::use(TEXT);
     GLEC(glActiveTexture(GL_TEXTURE0));
     GLEC(glBindTexture(GL_TEXTURE_2D, font.atlasTextureID));
