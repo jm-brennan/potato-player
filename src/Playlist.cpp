@@ -1,23 +1,7 @@
-#include <stdio.h>
-#include <nlohmann/json.hpp>
-#include <filesystem>
-#include <iostream>
-#include <unordered_map>
-#include <fstream>
-#include <set>
-
-#include "audio_player.h"
+#include "Playlist.h"
 
 namespace fs = std::filesystem;
 using namespace nlohmann;
-
-struct Playlist {
-    uint32_t id = 0;
-    std::string name;
-    std::set<fs::path> tracks;
-};
-
-using Playlists = std::unordered_map<uint32_t, Playlist>;
 
 void add_all_tracks_in_dir(fs::path dir, std::set<fs::path>& tracks) {
     for (const auto& path : fs::directory_iterator(dir)) {
@@ -106,11 +90,14 @@ Playlists parse_playlists() {
     return playlists;
 }
 
-int main() {
-    Playlists playlists = parse_playlists();
+std::vector<std::filesystem::path> randomize_playlist(const Playlist& playlist,
+                                                      std::random_device random) {
+    std::vector<std::filesystem::path> result;
+    result.reserve(playlist.tracks.size());
+    for (const std::filesystem::path& playlistEntry : playlist.tracks) {
 
-    fs::path playpath = *playlists[1].tracks.begin();
-    std::cout << "play: " << playpath << "\n";
+    }
+    std::shuffle(std::begin(result), std::end(result), random);
 
-    play(playpath);
+    return result;
 }

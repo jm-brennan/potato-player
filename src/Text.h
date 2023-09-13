@@ -15,7 +15,6 @@ struct TextStrip {
     std::vector<TexturePoint> points;
     float width = 0.0;
     uint vertexBufferID = 0;
-    //uint indexBufferID = 0;
 };
 
 struct TextGlyph {
@@ -25,19 +24,21 @@ struct TextGlyph {
     vec2 bearing; // offset from baseline to left/top of glyph
 };
 
-struct FontData {
-    uint atlasTextureID = 0;
-    vec2 atlasSize;
-    std::vector<TextGlyph> glyphs;
-};
-
 struct Text {
     std::string str;
     TextStrip textStrip;
     Model model;
 };
 
+struct FontData {
+    uint atlasTextureID = 0;
+    vec2 atlasSize;
+    std::vector<TextGlyph> glyphs;
+};
+
 void init(Text& text, const std::string& str);
+void free_gl(Text& text);
+void free_gl(FontData& font);
 FontData create_font(std::string font, uint size);
 void layout_text(Text& text, const FontData& font);
 void generate_text_strip_buffers(TextStrip& textStrip);

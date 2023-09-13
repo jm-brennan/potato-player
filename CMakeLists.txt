@@ -34,11 +34,11 @@ set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 
 configure_file("${SRC_DIR}/paths.h.in" "${SRC_DIR}/paths.h")
 set(SOURCES 
-#"${SRC_DIR}/player.cpp"
 "${SRC_DIR}/main.cpp"
 "${SRC_DIR}/audio_player.cpp"
-#"${SRC_DIR}/tagreader_main.cpp"
 "${SRC_DIR}/miniaudio.h"
+"${SRC_DIR}/Playlist.h"
+"${SRC_DIR}/Playlist.cpp"
 "${SRC_DIR}/Camera.h"
 "${SRC_DIR}/Camera.cpp"
 "${SRC_DIR}/ShaderManager.h"

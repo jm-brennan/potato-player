@@ -46,6 +46,12 @@ void generate_image_buffers(Image& image) {
     GLEC(glLinkProgram(ShaderManager::program(IMAGE)));
 }
 
+void free_gl(Image& image) {
+    GLEC(glDeleteBuffers(1, &image.vertexBufferID));
+    GLEC(glDeleteBuffers(1, &image.elementBufferID));
+    GLEC(glDeleteTextures(1, &image.textureID));
+}
+
 void set_image_texture_from_audio_file(Image& image, std::string audioFileName) {
     ShaderManager::use(IMAGE);
     // load and create a texture 

@@ -21,6 +21,13 @@ void init(AudioFile& audioFile, std::string filename)
     }
 }
 
+void free_gl(AudioFile& audioFile) {
+    free_gl(audioFile.displayArt);
+    free_gl(audioFile.displayTitle);
+    free_gl(audioFile.displayAlbumName);
+    free_gl(audioFile.displayArtistName);
+}
+
 void generate_display_objects(AudioFile& audioFile, const FontData& largeFont, const FontData& smallFont) {
         
     audioFile.displayArt.model.pos = vec2(40.0, 40.0);

@@ -108,8 +108,16 @@ FontData create_font(std::string font, uint size) {
     return result;
 }
 
+void free_gl(FontData& font) {
+    GLEC(glDeleteTextures(1, &font.atlasTextureID));
+}
+
 void init(Text& text, const std::string& str) {
     text.str = str;
+}
+
+void free_gl(Text& text) {
+    GLEC(glDeleteBuffers(1, &text.textStrip.vertexBufferID));
 }
 
 void layout_text(Text& text, const FontData& font) {

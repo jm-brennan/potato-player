@@ -22,6 +22,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#include "Playlist.h"
 #include "AudioFile.h"
 
 using namespace std;
@@ -124,7 +125,7 @@ int main(void)
 
     ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderTextureStr, SHADER::IMAGE);
 
-
+    Playlists playlists = parse_playlists();
     std::vector<std::string> filesToPlay = {"../tracks/I Know We'll Be Fine.mp3", "../tracks/Lamp.mp3"};
 
     AudioFile audio;
@@ -150,10 +151,10 @@ int main(void)
         if (frameCounter % framesToSwitch == 0) {
             ++audioIndex;
             audioIndex = audioIndex % filesToPlay.size();
-            // TODO 
-            // TODO 
-            // TODO 
-            // delete_data(audio)
+            if (audioIndex != 0)
+            {
+                free_gl(audio);
+            }
             init(audio, filesToPlay[audioIndex]);
             generate_display_objects(audio, largeFont, smallFont);
             ShaderManager::use(IMAGE);
@@ -179,7 +180,11 @@ int main(void)
         }
         ++frameCounter;
     }
+    
+    free_gl(largeFont);
+    free_gl(smallFont);
     ShaderManager::delete_shaders();
+
 
     glfwDestroyWindow(window);
     glfwTerminate();
