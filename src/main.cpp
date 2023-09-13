@@ -55,7 +55,7 @@ int main(void)
     #endif
 
     //glfwGetPrimaryMonitor()
-    GLFWwindow* window = glfwCreateWindow(800, 480, "window", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(800, 480, "Le Potato Player", nullptr, nullptr);
     if (!window) {
         glfwTerminate();
         exit(EXIT_FAILURE);
@@ -124,15 +124,16 @@ int main(void)
 
     ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderTextureStr, SHADER::IMAGE);
 
-    AudioFile audio1;
-    init(audio1, "../tracks/I Know We'll Be Fine.mp3");
-    generate_display_objects(audio1, largeFont, smallFont);
 
-    ShaderManager::use(IMAGE);
-    GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
+    std::vector<std::string> filesToPlay = {"../tracks/I Know We'll Be Fine.mp3", "../tracks/Lamp.mp3"};
 
+    AudioFile audio;
 
     std::cout << "\ngenerating text strip buffers\n";
+
+    uint framesToSwitch = 60;
+    uint frameCounter = 0;
+    uint audioIndex = 0;
 
     const float FPS = 30.0f;
     const double FRAME_TIME = 1.0f / FPS;
@@ -146,13 +147,26 @@ int main(void)
         currentTime = newTime;
         glfwPollEvents();
 
+        if (frameCounter % framesToSwitch == 0) {
+            ++audioIndex;
+            audioIndex = audioIndex % filesToPlay.size();
+            // TODO 
+            // TODO 
+            // TODO 
+            // delete_data(audio)
+            init(audio, filesToPlay[audioIndex]);
+            generate_display_objects(audio, largeFont, smallFont);
+            ShaderManager::use(IMAGE);
+            GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
+        }
+
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.13f, 0.14f, 0.15f, 1.0f);
 
-        render_audio_file_display(audio1, largeFont, smallFont, camera);
+        render_audio_file_display(audio, largeFont, smallFont, camera);
 
         glfwSwapBuffers(window);
 
@@ -163,6 +177,7 @@ int main(void)
         if (sleepTime > 0) {
             std::this_thread::sleep_for(std::chrono::microseconds((int)(sleepTime * 1000000)));
         }
+        ++frameCounter;
     }
     ShaderManager::delete_shaders();
 

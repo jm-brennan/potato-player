@@ -117,7 +117,7 @@ void layout_text(Text& text, const FontData& font) {
     vec2 pos = vec2(0.0f, 0.0f);
 
     text.textStrip.points.resize(text.str.size() * 6); // 6 points per quad since we dont use indexing
-
+    text.textStrip.width = 0;
     uint i = 0; // to index into points array
     for (const char& c : text.str) {
         const TextGlyph& glyph = font.glyphs[c];
