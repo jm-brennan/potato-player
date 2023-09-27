@@ -64,6 +64,14 @@ static ma_data_source* next_callback_tail(ma_data_source* pDataSource)
 
 static void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
 {
+    ma_uint64 cursor;
+
+    ma_result result = ma_data_source_get_cursor_in_pcm_frames(pDevice->pUserData, &cursor);
+    if (result != MA_SUCCESS) {
+        return;  // Failed to retrieve the cursor.
+    }
+
+    printf("cursor currently at frame %d\n", cursor);
     /*
     We can just read from the first decoder and miniaudio will resolve the chain for us. Note that
     if you want to loop the chain, like we're doing in this example, you need to set the `loop`
@@ -84,12 +92,12 @@ int play(std::vector<fs::path> audioPaths, fs::path next)
     ma_device_config deviceConfig;
     ma_device device;
 
-    g_decoderCount = audioPaths.size();
+    g_decoderCount = audioPaths.size()+1;
     decoders    = (ma_decoder*)malloc(sizeof(*decoders) * g_decoderCount);
 
     /* In this example, all decoders need to have the same output format. */
     decoderConfig = ma_decoder_config_init(SAMPLE_FORMAT, CHANNEL_COUNT, SAMPLE_RATE);
-    for (iDecoder = 0; iDecoder < g_decoderCount; ++iDecoder) {
+    for (iDecoder = 0; iDecoder < g_decoderCount-1; ++iDecoder) {
         result = ma_decoder_init_file(audioPaths[iDecoder].c_str(), &decoderConfig, &decoders[iDecoder]);
         if (result != MA_SUCCESS) {
             ma_uint32 iDecoder2;
@@ -108,7 +116,7 @@ int play(std::vector<fs::path> audioPaths, fs::path next)
     to the first one. For demonstration purposes we're going to use the callback method for the last
     data source.
     */
-    for (iDecoder = 0; iDecoder < g_decoderCount-1; iDecoder += 1) {
+    for (iDecoder = 0; iDecoder < g_decoderCount-2; iDecoder += 1) {
         ma_data_source_set_next(&decoders[iDecoder], &decoders[iDecoder+1]);
     }
 
@@ -116,7 +124,7 @@ int play(std::vector<fs::path> audioPaths, fs::path next)
     For the last data source we'll loop back to the start, but for demonstration purposes we'll use a
     callback to determine the next data source in the chain.
     */
-    ma_data_source_set_next_callback(&decoders[g_decoderCount-1], next_callback_tail);
+    //ma_data_source_set_next_callback(&decoders[g_decoderCount-1], next_callback_tail);
 
 
     /*
@@ -143,8 +151,8 @@ int play(std::vector<fs::path> audioPaths, fs::path next)
     printf("Press Enter to add");
     getchar();
 
-    result = ma_decoder_init_file(next.c_str(), &decoderConfig, &decoders[0]);
-    //ma_data_source_set_next(&decoders[1], &decoders[2]);
+    result = ma_decoder_init_file(next.c_str(), &decoderConfig, &decoders[2]);
+    ma_data_source_set_next(&decoders[1], &decoders[2]);
     printf("Press Enter to quit...");
     getchar();
 
