@@ -16,6 +16,7 @@ static ma_data_source* next_callback(ma_data_source* pDataSource)
     printf("finished data source at index %d\n", pathsIndex);
     pathsIndex = (pathsIndex + 1) % paths.size();
 
+    ma_decoder_uninit(activeDecoder);
     free(activeDecoder);
     activeDecoder = nextDecoder;
     nextDecoder = (ma_decoder*)malloc(sizeof(ma_decoder));
