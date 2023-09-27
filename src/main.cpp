@@ -17,15 +17,42 @@
 #include <cstdio>
 #include <string.h>
 #include <thread>
+#include <filesystem>
 
 #include "ShaderManager.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#define MINIAUDIO_IMPLEMENTATION
+#include "miniaudio.h"
+
 #include "Playlist.h"
 #include "AudioFile.h"
 
 using namespace std;
+
+void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
+{
+    //printf("data callback called with %d frames\n", frameCount);
+
+    ma_uint64 cursor;
+
+    ma_result result = ma_data_source_get_cursor_in_pcm_frames(pDevice->pUserData, &cursor);
+    if (result != MA_SUCCESS) {
+        return;  // Failed to retrieve the cursor.
+    }
+
+    //printf("cursor currently at frame %d\n", cursor);
+
+    ma_decoder* pDecoder = (ma_decoder*)pDevice->pUserData;
+    if (pDecoder == NULL) {
+        return;
+    }
+
+    ma_decoder_read_pcm_frames(pDecoder, pOutput, frameCount, NULL);
+
+    (void)pInput;
+}
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -126,11 +153,25 @@ int main(void)
     ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderTextureStr, SHADER::IMAGE);
 
     Playlists playlists = parse_playlists();
-    std::vector<std::string> filesToPlay = {"../tracks/I Know We'll Be Fine.mp3", "../tracks/Lamp.mp3"};
+    std::random_device random;
+
+    std::vector<std::filesystem::path> playlist = randomize_playlist(playlists[1], random);
+
+    std::cout << "playlist size " << playlist.size() << ":\n";
+    for (auto p : playlist) {
+        std::cout << p << "\n";
+    }
+
+    ma_result result;
+    ma_decoder decoder;
+    ma_device_config deviceConfig;
+    ma_device device;
+
+    deviceConfig = ma_device_config_init(ma_device_type_playback);
+
+
 
     AudioFile audio;
-
-    std::cout << "\ngenerating text strip buffers\n";
 
     uint framesToSwitch = 60;
     uint frameCounter = 0;
@@ -150,15 +191,47 @@ int main(void)
 
         if (frameCounter % framesToSwitch == 0) {
             ++audioIndex;
-            audioIndex = audioIndex % filesToPlay.size();
+            audioIndex = audioIndex % playlist.size();
+
+            result = ma_decoder_init_file(playlist[audioIndex].c_str(), NULL, &decoder);
+            if (result != MA_SUCCESS) {
+                printf("Could not load file: %s\n", playlist[audioIndex].c_str());
+                return -2;
+            }
+
+            ma_uint64 length;
+
+            result = ma_data_source_get_length_in_pcm_frames(&decoder, &length);
+            if (result != MA_SUCCESS) {
+                return -10;  // Failed to retrieve the length.
+            }
+
+            printf("source is %d frames long\n", length);
+
+            deviceConfig.playback.format   = decoder.outputFormat;
+            deviceConfig.playback.channels = decoder.outputChannels;
+            deviceConfig.sampleRate        = decoder.outputSampleRate;
+            deviceConfig.dataCallback      = data_callback;
+            deviceConfig.pUserData         = &decoder;
+
             if (audioIndex != 0)
             {
                 free_gl(audio);
             }
-            init(audio, filesToPlay[audioIndex]);
+            else
+            {
+                if (ma_device_init(NULL, &deviceConfig, &device) != MA_SUCCESS) {
+                    printf("Failed to open playback device.\n");
+                    ma_decoder_uninit(&decoder);
+                    return -3;
+                }
+            }
+            init(audio, playlist[audioIndex].u8string());
             generate_display_objects(audio, largeFont, smallFont);
             ShaderManager::use(IMAGE);
             GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
+
+            
         }
 
         int width, height;

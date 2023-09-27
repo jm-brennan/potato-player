@@ -3,10 +3,11 @@
 #define MINIAUDIO_IMPLEMENTATION
 #include "miniaudio.h"
 
+ma_decoder* decoders;
 
 void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
 {
-    printf("data callback called with %d frames\n", frameCount);
+    //printf("data callback called with %d frames\n", frameCount);
 
     ma_uint64 cursor;
 
@@ -15,68 +16,88 @@ void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uin
         return;  // Failed to retrieve the cursor.
     }
 
-    printf("cursor currently at frame %d\n", cursor);
+    //printf("cursor currently at frame %d\n", cursor);
 
     ma_decoder* pDecoder = (ma_decoder*)pDevice->pUserData;
     if (pDecoder == NULL) {
         return;
     }
 
-    ma_decoder_read_pcm_frames(pDecoder, pOutput, frameCount, NULL);
+    ma_data_source_read_pcm_frames(&decoders[0], pOutput, frameCount, NULL);
 
     (void)pInput;
 }
 
-int play(fs::path audioPath)
-{
-    if (!fs::exists(audioPath))
-    {
-        printf("audio file does not exist at %s\n", audioPath.c_str());
+void uninit_decoders(ma_decoder* decoders, uint numDecoders) {
+    for (uint i = 0; i < numDecoders; ++i) {
+        ma_decoder_uninit(&decoders[i]);
     }
+    free(decoders);
+}
 
+int play(std::vector<fs::path> audioPaths)
+{
     ma_result result;
-    ma_decoder decoder;
     ma_device_config deviceConfig;
     ma_device device;
 
-    result = ma_decoder_init_file(audioPath.c_str(), NULL, &decoder);
-    if (result != MA_SUCCESS) {
-        printf("Could not load file: %s\n", audioPath.c_str());
-        return -2;
+    const ma_format SAMPLE_FORMAT = (ma_format)5;
+    const uint CHANNEL_COUNT = 2;
+    const uint SAMPLE_RATE = 44100;
+
+    ma_decoder_config decoderConfig = ma_decoder_config_init(SAMPLE_FORMAT, CHANNEL_COUNT, SAMPLE_RATE);
+    
+    uint numDecoders = audioPaths.size();
+    decoders = (ma_decoder*)malloc(sizeof(*decoders) * numDecoders);
+
+    for (uint i = 0; i < audioPaths.size(); ++i) {
+        if (!fs::exists(audioPaths[i]))
+        {
+            printf("audio file does not exist at %s\n", audioPaths[i].c_str());
+            continue;
+        }
+        result = ma_decoder_init_file(audioPaths[i].c_str(), &decoderConfig, &decoders[i]);
+        if (result != MA_SUCCESS) {
+            printf("Could not load file: %s\n", audioPaths[i].c_str());
+            return -2;
+        }
+
+        printf("file %s outputFormat %ld\n", audioPaths[i].c_str(), decoders[i].outputFormat);
+        printf("file %s outputChannels %d\n", audioPaths[i].c_str(), decoders[i].outputChannels);
+        printf("file %s outputSampleRate %d\n", audioPaths[i].c_str(), decoders[i].outputSampleRate);
+
+
     }
 
-    ma_uint64 length;
+    for (uint i = 0; i < numDecoders-1; ++i) {
+        if (ma_data_source_set_next(&decoders[i], &decoders[i+1])) {
+            printf("bad setting next\n");
+            return -11;
+        }
 
-    result = ma_data_source_get_length_in_pcm_frames(&decoder, &length);
-    if (result != MA_SUCCESS) {
-        return -10;  // Failed to retrieve the length.
     }
-
-    printf("source is %d frames long\n", length);
-
-
 
     deviceConfig = ma_device_config_init(ma_device_type_playback);
-    deviceConfig.playback.format   = decoder.outputFormat;
-    deviceConfig.playback.channels = decoder.outputChannels;
-    deviceConfig.sampleRate        = decoder.outputSampleRate;
+    deviceConfig.playback.format   = SAMPLE_FORMAT;
+    deviceConfig.playback.channels = CHANNEL_COUNT;
+    deviceConfig.sampleRate        = SAMPLE_RATE;
     deviceConfig.dataCallback      = data_callback;
-    deviceConfig.pUserData         = &decoder;
+    deviceConfig.pUserData         = NULL;
 
     if (ma_device_init(NULL, &deviceConfig, &device) != MA_SUCCESS) {
         printf("Failed to open playback device.\n");
-        ma_decoder_uninit(&decoder);
+        uninit_decoders(decoders, numDecoders);
         return -3;
     }
 
     if (ma_device_start(&device) != MA_SUCCESS) {
         printf("Failed to start playback device.\n");
+        uninit_decoders(decoders, numDecoders);
         ma_device_uninit(&device);
-        ma_decoder_uninit(&decoder);
         return -4;
     }
 
-    sleep(5);
+   /*  sleep(5);
 
     if (ma_device_stop(&device) != MA_SUCCESS) {
         printf("Failed to stop playback device.\n");
@@ -101,10 +122,14 @@ int play(fs::path audioPath)
         ma_device_uninit(&device);
         ma_decoder_uninit(&decoder);
         return -5;
-    }
+    } */
+
+    
+
+    sleep(80);
 
     ma_device_uninit(&device);
-    ma_decoder_uninit(&decoder);
-
+    uninit_decoders(decoders, numDecoders);
+    
     return 0;
 }

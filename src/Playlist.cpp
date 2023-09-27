@@ -13,8 +13,12 @@ void add_all_tracks_in_dir(fs::path dir, std::set<fs::path>& tracks) {
             std::cout << "adding dir " << path << "\n";
             add_all_tracks_in_dir(path, tracks);
         } else {
-            std::cout << "adding track " << path << "\n";
-            tracks.insert(path);
+            if (path.path().extension().u8string() == ".mp3") {
+                std::cout << "adding track " << path << "\n";
+                tracks.insert(path);
+            } else {
+                std::cout << "ignoring non music file " << path << "\n";
+            }
         }
     }
 }
@@ -91,11 +95,11 @@ Playlists parse_playlists() {
 }
 
 std::vector<std::filesystem::path> randomize_playlist(const Playlist& playlist,
-                                                      std::random_device random) {
+                                                      std::random_device& random) {
     std::vector<std::filesystem::path> result;
     result.reserve(playlist.tracks.size());
     for (const std::filesystem::path& playlistEntry : playlist.tracks) {
-
+        result.emplace_back(playlistEntry);
     }
     std::shuffle(std::begin(result), std::end(result), random);
 

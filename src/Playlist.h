@@ -21,4 +21,4 @@ using Playlists = std::unordered_map<uint32_t, Playlist>;
 
 Playlists parse_playlists();
 
-std::vector<std::filesystem::path> randomize_playlist(const Playlist& playlist, std::random_device random);
+std::vector<std::filesystem::path> randomize_playlist(const Playlist& playlist, std::random_device& random);

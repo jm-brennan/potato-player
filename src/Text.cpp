@@ -164,11 +164,6 @@ void generate_text_strip_buffers(TextStrip& textStrip) {
     GLEC(glBindBuffer(GL_ARRAY_BUFFER, textStrip.vertexBufferID));
     std::cout << "text strip vertex buffer id " << textStrip.vertexBufferID << "\n";
     GLEC(glBufferData(GL_ARRAY_BUFFER, textStrip.points.size() * sizeof(TexturePoint), textStrip.points.data(), GL_STATIC_DRAW));
-
-    for (TexturePoint tp : textStrip.points) {
-        std::cout << vec_string(tp.vertex) << " : " << vec_string(tp.texture) << "\n";
-    }
-
 }
 
 void render_text(const Text& text, const FontData& font, const Camera& camera) {
