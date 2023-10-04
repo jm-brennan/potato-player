@@ -17,6 +17,7 @@
 #include <cstdio>
 #include <string.h>
 #include <thread>
+#include <mutex>
 #include <filesystem>
 
 #include "ShaderManager.h"
@@ -30,6 +31,10 @@
 #include "AudioFile.h"
 
 using namespace std;
+
+std::mutex stateLock;
+State playerState = PLAYLIST_INFO;
+uint secondsToSwitchToIdle = 60;
 
 void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
 {
@@ -155,7 +160,7 @@ int main(void)
     Playlists playlists = parse_playlists();
     std::random_device random;
 
-    std::vector<std::filesystem::path> playlist = randomize_playlist(playlists[1], random);
+    std::vector<std::filesystem::path> playlist = randomize_playlist(playlists[2], random);
 
     std::cout << "playlist size " << playlist.size() << ":\n";
     for (auto p : playlist) {

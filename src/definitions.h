@@ -7,6 +7,13 @@
 
 using namespace glm; // bad practice but its nice
 
+enum State {
+    IDLE,
+    PLAYING,
+    PAUSED,
+    PLAYLIST_INFO
+};
+
 #define GLEC(x) gl_clear_error();\
     x;\
     gl_log_call(#x, __FILE__, __LINE__)
