@@ -4,6 +4,7 @@
 #include <string>
 #include "gladInclude.h"
 #include <glm/glm.hpp>
+#include <atomic>
 
 using namespace glm; // bad practice but its nice
 
@@ -13,6 +14,10 @@ enum State {
     PAUSED,
     PLAYLIST_INFO
 };
+
+std::atomic<State> playerState {State::PLAYLIST_INFO};
+uint secondsToSwitchToIdle = 60;
+std::atomic<float> currentTrackProgress;
 
 #define GLEC(x) gl_clear_error();\
     x;\
@@ -31,10 +36,6 @@ static bool gl_log_call(const char* function, const char* file, int line) {
     }
     return error;
 }
-
-static const float PI = 3.14159f;
-static const float PI_HALF = 1.570795;
-static const float PI_2 = 6.28318f;
 
 inline std::string vec_string(const vec2& vec) {
     std::string result;

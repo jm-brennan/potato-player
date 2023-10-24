@@ -54,7 +54,7 @@ void generate_display_objects(AudioFile& audioFile, const FontData& largeFont, c
 
 }
 
-void render_audio_file_display(const AudioFile& audioFile, const FontData& largeFont, const FontData& smallFont, const Camera& camera) {
+void render_audio_file_display(const AudioFile& audioFile, const FontData& largeFont, const FontData& smallFont, bool isPlaying, const Camera& camera) {
     render_image(audioFile.displayArt, camera);
 
     render_text(audioFile.displayTitle, largeFont, camera);

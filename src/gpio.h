@@ -19,9 +19,9 @@ enum GPIO_PinStatus {
 };
 
 struct GPIO_Pin {
-    GPIO_PinDirection direction;
-    GPIO_PinStatus status;
-    uint32_t pinNumber;
+    GPIO_PinDirection direction = READ;
+    GPIO_PinStatus status = UNEXPORTED;
+    uint32_t pinNumber = 0;
 };
 
 void Export(GPIO_Pin& pin);

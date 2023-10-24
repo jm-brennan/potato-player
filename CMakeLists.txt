@@ -35,7 +35,8 @@ set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 configure_file("${SRC_DIR}/paths.h.in" "${SRC_DIR}/paths.h")
 set(SOURCES 
 #"${SRC_DIR}/miniaudio_test.cpp"
-"${SRC_DIR}/playlist_main.cpp"
+#"${SRC_DIR}/playlist_main.cpp"
+"${SRC_DIR}/gpio_main.cpp"
 #"${SRC_DIR}/main.cpp"
 "${SRC_DIR}/audio_player.h"
 "${SRC_DIR}/audio_player.cpp"
@@ -53,8 +54,9 @@ set(SOURCES
 #"${SRC_DIR}/AudioFile.h"
 #"${SRC_DIR}/AudioFile.cpp"
 #"${SRC_DIR}/Model.h"
-#"${SRC_DIR}/gpio.cpp"
-#"${SRC_DIR}/gpio.h"
+"${SRC_DIR}/gpio.cpp"
+"${SRC_DIR}/gpio.h"
+"${SRC_DIR}/utils.h"
 "${SRC_DIR}/gladInclude.h"
 )
 

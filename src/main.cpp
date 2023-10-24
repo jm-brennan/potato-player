@@ -32,33 +32,6 @@
 
 using namespace std;
 
-std::mutex stateLock;
-State playerState = PLAYLIST_INFO;
-uint secondsToSwitchToIdle = 60;
-
-void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
-{
-    //printf("data callback called with %d frames\n", frameCount);
-
-    ma_uint64 cursor;
-
-    ma_result result = ma_data_source_get_cursor_in_pcm_frames(pDevice->pUserData, &cursor);
-    if (result != MA_SUCCESS) {
-        return;  // Failed to retrieve the cursor.
-    }
-
-    //printf("cursor currently at frame %d\n", cursor);
-
-    ma_decoder* pDecoder = (ma_decoder*)pDevice->pUserData;
-    if (pDecoder == NULL) {
-        return;
-    }
-
-    ma_decoder_read_pcm_frames(pDecoder, pOutput, frameCount, NULL);
-
-    (void)pInput;
-}
-
 static void glfw_error_callback(int error, const char* description)
 {
     fprintf(stderr, "GLFW Error: %s\n", description);
@@ -174,6 +147,7 @@ int main(void)
 
     deviceConfig = ma_device_config_init(ma_device_type_playback);
 
+    
 
 
     AudioFile audio;
@@ -194,49 +168,28 @@ int main(void)
         currentTime = newTime;
         glfwPollEvents();
 
-        if (frameCounter % framesToSwitch == 0) {
-            ++audioIndex;
-            audioIndex = audioIndex % playlist.size();
+        /* 
+        init(audio, playlist[audioIndex].u8string());
+        generate_display_objects(audio, largeFont, smallFont);
+        ShaderManager::use(IMAGE);
+        GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
+        */
 
-            result = ma_decoder_init_file(playlist[audioIndex].c_str(), NULL, &decoder);
-            if (result != MA_SUCCESS) {
-                printf("Could not load file: %s\n", playlist[audioIndex].c_str());
-                return -2;
-            }
-
-            ma_uint64 length;
-
-            result = ma_data_source_get_length_in_pcm_frames(&decoder, &length);
-            if (result != MA_SUCCESS) {
-                return -10;  // Failed to retrieve the length.
-            }
-
-            printf("source is %d frames long\n", length);
-
-            deviceConfig.playback.format   = decoder.outputFormat;
-            deviceConfig.playback.channels = decoder.outputChannels;
-            deviceConfig.sampleRate        = decoder.outputSampleRate;
-            deviceConfig.dataCallback      = data_callback;
-            deviceConfig.pUserData         = &decoder;
-
-            if (audioIndex != 0)
-            {
-                free_gl(audio);
-            }
-            else
-            {
-                if (ma_device_init(NULL, &deviceConfig, &device) != MA_SUCCESS) {
-                    printf("Failed to open playback device.\n");
-                    ma_decoder_uninit(&decoder);
-                    return -3;
-                }
-            }
-            init(audio, playlist[audioIndex].u8string());
-            generate_display_objects(audio, largeFont, smallFont);
-            ShaderManager::use(IMAGE);
-            GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
-
-            
+        switch (playerState.load()) {
+            case IDLE:
+                blank_screen();
+                break;
+            case PLAYING:
+                render_audio_file_display(currentAudioFile, largeFont, smallFont, true, camera);
+                break;
+            case PAUSED:
+                break;
+                render_audio_file_display(audioFile, largeFont, smallFont, false, camera);
+            case PLAYLIST_INFO:
+                display_playlist_infO(playlists, smallFont, camera);
+                break;
+            default:
+                break;
         }
 
         int width, height;
@@ -245,7 +198,8 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.13f, 0.14f, 0.15f, 1.0f);
 
-        render_audio_file_display(audio, largeFont, smallFont, camera);
+
+        render_audio_file_display(audio, largeFont, smallFont, playerState, camera);
 
         glfwSwapBuffers(window);
 
