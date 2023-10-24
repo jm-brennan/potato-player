@@ -47,10 +47,10 @@ GPIO_PinValue Read(const GPIO_Pin& pin) {
             printf("unexpected file contents %s\n", contents.c_str());
         } */
 
-        uint8_t val = read_first_byte_of_file(value_filepath(pin.pinNumber));
-        printf("Pin %d value: %d\n", pin.pinNumber, val); 
+        //uint8_t val = read_first_byte_of_file(value_filepath(pin.pinNumber));
+        printf("Pin %d value: %s\n", pin.pinNumber, read_entire_file(readFile.c_str())); 
 
-        return static_cast<GPIO_PinValue>(val - 48);
+        return LOW;//static_cast<GPIO_PinValue>(val - 48);
     } else {
         printf("Error: Could not read from GPIO value file");
         return LOW;
