@@ -38,11 +38,11 @@ set(SOURCES
 #"${SRC_DIR}/playlist_main.cpp"
 "${SRC_DIR}/gpio_main.cpp"
 #"${SRC_DIR}/main.cpp"
-"${SRC_DIR}/audio_player.h"
-"${SRC_DIR}/audio_player.cpp"
-"${SRC_DIR}/miniaudio.h"
-"${SRC_DIR}/Playlist.h"
-"${SRC_DIR}/Playlist.cpp"
+#"${SRC_DIR}/audio_player.h"
+#"${SRC_DIR}/audio_player.cpp"
+#"${SRC_DIR}/miniaudio.h"
+#"${SRC_DIR}/Playlist.h"
+#"${SRC_DIR}/Playlist.cpp"
 #"${SRC_DIR}/Camera.h"
 #"${SRC_DIR}/Camera.cpp"
 #"${SRC_DIR}/ShaderManager.h"
@@ -57,7 +57,7 @@ set(SOURCES
 "${SRC_DIR}/gpio.cpp"
 "${SRC_DIR}/gpio.h"
 "${SRC_DIR}/utils.h"
-"${SRC_DIR}/gladInclude.h"
+#"${SRC_DIR}/gladInclude.h"
 )
 
 

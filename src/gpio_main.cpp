@@ -2,12 +2,14 @@
 #include <unistd.h>
 
 
-void read_pin_infinite() {
+void read_pin() {
     GPIO_Pin pinToRead;
     pinToRead.pinNumber = 81;
     pinToRead.direction = READ;
 
-    while (true) {
+    Export(pinToRead);
+
+    for (uint i = 0; i < 10; ++i) {
         GPIO_PinValue val = Read(pinToRead);
         if (val == HIGH) {
             printf("value was high\n");
@@ -17,8 +19,10 @@ void read_pin_infinite() {
         }
         sleep(1);
     }
+
+    Unexport(pinToRead);
 }
 
 int main() {
-    read_pin_infinite();
+    read_pin();
 }
