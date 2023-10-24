@@ -4,7 +4,7 @@
 
 void read_pin() {
     GPIO_Pin pinToRead;
-    pinToRead.pinNumber = 81;
+    pinToRead.pinNumber = 484;
     pinToRead.direction = READ;
 
     Export(pinToRead);
