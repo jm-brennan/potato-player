@@ -30,6 +30,21 @@ void Write(const GPIO_Pin& pin, GPIO_PinValue value) {
 GPIO_PinValue Read(const GPIO_Pin& pin) {
     if (pin.status == GPIO_PinStatus::EXPORTED && 
         pin.direction == GPIO_PinDirection::READ) {
+
+        std::cout << "Pin " << pin.pinNumber 
+                  << " value: " << read_first_byte_of_file(value_filepath(pin.pinNumber)) 
+                  << "\n";
+    } else {
+        std::cerr << "Error: Could not read from GPIO value file";
+    }
+    
+    
+    return LOW;
+
+
+    
+    if (pin.status == GPIO_PinStatus::EXPORTED && 
+        pin.direction == GPIO_PinDirection::READ) {
         
         std::string readFile = value_filepath(pin.pinNumber);
         printf("reading file: %s\n", readFile.c_str());

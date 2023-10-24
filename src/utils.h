@@ -19,7 +19,6 @@ inline std::string read_entire_file(const char *filename)
     }
     throw(errno);
 }
-
 inline uint8_t read_first_byte_of_file(std::string filename) {
     FILE *fileptr;
     char buffer;
@@ -28,12 +27,12 @@ inline uint8_t read_first_byte_of_file(std::string filename) {
     fileptr = fopen(filename.c_str(), "rb");  // Open the file in binary mode
     fseek(fileptr, 0, SEEK_END);          // Jump to the end of the file
     filelen = ftell(fileptr);             // Get the current byte offset in the file
-    
+
     if (filelen == 0)
     {
         return 0;
     }
-    
+
     rewind(fileptr);                      // Jump back to the beginning of the file
 
     fread(&buffer, 1, 1, fileptr); // Read in the entire file
