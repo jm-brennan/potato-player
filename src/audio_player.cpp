@@ -180,10 +180,45 @@ int play(std::vector<fs::path> audioPaths)
 
     
 
-    sleep(80);
+    sleep(10);
+    if (ma_device_stop(&device) != MA_SUCCESS) {
+        printf("Failed to stop playback device.\n");
+        ma_device_uninit(&device);
+        ma_decoder_uninit(activeDecoder);
+        return -5;
+    }
+    
+    sleep(10);
+    
+    if (ma_device_start(&device) != MA_SUCCESS) {
+        printf("Failed to start playback device.\n");
+        ma_device_uninit(&device);
+        ma_decoder_uninit(activeDecoder);
+        return -6;
+    }
+    
+    sleep(10);
+
+    if (ma_device_stop(&device) != MA_SUCCESS) {
+        printf("Failed to stop playback device.\n");
+        ma_device_uninit(&device);
+        ma_decoder_uninit(activeDecoder);
+        return -5;
+    }
+    sleep(10);
+    
+    if (ma_device_start(&device) != MA_SUCCESS) {
+        printf("Failed to start playback device.\n");
+        ma_device_uninit(&device);
+        ma_decoder_uninit(activeDecoder);
+        return -6;
+    }
+
+    sleep(10);
 
     ma_device_uninit(&device);
-    //uninit_decoders(decoders, numDecoders);
+    ma_decoder_uninit(activeDecoder);
+    ma_decoder_uninit(nextDecoder);
     
     free(activeDecoder);
     free(nextDecoder);

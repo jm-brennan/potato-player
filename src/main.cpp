@@ -23,14 +23,27 @@
 #include "ShaderManager.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
-#define MINIAUDIO_IMPLEMENTATION
 #include "miniaudio.h"
 
 #include "Playlist.h"
 #include "AudioFile.h"
 
 using namespace std;
+
+const uint NUM_PLAYLISTS = 6;
+
+std::atomic<State> playerState {State::PLAYLIST_INFO};
+std::atomic<float> currentTrackProgress{0.0f};
+
+void blank_screen() {
+    std::cout << "disable screen\n";
+}
+
+void render_playlists_infO(const std::map<uint, Text>& playlists, const FontData& font, Camera& camera) {
+    for (const std::pair<uint, Text>& playlist : playlists) {
+        render_text(playlist.second, font, camera);
+    }
+}
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -131,7 +144,33 @@ int main(void)
     ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderTextureStr, SHADER::IMAGE);
 
     Playlists playlists = parse_playlists();
+
+    std::cout << "Creating playlists display\n";
+    std::map<uint, Text> playlistsDisplay;
+    for (const std::pair<uint, Playlist>& playlist : playlists) {
+        uint playlistID = playlist.first;
+        if (playlistID > 0 && playlistID <= NUM_PLAYLISTS) {
+            init(playlistsDisplay[playlistID], playlist.second.name);
+            layout_text(playlistsDisplay[playlistID], smallFont);
+            generate_text_strip_buffers(playlistsDisplay[playlistID].textStrip);
+            std::cout << "adding playlist text for playlist " << playlist.second.name
+                      << " to playlist slot " << playlistID << "\n";
+        }
+        else {
+            std::cout << "Playlist \"" << playlist.second.name << "\" is outside of playable range found, not including\n";
+        }
+    }
+
+    vec2 playlistDisplayPos = vec2(40, 440);
+    for (std::pair<const uint, Text>& playlist : playlistsDisplay) {
+        playlist.second.model.pos = playlistDisplayPos;
+        std::cout << "set position for playlist " << playlist.second.str << " to " << vec_string(playlist.second.model.pos) << "\n";
+        playlistDisplayPos.y -= 40;
+    }
+
+
     std::random_device random;
+
 
     std::vector<std::filesystem::path> playlist = randomize_playlist(playlists[2], random);
 
@@ -147,10 +186,8 @@ int main(void)
 
     deviceConfig = ma_device_config_init(ma_device_type_playback);
 
-    
-
-
-    AudioFile audio;
+    AudioFile currentAudioFile;
+    init(currentAudioFile, playlist[0]);
 
     uint framesToSwitch = 60;
     uint frameCounter = 0;
@@ -175,6 +212,12 @@ int main(void)
         GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
         */
 
+        int width, height;
+        glfwGetFramebufferSize(window, &width, &height);
+        glViewport(0, 0, width, height);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glClearColor(0.13f, 0.14f, 0.15f, 1.0f);
+
         switch (playerState.load()) {
             case IDLE:
                 blank_screen();
@@ -184,22 +227,15 @@ int main(void)
                 break;
             case PAUSED:
                 break;
-                render_audio_file_display(audioFile, largeFont, smallFont, false, camera);
+                render_audio_file_display(currentAudioFile, largeFont, smallFont, false, camera);
             case PLAYLIST_INFO:
-                display_playlist_infO(playlists, smallFont, camera);
+                render_playlists_infO(playlistsDisplay, smallFont, camera);
                 break;
             default:
                 break;
         }
 
-        int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
-        glViewport(0, 0, width, height);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(0.13f, 0.14f, 0.15f, 1.0f);
-
-
-        render_audio_file_display(audio, largeFont, smallFont, playerState, camera);
+        //render_audio_file_display(currentAudioFile, largeFont, smallFont, playerState, camera);
 
         glfwSwapBuffers(window);
 

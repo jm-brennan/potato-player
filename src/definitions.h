@@ -15,9 +15,10 @@ enum State {
     PLAYLIST_INFO
 };
 
-std::atomic<State> playerState {State::PLAYLIST_INFO};
-uint secondsToSwitchToIdle = 60;
-std::atomic<float> currentTrackProgress;
+extern std::atomic<State> playerState;
+extern std::atomic<float> currentTrackProgress;
+
+const uint secondsToSwitchToIdle = 60;
 
 #define GLEC(x) gl_clear_error();\
     x;\

@@ -6,9 +6,15 @@
 #include <fstream>
 #include <set>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 #include "audio_player.h"
 #include "Playlist.h"
 
+#include "definitions.h"
+std::atomic<State> playerState {State::PLAYLIST_INFO};
+std::atomic<float> currentTrackProgress{0.0f};
 
 int main() {
     std::random_device random;
