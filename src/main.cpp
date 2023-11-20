@@ -27,13 +27,36 @@
 
 #include "Playlist.h"
 #include "AudioFile.h"
+#include "audio_player.h"
 
 using namespace std;
 
 const uint NUM_PLAYLISTS = 6;
 
-std::atomic<State> playerState {State::PLAYLIST_INFO};
-std::atomic<float> currentTrackProgress{0.0f};
+enum State {
+    IDLE,
+    PLAYING,
+    PAUSED,
+    PLAYLIST_INFO,
+    SHUTDOWN
+};
+
+std::string StateString(State state) {
+    switch (state) {
+        case IDLE:
+            return "IDLE";
+        case PLAYING:
+            return "PLAYING";
+        case PAUSED:
+            return "PAUSED";
+        case PLAYLIST_INFO:
+            return "PLAYLIST_INFO";
+        case SHUTDOWN:
+            return "SHUTDOWN";
+        default:
+            return "INVALID STATE";
+    }
+}
 
 void blank_screen() {
     std::cout << "disable screen\n";
@@ -55,6 +78,44 @@ static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int act
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
 }
+
+
+void play(State& playerState, ma_device& device) {
+    if (playerState != State::PLAYING) {
+        if (ma_device_start(&device) != MA_SUCCESS) {
+            printf("Failed to start playback device, shutting down decoders\n");
+            uninitialize_device(device);
+            uninitialize_decoders();
+            return;
+        }
+        else {
+            playerState = PLAYING;
+            std::cout << "Playing\n";
+        }
+    }
+    else {
+        std::cout << "Already playing\n";
+    } 
+}
+
+void pause(State& playerState, ma_device& device) {
+    if (playerState != State::PAUSED) {
+        if (ma_device_stop(&device) != MA_SUCCESS) {
+            printf("Failed to stop playback device, shutting down decoders\n");
+            uninitialize_device(device);
+                uninitialize_decoders();
+            return;
+        }
+        else {
+            playerState = PAUSED;
+            std::cout << "Paused\n";
+        }
+    }
+    else {
+        std::cout << "Already paused\n";
+    }
+}
+
 int main(void)
 {
     glfwSetErrorCallback(glfw_error_callback);
@@ -143,6 +204,8 @@ int main(void)
 
     ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderTextureStr, SHADER::IMAGE);
 
+    State playerState = PLAYLIST_INFO;
+
     Playlists playlists = parse_playlists();
 
     std::cout << "Creating playlists display\n";
@@ -179,17 +242,16 @@ int main(void)
         std::cout << p << "\n";
     }
 
-    ma_result result;
-    ma_decoder decoder;
+
+
     ma_device_config deviceConfig;
     ma_device device;
 
-    deviceConfig = ma_device_config_init(ma_device_type_playback);
+    init_decoder_config();
 
-    AudioFile currentAudioFile;
-    init(currentAudioFile, playlist[0]);
+    bool firstPlay = true;
 
-    uint framesToSwitch = 60;
+    uint framesToSwitch = 210;
     uint frameCounter = 0;
     uint audioIndex = 0;
 
@@ -218,22 +280,46 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.13f, 0.14f, 0.15f, 1.0f);
 
-        switch (playerState.load()) {
+        // process input
+        State newState = (State)((uint)(frameCounter / framesToSwitch) % 4);
+        std::cout << "current state is " << StateString(playerState)
+                  << ", state to switch to is " << StateString(newState) << "\n";
+        // end process input
+
+        switch (newState) {
             case IDLE:
+                if (playerState == PLAYING) {
+                    pause(playerState, device);
+                }
                 blank_screen();
                 break;
             case PLAYING:
-                render_audio_file_display(currentAudioFile, largeFont, smallFont, true, camera);
+                if (firstPlay) {
+                    start_playlist_playback(deviceConfig, device, playlist);
+                    firstPlay = false;
+                }
+                else {
+                    play(playerState, device);
+                }
+                //render_audio_file_display(currentAudioFile, largeFont, smallFont, true, camera);
                 break;
             case PAUSED:
+                if (playerState == PLAYING) {
+                    pause(playerState, device);
+                }
+                //render_audio_file_display(currentAudioFile, largeFont, smallFont, false, camera);
                 break;
-                render_audio_file_display(currentAudioFile, largeFont, smallFont, false, camera);
             case PLAYLIST_INFO:
+                if (playerState == PLAYING) {
+                    pause(playerState, device);
+                }
                 render_playlists_infO(playlistsDisplay, smallFont, camera);
                 break;
             default:
                 break;
         }
+
+        playerState = newState;
 
         //render_audio_file_display(currentAudioFile, largeFont, smallFont, playerState, camera);
 

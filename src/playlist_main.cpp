@@ -13,8 +13,6 @@
 #include "Playlist.h"
 
 #include "definitions.h"
-std::atomic<State> playerState {State::PLAYLIST_INFO};
-std::atomic<float> currentTrackProgress{0.0f};
 
 int main() {
     std::random_device random;

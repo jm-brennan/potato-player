@@ -8,16 +8,6 @@
 
 using namespace glm; // bad practice but its nice
 
-enum State {
-    IDLE,
-    PLAYING,
-    PAUSED,
-    PLAYLIST_INFO
-};
-
-extern std::atomic<State> playerState;
-extern std::atomic<float> currentTrackProgress;
-
 const uint secondsToSwitchToIdle = 60;
 
 #define GLEC(x) gl_clear_error();\
