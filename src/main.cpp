@@ -201,13 +201,13 @@ int main(void)
     FontData smallFont = create_font("Poppins-Light.ttf", 32);
     FontData largeFont = create_font("Poppins-Medium.ttf", 64);
 
-
     ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderTextureStr, SHADER::IMAGE);
 
     State playerState = PLAYLIST_INFO;
 
     Playlists playlists = parse_playlists();
 
+    ShaderManager::use(TEXT);
     std::cout << "Creating playlists display\n";
     std::map<uint, Text> playlistsDisplay;
     for (const std::pair<uint, Playlist>& playlist : playlists) {
@@ -235,14 +235,21 @@ int main(void)
     std::random_device random;
 
 
-    std::vector<std::filesystem::path> playlist = randomize_playlist(playlists[2], random);
+    std::vector<std::filesystem::path> playlist = randomize_playlist(playlists[1], random);
 
     std::cout << "playlist size " << playlist.size() << ":\n";
     for (auto p : playlist) {
         std::cout << p << "\n";
     }
 
-
+    std::vector<std::pair<bool, AudioFile>> fileDisplays;
+    fileDisplays.resize(playlist.size());
+    uint currentPathsIndex = 0;
+    init(fileDisplays[currentPathsIndex].second, playlist[currentPathsIndex]);
+    generate_display_objects(fileDisplays[currentPathsIndex].second, largeFont, smallFont);
+    fileDisplays[currentPathsIndex].first = true;
+    ShaderManager::use(IMAGE);
+    GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
 
     ma_device_config deviceConfig;
     ma_device device;
@@ -253,7 +260,6 @@ int main(void)
 
     uint framesToSwitch = 210;
     uint frameCounter = 0;
-    uint audioIndex = 0;
 
     const float FPS = 30.0f;
     const double FRAME_TIME = 1.0f / FPS;
@@ -267,13 +273,6 @@ int main(void)
         currentTime = newTime;
         glfwPollEvents();
 
-        /* 
-        init(audio, playlist[audioIndex].u8string());
-        generate_display_objects(audio, largeFont, smallFont);
-        ShaderManager::use(IMAGE);
-        GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
-        */
-
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0, 0, width, height);
@@ -284,6 +283,18 @@ int main(void)
         State newState = (State)((uint)(frameCounter / framesToSwitch) % 4);
         std::cout << "current state is " << StateString(playerState)
                   << ", state to switch to is " << StateString(newState) << "\n";
+
+        uint newPathsIndex = pathsIndex.load();
+        if (currentPathsIndex != newPathsIndex && !fileDisplays[newPathsIndex].first) {
+            std::cout << "generating display objects for " << paths[newPathsIndex] << "\n";
+            init(fileDisplays[newPathsIndex].second, playlist[newPathsIndex]);
+            generate_display_objects(fileDisplays[newPathsIndex].second, largeFont, smallFont);
+            ShaderManager::use(IMAGE);
+            GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
+            fileDisplays[newPathsIndex].first = true;
+        }
+
+        currentPathsIndex = newPathsIndex;
         // end process input
 
         switch (newState) {
@@ -301,13 +312,13 @@ int main(void)
                 else {
                     play(playerState, device);
                 }
-                //render_audio_file_display(currentAudioFile, largeFont, smallFont, true, camera);
+                render_audio_file_display(fileDisplays[currentPathsIndex].second, largeFont, smallFont, true, camera);
                 break;
             case PAUSED:
                 if (playerState == PLAYING) {
                     pause(playerState, device);
                 }
-                //render_audio_file_display(currentAudioFile, largeFont, smallFont, false, camera);
+                render_audio_file_display(fileDisplays[currentPathsIndex].second, largeFont, smallFont, false, camera);
                 break;
             case PLAYLIST_INFO:
                 if (playerState == PLAYING) {
@@ -321,8 +332,6 @@ int main(void)
 
         playerState = newState;
 
-        //render_audio_file_display(currentAudioFile, largeFont, smallFont, playerState, camera);
-
         glfwSwapBuffers(window);
 
         newTime = glfwGetTime();
@@ -335,6 +344,10 @@ int main(void)
         ++frameCounter;
     }
     
+    for (std::pair<bool, AudioFile>& fileDisplay : fileDisplays) {
+        free_gl(fileDisplay.second);
+        fileDisplay.first = false;
+    }
     free_gl(largeFont);
     free_gl(smallFont);
     ShaderManager::delete_shaders();
