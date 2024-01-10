@@ -28,6 +28,7 @@
 #include "Playlist.h"
 #include "AudioFile.h"
 #include "audio_player.h"
+#include "gpio.h"
 
 using namespace std;
 
@@ -118,6 +119,8 @@ void pause(State& playerState, ma_device& device) {
 
 int main(void)
 {
+    gpio_run();
+
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit()) {
         exit(EXIT_FAILURE);
@@ -258,7 +261,7 @@ int main(void)
 
     bool firstPlay = true;
 
-    uint framesToSwitch = 210;
+    uint framesToSwitch = 140;
     uint frameCounter = 0;
 
     const float FPS = 30.0f;
