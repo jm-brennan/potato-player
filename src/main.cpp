@@ -119,7 +119,8 @@ void pause(State& playerState, ma_device& device) {
 
 int main(void)
 {
-    gpio_run();
+    //gpio_write();
+    gpio_read();
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit()) {

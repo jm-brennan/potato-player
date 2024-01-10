@@ -1,1 +1,2 @@
-int gpio_run();
+int gpio_write();
+int gpio_read();
