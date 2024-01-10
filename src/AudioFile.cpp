@@ -30,7 +30,7 @@ void free_gl(AudioFile& audioFile) {
 
 void generate_display_objects(AudioFile& audioFile, const FontData& largeFont, const FontData& smallFont) {
         
-    audioFile.displayArt.model.pos = vec2(40.0, 40.0);
+    audioFile.displayArt.model.pos = vec2(444.0, 40.0);
     audioFile.displayArt.size = vec2(316.0);
 
     generate_image_buffers(audioFile.displayArt);
@@ -44,12 +44,12 @@ void generate_display_objects(AudioFile& audioFile, const FontData& largeFont, c
 
 
     layout_text(audioFile.displayAlbumName, smallFont);
-    audioFile.displayAlbumName.model.pos = vec2(396.0f, 200.0f);
+    audioFile.displayAlbumName.model.pos = vec2(40.0f, 200.0f);
     generate_text_strip_buffers(audioFile.displayAlbumName.textStrip);
 
 
     layout_text(audioFile.displayArtistName, smallFont);
-    audioFile.displayArtistName.model.pos = vec2(396.0f, 120.0f);
+    audioFile.displayArtistName.model.pos = vec2(40.0f, 120.0f);
     generate_text_strip_buffers(audioFile.displayArtistName.textStrip);
 
 }
