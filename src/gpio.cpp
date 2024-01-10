@@ -18,7 +18,7 @@ int gpio_run()
         exit(1);
     }
 
-    if (write(fd, "484", 2) != 2) {
+    if (write(fd, "484", 3) != 3) {
         perror("Error writing to /sys/class/gpio/export");
         exit(1);
     }
@@ -72,7 +72,7 @@ int gpio_run()
         exit(1);
     }
 
-    if (write(fd, "484", 2) != 2) {
+    if (write(fd, "484", 3) != 3) {
         perror("Error writing to /sys/class/gpio/unexport");
         exit(1);
     }
