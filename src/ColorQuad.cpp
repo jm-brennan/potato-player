@@ -37,7 +37,7 @@ void init(ColorQuad& quad, vec2 pos, vec2 size, vec4 color)
     GLEC(glLinkProgram(ShaderManager::program(COLOR)));
 }
 
-void render_color_quad(ColorQuad& quad, const Camera& camera) {
+void render_color_quad(const ColorQuad& quad, const Camera& camera) {
     //std::cout << "rendering quad\n";
     ShaderManager::use(COLOR);
     GLEC(glBindBuffer(GL_ARRAY_BUFFER, quad.vertexBufferID));

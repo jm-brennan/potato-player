@@ -36,6 +36,13 @@ struct FontData {
     std::vector<TextGlyph> glyphs;
 };
 
+struct Fonts {
+    FontData large;
+    FontData medium;
+    FontData smallItalic;
+    FontData mono;
+};
+
 void init(Text& text, const std::string& str);
 void free_gl(Text& text);
 void free_gl(FontData& font);

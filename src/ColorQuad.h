@@ -12,4 +12,4 @@ struct ColorQuad {
 };
 
 void init(ColorQuad& quad, vec2 pos, vec2 size, vec4 color);
-void render_color_quad(ColorQuad& quad, const Camera& camera);
+void render_color_quad(const ColorQuad& quad, const Camera& camera);

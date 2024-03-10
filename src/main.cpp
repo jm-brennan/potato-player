@@ -35,6 +35,9 @@ using namespace std;
 
 const uint NUM_PLAYLISTS = 6;
 
+extern std::atomic<uint> currentTrackFrame;
+extern std::atomic<uint> currentTrackLength;
+
 enum State {
     IDLE,
     PLAYING,
@@ -64,9 +67,9 @@ void blank_screen() {
     std::cout << "disable screen\n";
 }
 
-void render_playlists_infO(const std::map<uint, Text>& playlists, const FontData& font, Camera& camera) {
+void render_playlists_infO(const std::map<uint, Text>& playlists, const Fonts& fonts, Camera& camera) {
     for (const std::pair<uint, Text>& playlist : playlists) {
-        render_text(playlist.second, font, camera);
+        render_text(playlist.second, fonts.medium, camera);
     }
 }
 
@@ -96,7 +99,7 @@ void play(State& playerState, ma_device& device) {
         }
     }
     else {
-        std::cout << "Already playing\n";
+        //std::cout << "Already playing\n";
     } 
 }
 
@@ -211,8 +214,12 @@ int main(void)
     ShaderManager::use(TEXT);
     GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXT), "s_texture"), 0));
     std::cout << "Creating fonts\n";
-    FontData smallFont = create_font("Poppins-Light.ttf", 32);
-    FontData largeFont = create_font("Poppins-Medium.ttf", 64);
+
+    Fonts fonts;
+    fonts.large = create_font("Poppins-Medium.ttf", 64);
+    fonts.medium = create_font("Poppins-Light.ttf", 32);
+    fonts.smallItalic = create_font("Poppins-LightItalic.ttf", 24);
+    fonts.mono = create_font("ChivoMono-Light.ttf", 20);
 
     ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderColorStr, SHADER::COLOR);
 
@@ -229,7 +236,7 @@ int main(void)
         uint playlistID = playlist.first;
         if (playlistID > 0 && playlistID <= NUM_PLAYLISTS) {
             init(playlistsDisplay[playlistID], playlist.second.name);
-            layout_text(playlistsDisplay[playlistID], smallFont);
+            layout_text(playlistsDisplay[playlistID], fonts.medium);
             generate_text_strip_buffers(playlistsDisplay[playlistID].textStrip);
             std::cout << "adding playlist text for playlist " << playlist.second.name
                       << " to playlist slot " << playlistID << "\n";
@@ -260,7 +267,7 @@ int main(void)
     AudioFileDisplay currentTrackDisplays;
     uint currentPathsIndex = 0;
     init(currentTrackDisplays, playlist[currentPathsIndex]);
-    generate_display_objects(currentTrackDisplays, largeFont, smallFont);
+    generate_display_objects(currentTrackDisplays, fonts);
     ShaderManager::use(IMAGE);
     GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
 
@@ -273,11 +280,6 @@ int main(void)
 
     uint framesToSwitch = 140;
     uint frameCounter = 0;
-
-    ColorQuad quad1;
-    init(quad1, vec2(396.0f, 50.0f), vec2(364.0f, 2.0f), vec4(0.9f, 0.6f, 0.9f, 1.0f));
-    ColorQuad quad2;
-    init(quad2, vec2(466.0f, 40.0f), vec2(4.0f, 20.0f), vec4(0.9f, 0.6f, 0.9f, 1.0f));
 
     const float FPS = 30.0f;
     const double FRAME_TIME = 1.0f / FPS;
@@ -299,21 +301,25 @@ int main(void)
 
         // process input
         State newState = playerState;//(State)((uint)(frameCounter / framesToSwitch) % 4);
-        std::cout << "current state is " << StateString(playerState)
-                  << ", state to switch to is " << StateString(newState) << "\n";
+        //std::cout << "current state is " << StateString(playerState)
+         //         << ", state to switch to is " << StateString(newState) << "\n";
 
         int newPathsIndex = pathsIndex.load();
         if (currentPathsIndex != newPathsIndex) {
             free_gl(currentTrackDisplays);
             std::cout << "generating display objects for " << paths[newPathsIndex] << "\n";
             init(currentTrackDisplays, playlist[newPathsIndex]);
-            generate_display_objects(currentTrackDisplays, largeFont, smallFont);
+            generate_display_objects(currentTrackDisplays, fonts);
             ShaderManager::use(IMAGE);
             GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
         }
 
         currentPathsIndex = newPathsIndex;
         // end process input
+
+        uint currentLength = currentTrackLength.load();
+        //std::cout << "current length is " << currentLength << "\n";
+        update_playback_progress(currentTrackDisplays, currentTrackFrame.load(), currentLength, fonts);
 
         switch (newState) {
             case IDLE:
@@ -324,34 +330,31 @@ int main(void)
                 break;
             case PLAYING:
                 if (firstPlay) {
-                    //start_playlist_playback(deviceConfig, device, playlist);
+                    start_playlist_playback(deviceConfig, device, playlist);
                     firstPlay = false;
                 }
                 else {
-                    //play(playerState, device);
+                    play(playerState, device);
                 }
-                render_audio_file_display(currentTrackDisplays, largeFont, smallFont, true, camera);
+                render_audio_file_display(currentTrackDisplays, fonts, true, camera);
                 break;
             case PAUSED:
                 if (playerState == PLAYING) {
                     pause(playerState, device);
                 }
-                render_audio_file_display(currentTrackDisplays, largeFont, smallFont, false, camera);
+                render_audio_file_display(currentTrackDisplays, fonts, false, camera);
                 break;
             case PLAYLIST_INFO:
                 if (playerState == PLAYING) {
                     pause(playerState, device);
                 }
-                render_playlists_infO(playlistsDisplay, smallFont, camera);
+                render_playlists_infO(playlistsDisplay, fonts, camera);
                 break;
             default:
                 break;
         }
 
         playerState = newState;
-
-        render_color_quad(quad1, camera);
-        render_color_quad(quad2, camera);
 
         glfwSwapBuffers(window);
 
@@ -366,8 +369,10 @@ int main(void)
     }
     
     free_gl(currentTrackDisplays);
-    free_gl(largeFont);
-    free_gl(smallFont);
+    free_gl(fonts.large);
+    free_gl(fonts.medium);
+    free_gl(fonts.smallItalic);
+    free_gl(fonts.mono);
     ShaderManager::delete_shaders();
 
 
