@@ -5,11 +5,12 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <string>
 
 #include "gpio.h"
 
-int gpio_write() {
-    // Export the desired pin by writing to /sys/class/gpio/export
+void gpio_export(std::string& pin) {
+     // Export the desired pin by writing to /sys/class/gpio/export
 
     int fd = open("/sys/class/gpio/export", O_WRONLY);
     if (fd == -1) {
@@ -17,16 +18,21 @@ int gpio_write() {
         exit(1);
     }
 
-    if (write(fd, "484", 3) != 3) {
+    if (write(fd, pin.c_str(), pin.size()) != pin.size()) {
         perror("Error writing to /sys/class/gpio/export");
         exit(1);
     }
 
     close(fd);
+}
+
+int gpio_write() {
+    std::string pin = "484";
+    gpio_export(pin);
 
     // Set the pin to be an output by writing "out" to /sys/class/gpio/gpio24/direction
 
-    fd = open("/sys/class/gpio/gpio484/direction", O_WRONLY);
+    int fd = open("/sys/class/gpio/gpio484/direction", O_WRONLY);
     if (fd == -1) {
         perror("Unable to open /sys/class/gpio/gpio24/direction");
         exit(1);

@@ -26,9 +26,10 @@
 #include "miniaudio.h"
 
 #include "Playlist.h"
-#include "AudioFile.h"
+#include "AudioFileDisplay.h"
 #include "audio_player.h"
 #include "gpio.h"
+#include "ColorQuad.h"
 
 using namespace std;
 
@@ -120,7 +121,7 @@ void pause(State& playerState, ma_device& device) {
 int main(void)
 {
     //gpio_write();
-    gpio_read();
+    //gpio_read();
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit()) {
@@ -195,7 +196,15 @@ int main(void)
         "{\n"
         "   gl_FragColor = vec4(1.0, 1.0, 1.0, texture2D(s_texture, v_texCoord).a);\n"
         "}\n";
-        
+    
+    string fShaderColorStr =
+        "precision mediump float;\n"
+        "//uniform vec4 v_color;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n"
+        "}\n";
+
 
     ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderTextStr, SHADER::TEXT);
 
@@ -205,9 +214,11 @@ int main(void)
     FontData smallFont = create_font("Poppins-Light.ttf", 32);
     FontData largeFont = create_font("Poppins-Medium.ttf", 64);
 
+    ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderColorStr, SHADER::COLOR);
+
     ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderTextureStr, SHADER::IMAGE);
 
-    State playerState = PLAYLIST_INFO;
+    State playerState = PLAYING;//PLAYLIST_INFO;
 
     Playlists playlists = parse_playlists();
 
@@ -246,12 +257,10 @@ int main(void)
         std::cout << p << "\n";
     }
 
-    std::vector<std::pair<bool, AudioFile>> fileDisplays;
-    fileDisplays.resize(playlist.size());
+    AudioFileDisplay currentTrackDisplays;
     uint currentPathsIndex = 0;
-    init(fileDisplays[currentPathsIndex].second, playlist[currentPathsIndex]);
-    generate_display_objects(fileDisplays[currentPathsIndex].second, largeFont, smallFont);
-    fileDisplays[currentPathsIndex].first = true;
+    init(currentTrackDisplays, playlist[currentPathsIndex]);
+    generate_display_objects(currentTrackDisplays, largeFont, smallFont);
     ShaderManager::use(IMAGE);
     GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
 
@@ -264,6 +273,11 @@ int main(void)
 
     uint framesToSwitch = 140;
     uint frameCounter = 0;
+
+    ColorQuad quad1;
+    init(quad1, vec2(396.0f, 50.0f), vec2(364.0f, 2.0f), vec4(0.9f, 0.6f, 0.9f, 1.0f));
+    ColorQuad quad2;
+    init(quad2, vec2(466.0f, 40.0f), vec2(4.0f, 20.0f), vec4(0.9f, 0.6f, 0.9f, 1.0f));
 
     const float FPS = 30.0f;
     const double FRAME_TIME = 1.0f / FPS;
@@ -284,18 +298,18 @@ int main(void)
         glClearColor(0.13f, 0.14f, 0.15f, 1.0f);
 
         // process input
-        State newState = (State)((uint)(frameCounter / framesToSwitch) % 4);
+        State newState = playerState;//(State)((uint)(frameCounter / framesToSwitch) % 4);
         std::cout << "current state is " << StateString(playerState)
                   << ", state to switch to is " << StateString(newState) << "\n";
 
-        uint newPathsIndex = pathsIndex.load();
-        if (currentPathsIndex != newPathsIndex && !fileDisplays[newPathsIndex].first) {
+        int newPathsIndex = pathsIndex.load();
+        if (currentPathsIndex != newPathsIndex) {
+            free_gl(currentTrackDisplays);
             std::cout << "generating display objects for " << paths[newPathsIndex] << "\n";
-            init(fileDisplays[newPathsIndex].second, playlist[newPathsIndex]);
-            generate_display_objects(fileDisplays[newPathsIndex].second, largeFont, smallFont);
+            init(currentTrackDisplays, playlist[newPathsIndex]);
+            generate_display_objects(currentTrackDisplays, largeFont, smallFont);
             ShaderManager::use(IMAGE);
             GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
-            fileDisplays[newPathsIndex].first = true;
         }
 
         currentPathsIndex = newPathsIndex;
@@ -310,19 +324,19 @@ int main(void)
                 break;
             case PLAYING:
                 if (firstPlay) {
-                    start_playlist_playback(deviceConfig, device, playlist);
+                    //start_playlist_playback(deviceConfig, device, playlist);
                     firstPlay = false;
                 }
                 else {
-                    play(playerState, device);
+                    //play(playerState, device);
                 }
-                render_audio_file_display(fileDisplays[currentPathsIndex].second, largeFont, smallFont, true, camera);
+                render_audio_file_display(currentTrackDisplays, largeFont, smallFont, true, camera);
                 break;
             case PAUSED:
                 if (playerState == PLAYING) {
                     pause(playerState, device);
                 }
-                render_audio_file_display(fileDisplays[currentPathsIndex].second, largeFont, smallFont, false, camera);
+                render_audio_file_display(currentTrackDisplays, largeFont, smallFont, false, camera);
                 break;
             case PLAYLIST_INFO:
                 if (playerState == PLAYING) {
@@ -336,6 +350,9 @@ int main(void)
 
         playerState = newState;
 
+        render_color_quad(quad1, camera);
+        render_color_quad(quad2, camera);
+
         glfwSwapBuffers(window);
 
         newTime = glfwGetTime();
@@ -348,10 +365,7 @@ int main(void)
         ++frameCounter;
     }
     
-    for (std::pair<bool, AudioFile>& fileDisplay : fileDisplays) {
-        free_gl(fileDisplay.second);
-        fileDisplay.first = false;
-    }
+    free_gl(currentTrackDisplays);
     free_gl(largeFont);
     free_gl(smallFont);
     ShaderManager::delete_shaders();

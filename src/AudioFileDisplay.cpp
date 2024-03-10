@@ -1,10 +1,10 @@
-#include "AudioFile.h"
+#include "AudioFileDisplay.h"
 #include <tag.h>
 #include <tpropertymap.h>
 #include <fileref.h>
 
 
-void init(AudioFile& audioFile, std::string filename)
+void init(AudioFileDisplay& audioFile, std::string filename)
 {
     audioFile.filename = filename;
     TagLib::FileRef f(filename.c_str());
@@ -21,14 +21,14 @@ void init(AudioFile& audioFile, std::string filename)
     }
 }
 
-void free_gl(AudioFile& audioFile) {
+void free_gl(AudioFileDisplay& audioFile) {
     free_gl(audioFile.displayArt);
     free_gl(audioFile.displayTitle);
     free_gl(audioFile.displayAlbumName);
     free_gl(audioFile.displayArtistName);
 }
 
-void generate_display_objects(AudioFile& audioFile, const FontData& largeFont, const FontData& smallFont) {
+void generate_display_objects(AudioFileDisplay& audioFile, const FontData& largeFont, const FontData& smallFont) {
         
     audioFile.displayArt.model.pos = vec2(40.0, 40.0);
     audioFile.displayArt.size = vec2(316.0);
@@ -54,7 +54,7 @@ void generate_display_objects(AudioFile& audioFile, const FontData& largeFont, c
 
 }
 
-void render_audio_file_display(const AudioFile& audioFile, const FontData& largeFont, const FontData& smallFont, bool isPlaying, const Camera& camera) {
+void render_audio_file_display(const AudioFileDisplay& audioFile, const FontData& largeFont, const FontData& smallFont, bool isPlaying, const Camera& camera) {
     render_image(audioFile.displayArt, camera);
 
     render_text(audioFile.displayTitle, largeFont, camera);

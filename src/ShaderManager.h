@@ -14,6 +14,7 @@
 enum SHADER {
     IMAGE,
     TEXT,
+    COLOR,
 
     NUM_SHADERS
 };

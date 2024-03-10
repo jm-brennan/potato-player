@@ -19,6 +19,7 @@ FontData create_font(std::string font, uint size) {
         return result;
     }
 
+
     FT_Face face;
     std::string filepath = std::string(FONT_DIR) + font;
     if (FT_New_Face(library, filepath.c_str(), 0, &face)) {
@@ -77,7 +78,7 @@ FontData create_font(std::string font, uint size) {
 
 
     uint glyphStart = 0;
-    for (unsigned char c = 0; c < 128; c++) {
+    for (uint c = 0; c < 128; c++) {
         if (FT_Load_Char(face, c, FT_LOAD_RENDER)) continue;
         GLEC(glTexSubImage2D(
             GL_TEXTURE_2D,
