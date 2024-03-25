@@ -101,7 +101,7 @@ std::vector<std::filesystem::path> randomize_playlist(const Playlist& playlist,
     for (const std::filesystem::path& playlistEntry : playlist.tracks) {
         result.emplace_back(playlistEntry);
     }
-    std::shuffle(std::begin(result), std::end(result), random);
+    //std::shuffle(std::begin(result), std::end(result), random);
 
     return result;
 }

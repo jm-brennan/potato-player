@@ -9,9 +9,11 @@
 
 using namespace glm;
 
-FontData create_font(std::string font, uint size) {
+FontData create_font(std::string font, uint size, std::vector<wchar_t> unicodeToCreate) {
     FontData result;
-    result.glyphs.resize(128);
+    result.fontFile = font;
+    result.fontSizePx = size;
+    result.ascii_glyphs.resize(128);
 
     FT_Library library;
     if (FT_Init_FreeType(&library)) {
@@ -40,6 +42,21 @@ FontData create_font(std::string font, uint size) {
             printf("ERROR::FreeType load char [%c]\n", c);
             continue;
         }
+
+        atlasWidth += face->glyph->bitmap.width + 1;
+        atlasHeight = (face->glyph->bitmap.rows > atlasHeight) ? face->glyph->bitmap.rows : atlasHeight;
+    }
+
+    for (const wchar_t& c : unicodeToCreate) {
+        std::cout << "getting face info for wchar: " << c << "\n";
+        if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
+            printf("ERROR::FreeType load char [%c]\n", c);
+            continue;
+        }
+
+        std::cout << "got info\n";
+        std::cout << "face ptr " << face << "\n";
+        std::cout << "with glyph " << face->glyph << "\n";
 
         atlasWidth += face->glyph->bitmap.width + 1;
         atlasHeight = (face->glyph->bitmap.rows > atlasHeight) ? face->glyph->bitmap.rows : atlasHeight;
@@ -98,7 +115,33 @@ FontData create_font(std::string font, uint size) {
             vec2(face->glyph->advance.x >> 6, 0.0f),
             vec2(face->glyph->bitmap_left, face->glyph->bitmap_top)
         };
-        result.glyphs[c] = g;
+        result.ascii_glyphs[c] = g;
+
+        glyphStart += face->glyph->bitmap.width + 1;
+    }
+
+    for (const wchar_t& c : unicodeToCreate) {
+        std::cout << "getting face info for wchar: " << c << "\n";
+        if (FT_Load_Char(face, c, FT_LOAD_RENDER)) continue;
+        GLEC(glTexSubImage2D(
+            GL_TEXTURE_2D,
+            0, 
+            glyphStart,
+            0, 
+            face->glyph->bitmap.width,
+            face->glyph->bitmap.rows,
+            GL_ALPHA,
+            GL_UNSIGNED_BYTE,
+            face->glyph->bitmap.buffer
+        ));
+
+        TextGlyph g = {
+            vec2((float)glyphStart / result.atlasSize.x, 0.0f),
+            vec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+            vec2(face->glyph->advance.x >> 6, 0.0f),
+            vec2(face->glyph->bitmap_left, face->glyph->bitmap_top)
+        };
+        result.non_ascii_glyphs[c] = g;
 
         glyphStart += face->glyph->bitmap.width + 1;
     }
@@ -113,7 +156,7 @@ void free_gl(FontData& font) {
     GLEC(glDeleteTextures(1, &font.atlasTextureID));
 }
 
-void init(Text& text, const std::string& str) {
+void text_init(Text& text, const std::wstring& str) {
     text.str = str;
 }
 
@@ -121,30 +164,59 @@ void free_gl(Text& text) {
     GLEC(glDeleteBuffers(1, &text.textStrip.vertexBufferID));
 }
 
-void layout_text(Text& text, const FontData& font) {
+void layout_text(Text& text, FontData& font) {
 
     vec2 pos = vec2(0.0f, 0.0f);
 
     text.textStrip.points.resize(text.str.size() * 6); // 6 points per quad since we dont use indexing
     text.textStrip.width = 0;
+
+    std::vector<wchar_t> unseenGlyphs;
     uint i = 0; // to index into points array
-    for (const char& c : text.str) {
-        const TextGlyph& glyph = font.glyphs[c];
+    for (const wchar_t& c : text.str) {
+        if (c > 128) {
+            std::map<wchar_t, TextGlyph>::const_iterator it = font.non_ascii_glyphs.find(c);
+            if (it == font.non_ascii_glyphs.end()) {
+                std::cout << "found char that is not yet glyphed: " << c << "\n";
+                unseenGlyphs.push_back(c);
+            }
+        }
+    }
 
-        float x = pos.x + glyph.bearing.x;
-        float y = pos.y - (glyph.size.y - glyph.bearing.y);//+ (font.atlasSize.y - glyph.size.y) + (glyph.size.y - glyph.bearing.y);
-        float w = glyph.size.x;
-        float h = glyph.size.y;
+    if (!unseenGlyphs.empty()) {
+        std::cout << "recreating font\n";
+        free_gl(font);
+        font = create_font(font.fontFile, font.fontSizePx, unseenGlyphs);
+    }
+    
+    for (const wchar_t& c : text.str) {
+        const TextGlyph* glyph = nullptr;
+        if (c < 128) {
+            glyph = &font.ascii_glyphs[c];
+        }
+        else {
+            glyph = &font.non_ascii_glyphs[c];
+        }
 
-        text.textStrip.points[i++] = (TexturePoint){vec2(x, y),       vec2(glyph.texCoord.x, glyph.texCoord.y + (glyph.size.y / font.atlasSize.y))};
-        text.textStrip.points[i++] = (TexturePoint){vec2(x, y+h),     vec2(glyph.texCoord.x, glyph.texCoord.y)};
-        text.textStrip.points[i++] = (TexturePoint){vec2(x + w, y+h), vec2(glyph.texCoord.x + (glyph.size.x / font.atlasSize.x), glyph.texCoord.y)};
-        text.textStrip.points[i++] = (TexturePoint){vec2(x, y),       vec2(glyph.texCoord.x, glyph.texCoord.y + (glyph.size.y / font.atlasSize.y))};
-        text.textStrip.points[i++] = (TexturePoint){vec2(x + w, y+h), vec2(glyph.texCoord.x + (glyph.size.x / font.atlasSize.x), glyph.texCoord.y)};
-        text.textStrip.points[i++] = (TexturePoint){vec2(x + w, y),   vec2(glyph.texCoord.x + (glyph.size.x / font.atlasSize.x), glyph.texCoord.y + (glyph.size.y / font.atlasSize.y))};
-        pos += glyph.advance;
+        if (!glyph) {
+            std::cout << "Bad glyph data for " << c << "\n";
+            continue;
+        }
 
-        text.textStrip.width += glyph.advance.x;
+        float x = pos.x + glyph->bearing.x;
+        float y = pos.y - (glyph->size.y - glyph->bearing.y);//+ (font.atlasSize.y - glyph->size.y) + (glyph->size.y - glyph->bearing.y);
+        float w = glyph->size.x;
+        float h = glyph->size.y;
+
+        text.textStrip.points[i++] = (TexturePoint){vec2(x, y),       vec2(glyph->texCoord.x, glyph->texCoord.y + (glyph->size.y / font.atlasSize.y))};
+        text.textStrip.points[i++] = (TexturePoint){vec2(x, y+h),     vec2(glyph->texCoord.x, glyph->texCoord.y)};
+        text.textStrip.points[i++] = (TexturePoint){vec2(x + w, y+h), vec2(glyph->texCoord.x + (glyph->size.x / font.atlasSize.x), glyph->texCoord.y)};
+        text.textStrip.points[i++] = (TexturePoint){vec2(x, y),       vec2(glyph->texCoord.x, glyph->texCoord.y + (glyph->size.y / font.atlasSize.y))};
+        text.textStrip.points[i++] = (TexturePoint){vec2(x + w, y+h), vec2(glyph->texCoord.x + (glyph->size.x / font.atlasSize.x), glyph->texCoord.y)};
+        text.textStrip.points[i++] = (TexturePoint){vec2(x + w, y),   vec2(glyph->texCoord.x + (glyph->size.x / font.atlasSize.x), glyph->texCoord.y + (glyph->size.y / font.atlasSize.y))};
+        pos += glyph->advance;
+
+        text.textStrip.width += glyph->advance.x;
     }
 
 

@@ -6,9 +6,14 @@
 #include <glm/glm.hpp>
 #include <atomic>
 
+#include <codecvt>
+#include <locale>
+
 using namespace glm; // bad practice but its nice
 
 const uint secondsToSwitchToIdle = 60;
+
+static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> wsconverter;
 
 #define GLEC(x) gl_clear_error();\
     x;\

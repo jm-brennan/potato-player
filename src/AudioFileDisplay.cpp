@@ -5,16 +5,16 @@
 
 std::string seconds_to_display_time(uint seconds);
 
-void init(AudioFileDisplay& audioFile, std::string filename)
+void audio_file_init(AudioFileDisplay& audioFile, std::string filename)
 {
     audioFile.filename = filename;
     TagLib::FileRef f(filename.c_str());
 
     if (!f.isNull() && f.tag()) {
         TagLib::Tag *tag = f.tag();
-        init(audioFile.displayTitle, tag->title().to8Bit());
-        init(audioFile.displayArtistName, tag->artist().to8Bit());
-        init(audioFile.displayAlbumName, tag->album().to8Bit());
+        text_init(audioFile.displayTitle, tag->title().toWString());
+        text_init(audioFile.displayArtistName, tag->artist().toWString());
+        text_init(audioFile.displayAlbumName, tag->album().toWString());
         init(audioFile.progressBar, vec2(396.0f, 50.0f), vec2(364.0f, 2.0f), vec4(0.9f, 0.6f, 0.9f, 1.0f));
         init(audioFile.progressIndicator, vec2(396.0f, 40.0f), vec2(4.0f, 20.0f), vec4(0.9f, 0.6f, 0.9f, 1.0f));
 
@@ -24,8 +24,8 @@ void init(AudioFileDisplay& audioFile, std::string filename)
             audioFile.lengthS = f.audioProperties()->lengthInSeconds();
         }
 
-        init(audioFile.displayLength, "/" + seconds_to_display_time(audioFile.lengthS));
-        init(audioFile.displayProgress, seconds_to_display_time(audioFile.displayTimeS));
+        text_init(audioFile.displayLength, wsconverter.from_bytes("/" + seconds_to_display_time(audioFile.lengthS)));
+        text_init(audioFile.displayProgress, wsconverter.from_bytes(seconds_to_display_time(audioFile.displayTimeS)));
     }
     else
     {
@@ -40,7 +40,7 @@ void free_gl(AudioFileDisplay& audioFile) {
     free_gl(audioFile.displayArtistName);
 }
 
-void generate_display_objects(AudioFileDisplay& audioFile, const Fonts& fonts) {
+void generate_display_objects(AudioFileDisplay& audioFile, Fonts& fonts) {
         
     audioFile.displayArt.model.pos = vec2(40.0, 40.0);
     audioFile.displayArt.size = vec2(316.0);
@@ -71,7 +71,7 @@ void generate_display_objects(AudioFileDisplay& audioFile, const Fonts& fonts) {
     generate_text_strip_buffers(audioFile.displayProgress.textStrip);
 }
 
-void update_playback_progress(AudioFileDisplay& audioFile, uint currentFrame, uint totalFrames, const Fonts& fonts) {
+void update_playback_progress(AudioFileDisplay& audioFile, uint currentFrame, uint totalFrames, Fonts& fonts) {
     float barSize = audioFile.progressBar.size.x;
     float progressPercent = (float)currentFrame / (float)totalFrames;
     
@@ -82,7 +82,7 @@ void update_playback_progress(AudioFileDisplay& audioFile, uint currentFrame, ui
     {
         audioFile.displayTimeS = displayTimeS;
         free_gl(audioFile.displayProgress);
-        init(audioFile.displayProgress, seconds_to_display_time(displayTimeS));
+        text_init(audioFile.displayProgress, wsconverter.from_bytes(seconds_to_display_time(displayTimeS)));
         layout_text(audioFile.displayProgress, fonts.mono);
         audioFile.displayProgress.model.pos = vec2(audioFile.displayLength.model.pos.x - audioFile.displayProgress.textStrip.width, 80.0f);
         generate_text_strip_buffers(audioFile.displayProgress.textStrip);
@@ -116,7 +116,7 @@ std::string seconds_to_display_time(uint seconds) {
     return result;
 }
 
-void render_audio_file_display(const AudioFileDisplay& audioFile, const Fonts& fonts, bool isPlaying, const Camera& camera) {
+void render_audio_file_display(const AudioFileDisplay& audioFile, Fonts& fonts, bool isPlaying, const Camera& camera) {
     render_image(audioFile.displayArt, camera);
 
     render_text(audioFile.displayTitle, fonts.large, camera);

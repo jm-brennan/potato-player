@@ -67,7 +67,7 @@ void blank_screen() {
     std::cout << "disable screen\n";
 }
 
-void render_playlists_infO(const std::map<uint, Text>& playlists, const Fonts& fonts, Camera& camera) {
+void render_playlists_infO(const std::map<uint, Text>& playlists, Fonts& fonts, Camera& camera) {
     for (const std::pair<uint, Text>& playlist : playlists) {
         render_text(playlist.second, fonts.medium, camera);
     }
@@ -216,10 +216,14 @@ int main(void)
     std::cout << "Creating fonts\n";
 
     Fonts fonts;
-    fonts.large = create_font("Poppins-Medium.ttf", 64);
-    fonts.medium = create_font("Poppins-Light.ttf", 32);
-    fonts.smallItalic = create_font("Poppins-LightItalic.ttf", 24);
-    fonts.mono = create_font("ChivoMono-Light.ttf", 20);
+    //fonts.large = create_font("Poppins-Medium.ttf", 64, {20363});
+    //fonts.medium = create_font("Poppins-Light.ttf", 32, {20363});
+    //fonts.smallItalic = create_font("Poppins-LightItalic.ttf", 24, {20363});
+    //fonts.mono = create_font("ChivoMono-Light.ttf", 20, {20363});
+    fonts.large = create_font("NotoSansJP-Regular.ttf", 64, {20363});
+    fonts.medium = create_font("NotoSansJP-Regular.ttf", 32, {20363});
+    fonts.smallItalic = create_font("NotoSansJP-Regular.ttf", 24, {20363});
+    fonts.mono = create_font("NotoSansJP-Regular.ttf", 20, {20363});
 
     ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderColorStr, SHADER::COLOR);
 
@@ -235,7 +239,7 @@ int main(void)
     for (const std::pair<uint, Playlist>& playlist : playlists) {
         uint playlistID = playlist.first;
         if (playlistID > 0 && playlistID <= NUM_PLAYLISTS) {
-            init(playlistsDisplay[playlistID], playlist.second.name);
+            text_init(playlistsDisplay[playlistID], wsconverter.from_bytes(playlist.second.name));
             layout_text(playlistsDisplay[playlistID], fonts.medium);
             generate_text_strip_buffers(playlistsDisplay[playlistID].textStrip);
             std::cout << "adding playlist text for playlist " << playlist.second.name
@@ -257,7 +261,7 @@ int main(void)
     std::random_device random;
 
 
-    std::vector<std::filesystem::path> playlist = randomize_playlist(playlists[1], random);
+    std::vector<std::filesystem::path> playlist = randomize_playlist(playlists[2], random);
 
     std::cout << "playlist size " << playlist.size() << ":\n";
     for (auto p : playlist) {
@@ -266,7 +270,7 @@ int main(void)
 
     AudioFileDisplay currentTrackDisplays;
     uint currentPathsIndex = 0;
-    init(currentTrackDisplays, playlist[currentPathsIndex]);
+    audio_file_init(currentTrackDisplays, playlist[currentPathsIndex]);
     generate_display_objects(currentTrackDisplays, fonts);
     ShaderManager::use(IMAGE);
     GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
@@ -308,7 +312,7 @@ int main(void)
         if (currentPathsIndex != newPathsIndex) {
             free_gl(currentTrackDisplays);
             std::cout << "generating display objects for " << paths[newPathsIndex] << "\n";
-            init(currentTrackDisplays, playlist[newPathsIndex]);
+            audio_file_init(currentTrackDisplays, playlist[newPathsIndex]);
             generate_display_objects(currentTrackDisplays, fonts);
             ShaderManager::use(IMAGE);
             GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));

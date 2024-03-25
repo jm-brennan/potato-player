@@ -10,6 +10,8 @@
 #include "Texture.h"
 #include "Model.h"
 #include "Camera.h"
+#include <map>
+#include <wchar.h>
 
 struct TextStrip {
     std::vector<TexturePoint> points;
@@ -25,15 +27,18 @@ struct TextGlyph {
 };
 
 struct Text {
-    std::string str;
+    std::wstring str;
     TextStrip textStrip;
     Model model;
 };
 
 struct FontData {
+    std::string fontFile;
+    uint fontSizePx = 24;
     uint atlasTextureID = 0;
     vec2 atlasSize;
-    std::vector<TextGlyph> glyphs;
+    std::vector<TextGlyph> ascii_glyphs;
+    std::map<wchar_t, TextGlyph> non_ascii_glyphs;
 };
 
 struct Fonts {
@@ -43,11 +48,12 @@ struct Fonts {
     FontData mono;
 };
 
-void init(Text& text, const std::string& str);
+void text_init(Text& text, const std::wstring& str);
 void free_gl(Text& text);
 void free_gl(FontData& font);
-FontData create_font(std::string font, uint size);
-void layout_text(Text& text, const FontData& font);
+FontData create_font(std::string font, uint size, std::vector<wchar_t> unicodeToCreate);
+const TextGlyph* get_non_ascii_glyph(const FontData& font, const wchar_t c);
+void layout_text(Text& text, FontData& font);
 void generate_text_strip_buffers(TextStrip& textStrip);
 void render_text(const Text& text, const FontData& font, const Camera& camera);
 
