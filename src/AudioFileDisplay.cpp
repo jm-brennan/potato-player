@@ -40,7 +40,7 @@ void free_gl(AudioFileDisplay& audioFile) {
     free_gl(audioFile.displayArtistName);
 }
 
-void generate_display_objects(AudioFileDisplay& audioFile, Fonts& fonts) {
+void generate_display_objects(AudioFileDisplay& audioFile, FontList& fonts) {
         
     audioFile.displayArt.model.pos = vec2(40.0, 40.0);
     audioFile.displayArt.size = vec2(316.0);
@@ -49,29 +49,29 @@ void generate_display_objects(AudioFileDisplay& audioFile, Fonts& fonts) {
     set_image_texture_from_audio_file(audioFile.displayArt, audioFile.filename);
 
 
-    layout_text(audioFile.displayTitle, fonts.large);
+    layout_text(audioFile.displayTitle, fonts, FontIndex::LARGE);
     float xpos = (800.0 / 2.0) - (audioFile.displayTitle.textStrip.width / 2.0);
     audioFile.displayTitle.model.pos = vec2(xpos, 396.0f);
     generate_text_strip_buffers(audioFile.displayTitle.textStrip);
 
-    layout_text(audioFile.displayArtistName, fonts.medium);
+    layout_text(audioFile.displayArtistName, fonts, FontIndex::MEDIUM);
     audioFile.displayArtistName.model.pos = vec2(396.0f, 240.0f);
     generate_text_strip_buffers(audioFile.displayArtistName.textStrip);
 
-    layout_text(audioFile.displayAlbumName, fonts.smallItalic);
+    layout_text(audioFile.displayAlbumName, fonts, FontIndex::SMALL_ITALIC);
     audioFile.displayAlbumName.model.pos = vec2(396.0f, 200.0f);
     generate_text_strip_buffers(audioFile.displayAlbumName.textStrip);
 
-    layout_text(audioFile.displayLength, fonts.mono);
+    layout_text(audioFile.displayLength, fonts, FontIndex::MONO);
     audioFile.displayLength.model.pos = vec2(760.0f - audioFile.displayLength.textStrip.width, 80.0f);
     generate_text_strip_buffers(audioFile.displayLength.textStrip);
     
-    layout_text(audioFile.displayProgress, fonts.mono);
+    layout_text(audioFile.displayProgress, fonts, FontIndex::MONO);
     audioFile.displayProgress.model.pos = vec2(audioFile.displayLength.model.pos.x - audioFile.displayProgress.textStrip.width, 80.0f);
     generate_text_strip_buffers(audioFile.displayProgress.textStrip);
 }
 
-void update_playback_progress(AudioFileDisplay& audioFile, uint currentFrame, uint totalFrames, Fonts& fonts) {
+void update_playback_progress(AudioFileDisplay& audioFile, uint currentFrame, uint totalFrames, FontList& fonts) {
     float barSize = audioFile.progressBar.size.x;
     float progressPercent = (float)currentFrame / (float)totalFrames;
     
@@ -83,7 +83,7 @@ void update_playback_progress(AudioFileDisplay& audioFile, uint currentFrame, ui
         audioFile.displayTimeS = displayTimeS;
         free_gl(audioFile.displayProgress);
         text_init(audioFile.displayProgress, wsconverter.from_bytes(seconds_to_display_time(displayTimeS)));
-        layout_text(audioFile.displayProgress, fonts.mono);
+        layout_text(audioFile.displayProgress, fonts, FontIndex::MONO);
         audioFile.displayProgress.model.pos = vec2(audioFile.displayLength.model.pos.x - audioFile.displayProgress.textStrip.width, 80.0f);
         generate_text_strip_buffers(audioFile.displayProgress.textStrip);
     }
@@ -116,14 +116,14 @@ std::string seconds_to_display_time(uint seconds) {
     return result;
 }
 
-void render_audio_file_display(const AudioFileDisplay& audioFile, Fonts& fonts, bool isPlaying, const Camera& camera) {
+void render_audio_file_display(const AudioFileDisplay& audioFile, FontList& fonts, bool isPlaying, const Camera& camera) {
     render_image(audioFile.displayArt, camera);
 
-    render_text(audioFile.displayTitle, fonts.large, camera);
-    render_text(audioFile.displayArtistName, fonts.medium, camera);
-    render_text(audioFile.displayAlbumName, fonts.smallItalic, camera);
-    render_text(audioFile.displayLength, fonts.mono, camera);
-    render_text(audioFile.displayProgress, fonts.mono, camera);
+    render_text(audioFile.displayTitle, fonts[audioFile.displayTitle.fontIndex], camera);
+    render_text(audioFile.displayArtistName, fonts[audioFile.displayArtistName.fontIndex], camera);
+    render_text(audioFile.displayAlbumName, fonts[audioFile.displayAlbumName.fontIndex], camera);
+    render_text(audioFile.displayLength, fonts[audioFile.displayLength.fontIndex], camera);
+    render_text(audioFile.displayProgress, fonts[audioFile.displayProgress.fontIndex], camera);
 
     render_color_quad(audioFile.progressBar, camera);
     render_color_quad(audioFile.progressIndicator, camera);

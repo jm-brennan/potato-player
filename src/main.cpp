@@ -67,9 +67,9 @@ void blank_screen() {
     std::cout << "disable screen\n";
 }
 
-void render_playlists_infO(const std::map<uint, Text>& playlists, Fonts& fonts, Camera& camera) {
+void render_playlists_infO(const std::map<uint, Text>& playlists, FontList& fonts, Camera& camera) {
     for (const std::pair<uint, Text>& playlist : playlists) {
-        render_text(playlist.second, fonts.medium, camera);
+        render_text(playlist.second, fonts[FontIndex::MEDIUM], camera);
     }
 }
 
@@ -213,17 +213,18 @@ int main(void)
 
     ShaderManager::use(TEXT);
     GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXT), "s_texture"), 0));
-    std::cout << "Creating fonts\n";
+    std::cout << "Creating fonts at indices: " << FontIndex::LARGE << ", " << FontIndex::MEDIUM << ", " << FontIndex::SMALL_ITALIC << "\n";
 
-    Fonts fonts;
-    //fonts.large = create_font("Poppins-Medium.ttf", 64, {20363});
-    //fonts.medium = create_font("Poppins-Light.ttf", 32, {20363});
-    //fonts.smallItalic = create_font("Poppins-LightItalic.ttf", 24, {20363});
-    //fonts.mono = create_font("ChivoMono-Light.ttf", 20, {20363});
-    fonts.large = create_font("NotoSansJP-Regular.ttf", 64, {20363});
-    fonts.medium = create_font("NotoSansJP-Regular.ttf", 32, {20363});
-    fonts.smallItalic = create_font("NotoSansJP-Regular.ttf", 24, {20363});
-    fonts.mono = create_font("NotoSansJP-Regular.ttf", 20, {20363});
+
+    FontList fonts;
+    create_font(fonts[FontIndex::LARGE], "Poppins-Medium.ttf", 64, {20363});
+    create_font(fonts[FontIndex::MEDIUM], "Poppins-Light.ttf", 32, {20363});
+    create_font(fonts[FontIndex::SMALL_ITALIC], "Poppins-LightItalic.ttf", 24, {20363});
+    create_font(fonts[FontIndex::MONO], "ChivoMono-Light.ttf", 20, {20363});
+    //create_font(fonts[LARGE], "NotoSansJP-Regular.ttf", 64, {20363});
+    //create_font(fonts[MEDIUM], "NotoSansJP-Regular.ttf", 32, {20363});
+    //create_font(fonts[SMALL_ITALIC], "NotoSansJP-Regular.ttf", 24, {20363});
+    //create_font(fonts[MONO], "NotoSansJP-Regular.ttf", 20, {20363});
 
     ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderColorStr, SHADER::COLOR);
 
@@ -240,7 +241,7 @@ int main(void)
         uint playlistID = playlist.first;
         if (playlistID > 0 && playlistID <= NUM_PLAYLISTS) {
             text_init(playlistsDisplay[playlistID], wsconverter.from_bytes(playlist.second.name));
-            layout_text(playlistsDisplay[playlistID], fonts.medium);
+            layout_text(playlistsDisplay[playlistID], fonts, FontIndex::MEDIUM);
             generate_text_strip_buffers(playlistsDisplay[playlistID].textStrip);
             std::cout << "adding playlist text for playlist " << playlist.second.name
                       << " to playlist slot " << playlistID << "\n";
@@ -373,10 +374,10 @@ int main(void)
     }
     
     free_gl(currentTrackDisplays);
-    free_gl(fonts.large);
-    free_gl(fonts.medium);
-    free_gl(fonts.smallItalic);
-    free_gl(fonts.mono);
+    free_gl(fonts[LARGE]);
+    free_gl(fonts[MEDIUM]);
+    free_gl(fonts[SMALL_ITALIC]);
+    free_gl(fonts[MONO]);
     ShaderManager::delete_shaders();
 
 
