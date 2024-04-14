@@ -9,29 +9,35 @@
 
 using namespace glm;
 
+FT_Library freetype;
+
+void init_freetype() {
+    if (FT_Init_FreeType(&freetype)) {
+        printf("ERROR::FreeType init\n");
+        return;
+    }
+}
+
+void shutdown_freetype() {
+    FT_Done_FreeType(freetype);
+}
+
 void create_font(FontData& font, 
                  std::string fontName,
                  uint size,
                  std::vector<wchar_t> unicodeToCreate) {
-    
+
     font.fontFile = fontName;
     font.fontSizePx = size;
     font.ascii_glyphs.resize(128);
 
-    FT_Library library;
-    if (FT_Init_FreeType(&library)) {
-        printf("ERROR::FreeType init\n");
-        return;
-    }
-
-    FT_Face face;
     std::string filepath = std::string(FONT_DIR) + font.fontFile;
-    if (FT_New_Face(library, filepath.c_str(), 0, &face)) {
+    if (FT_New_Face(freetype, filepath.c_str(), 0, &font.face)) {
         printf("ERROR::FreeType load font\n");
         return;
     }
 
-    if (FT_Set_Pixel_Sizes(face, 0, size)) {
+    if (FT_Set_Pixel_Sizes(font.face, 0, size)) {
         printf("ERROR::FreeType pixel size\n");
     }
 
@@ -40,32 +46,32 @@ void create_font(FontData& font,
     unsigned int atlasWidth  = 0;
     unsigned int atlasHeight = 0;
     for (unsigned char c = 0; c < 128; c++) {
-         if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
+        if (FT_Load_Char(font.face, c, FT_LOAD_RENDER)) {
             printf("ERROR::FreeType load char [%c]\n", c);
             continue;
         }
 
-        atlasWidth += face->glyph->bitmap.width + 1;
-        atlasHeight = (face->glyph->bitmap.rows > atlasHeight) ? face->glyph->bitmap.rows : atlasHeight;
+        atlasWidth += font.face->glyph->bitmap.width + 1;
+        atlasHeight = (font.face->glyph->bitmap.rows > atlasHeight) ? font.face->glyph->bitmap.rows : atlasHeight;
     }
 
     for (const wchar_t& c : unicodeToCreate) {
-        if (FT_Get_Char_Index(face, c) == 0) {
+        if (FT_Get_Char_Index(font.face, c) == 0) {
             std::cout << "could not find character " << c << "in font";
         }
 
         std::cout << "getting face info for wchar: " << c << "\n";
-        if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
+        if (FT_Load_Char(font.face, c, FT_LOAD_RENDER)) {
             printf("ERROR::FreeType load char [%c]\n", c);
             continue;
         }
 
         std::cout << "got info\n";
-        std::cout << "face ptr " << face << "\n";
-        std::cout << "with glyph " << face->glyph << "\n";
+        std::cout << "face ptr " << font.face << "\n";
+        std::cout << "with glyph " << font.face->glyph << "\n";
 
-        atlasWidth += face->glyph->bitmap.width + 1;
-        atlasHeight = (face->glyph->bitmap.rows > atlasHeight) ? face->glyph->bitmap.rows : atlasHeight;
+        atlasWidth += font.face->glyph->bitmap.width + 1;
+        atlasHeight = (font.face->glyph->bitmap.rows > atlasHeight) ? font.face->glyph->bitmap.rows : atlasHeight;
     }
 
     font.atlasSize = vec2(atlasWidth, atlasHeight);
@@ -102,58 +108,55 @@ void create_font(FontData& font,
 
     uint glyphStart = 0;
     for (uint c = 0; c < 128; c++) {
-        if (FT_Load_Char(face, c, FT_LOAD_RENDER)) continue;
+        if (FT_Load_Char(font.face, c, FT_LOAD_RENDER)) continue;
         GLEC(glTexSubImage2D(
             GL_TEXTURE_2D,
             0, 
             glyphStart,
             0, 
-            face->glyph->bitmap.width,
-            face->glyph->bitmap.rows,
+            font.face->glyph->bitmap.width,
+            font.face->glyph->bitmap.rows,
             GL_ALPHA,
             GL_UNSIGNED_BYTE,
-            face->glyph->bitmap.buffer
+            font.face->glyph->bitmap.buffer
         ));
 
         TextGlyph g = {
             vec2((float)glyphStart / font.atlasSize.x, 0.0f),
-            vec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-            vec2(face->glyph->advance.x >> 6, 0.0f),
-            vec2(face->glyph->bitmap_left, face->glyph->bitmap_top)
+            vec2(font.face->glyph->bitmap.width, font.face->glyph->bitmap.rows),
+            vec2(font.face->glyph->advance.x >> 6, 0.0f),
+            vec2(font.face->glyph->bitmap_left, font.face->glyph->bitmap_top)
         };
         font.ascii_glyphs[c] = g;
 
-        glyphStart += face->glyph->bitmap.width + 1;
+        glyphStart += font.face->glyph->bitmap.width + 1;
     }
 
     for (const wchar_t& c : unicodeToCreate) {
         std::cout << "getting face info for wchar: " << c << "\n";
-        if (FT_Load_Char(face, c, FT_LOAD_RENDER)) continue;
+        if (FT_Load_Char(font.face, c, FT_LOAD_RENDER)) continue;
         GLEC(glTexSubImage2D(
             GL_TEXTURE_2D,
             0, 
             glyphStart,
             0, 
-            face->glyph->bitmap.width,
-            face->glyph->bitmap.rows,
+            font.face->glyph->bitmap.width,
+            font.face->glyph->bitmap.rows,
             GL_ALPHA,
             GL_UNSIGNED_BYTE,
-            face->glyph->bitmap.buffer
+            font.face->glyph->bitmap.buffer
         ));
 
         TextGlyph g = {
             vec2((float)glyphStart / font.atlasSize.x, 0.0f),
-            vec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-            vec2(face->glyph->advance.x >> 6, 0.0f),
-            vec2(face->glyph->bitmap_left, face->glyph->bitmap_top)
+            vec2(font.face->glyph->bitmap.width, font.face->glyph->bitmap.rows),
+            vec2(font.face->glyph->advance.x >> 6, 0.0f),
+            vec2(font.face->glyph->bitmap_left, font.face->glyph->bitmap_top)
         };
         font.non_ascii_glyphs[c] = g;
 
-        glyphStart += face->glyph->bitmap.width + 1;
+        glyphStart += font.face->glyph->bitmap.width + 1;
     }
-
-    FT_Done_Face(face);
-    FT_Done_FreeType(library);
 
     return;
 }
@@ -162,42 +165,117 @@ void free_gl(FontData& font) {
     GLEC(glDeleteTextures(1, &font.atlasTextureID));
 }
 
-void text_init(Text& text, const std::wstring& str) {
+void text_init(Text& text, const std::wstring& str, uint fontSizePx) {
     text.str = str;
+    text.fontSizePx = fontSizePx;
 }
 
 void free_gl(Text& text) {
     GLEC(glDeleteBuffers(1, &text.textStrip.vertexBufferID));
 }
 
-void layout_text(Text& text, FontList& fonts, FontIndex desiredFont) {
+FontIndex find_font_that_supports_glyphs(std::wstring& str, uint desiredSize, FontList& fonts, std::vector<wchar_t>& unseenGlyphs) {
+    uint bestScore = 0;
+    FontIndex bestIndex = (FontIndex)0;
+    std::string bestFontName = "";
 
-    FontIndex determinedFont = desiredFont;
-    text.fontIndex = determinedFont;
-    FontData& font = fonts[determinedFont];
+    for (uint i = 0; i < fonts.size(); ++i) {
+        if (fonts[i].empty()) {
+            continue; // this font not in use, in theory we could initialize it here though and proceed
+        }
+
+        FontData& font = fonts[i].begin()->second;
+        uint fontScore = 0;
+        for (const wchar_t& c : str) {
+            if (FT_Load_Char(font.face, c, FT_LOAD_RENDER)) {
+                printf("ERROR::FreeType load char [%c]\n", c);
+                continue;
+            }
+            if (FT_Get_Char_Index(font.face, c) != 0) {
+                ++fontScore;
+            }
+        }
+
+        if (fontScore == str.size()) {
+            bestScore = fontScore;
+            bestIndex = (FontIndex)i;
+            bestFontName = font.fontFile;
+            break;
+        }
+        else if (fontScore > bestScore) {
+            bestScore = fontScore;
+            bestIndex = (FontIndex)i;
+            bestFontName = font.fontFile;
+        }
+    }
+
+    if (fonts[bestIndex].find(desiredSize) == fonts[bestIndex].end()) {
+        create_font(fonts[bestIndex][desiredSize], bestFontName, desiredSize, {});
+    }
+    // TODO iterators to avoid multiple lookups
+    FontData& bestFont = fonts[bestIndex][desiredSize];
+    
+    for (const wchar_t& c : str) {
+        if (c > 127 && bestFont.non_ascii_glyphs.find(c) == bestFont.non_ascii_glyphs.end()) {
+            unseenGlyphs.push_back(c);
+        }
+    }
+
+    return bestIndex;
+}
+
+void layout_text(Text& text, FontList& fonts, FontIndex desiredFontIndex, uint fontSizePx) {
+    std::wcout << "trying to layout " << text.str << " with font " << desiredFontIndex << " at size " << fontSizePx << "\n";
+    //if (fonts[determinedFont].find(fontSizePx) == fonts[determinedFont].end()) {
+    //    
+    //}
+
     vec2 pos = vec2(0.0f, 0.0f);
 
     text.textStrip.points.resize(text.str.size() * 6); // 6 points per quad since we dont use indexing
     text.textStrip.width = 0;
 
     std::vector<wchar_t> unseenGlyphs;
-    uint i = 0; // to index into points array
+    bool anyGlyphsUnsupportedByFont = false;
+    FontData& desiredFont = fonts[desiredFontIndex][text.fontSizePx];
     for (const wchar_t& c : text.str) {
-        if (c > 128) {
-            std::map<wchar_t, TextGlyph>::const_iterator it = font.non_ascii_glyphs.find(c);
-            if (it == font.non_ascii_glyphs.end()) {
-                std::cout << "found char that is not yet glyphed: " << c << "\n";
+        if (c < 128) {
+            continue;
+        }
+
+        if (desiredFont.non_ascii_glyphs.find(c) == desiredFont.non_ascii_glyphs.end()) {
+            if (FT_Load_Char(desiredFont.face, c, FT_LOAD_RENDER)) {
+                printf("ERROR::FreeType load char [%c]\n", c);
+                continue;
+            }
+            if (FT_Get_Char_Index(desiredFont.face, c) == 0) {
+                std::cout << "could not find character " << c << "in desired font\n";
+                anyGlyphsUnsupportedByFont = true;
+            }
+            else {
+                std::cout << "found char that is not yet glyphed but is supported by font: " << c << "\n";
                 unseenGlyphs.push_back(c);
             }
         }
     }
 
+    FontIndex determinedFont = desiredFontIndex;
+
+    if (anyGlyphsUnsupportedByFont) {
+        unseenGlyphs.clear();
+        determinedFont = find_font_that_supports_glyphs(text.str, text.fontSizePx, fonts, unseenGlyphs);
+    }
+    
+    FontData& font = fonts[determinedFont][fontSizePx];
+    text.fontIndex = determinedFont;
+    
     if (!unseenGlyphs.empty()) {
         std::cout << "recreating font\n";
         free_gl(font);
         create_font(font, font.fontFile, font.fontSizePx, unseenGlyphs);
     }
     
+    uint i = 0; // textStrip points array index
     for (const wchar_t& c : text.str) {
         const TextGlyph* glyph = nullptr;
         if (c < 128) {
@@ -212,6 +290,7 @@ void layout_text(Text& text, FontList& fonts, FontIndex desiredFont) {
             continue;
         }
 
+        std::cout << "layout for character " << c << " with font " << desiredFontIndex << " and size " << fontSizePx << "\n";
         float x = pos.x + glyph->bearing.x;
         float y = pos.y - (glyph->size.y - glyph->bearing.y);//+ (font.atlasSize.y - glyph->size.y) + (glyph->size.y - glyph->bearing.y);
         float w = glyph->size.x;

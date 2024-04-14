@@ -11,6 +11,7 @@
 #include "Model.h"
 #include "Camera.h"
 #include <map>
+#include <unordered_map>
 #include <array>
 #include <wchar.h>
 
@@ -23,6 +24,7 @@ struct TextGlyph {
 
 struct FontData {
     std::string fontFile;
+    FT_Face face;
     uint fontSizePx = 24;
     uint atlasTextureID = 0;
     vec2 atlasSize;
@@ -40,7 +42,7 @@ enum FontIndex {
     NUM_FONTS
 };
 
-using FontList = std::array<FontData, static_cast<size_t>(NUM_FONTS)>;
+using FontList = std::array<std::unordered_map<uint, FontData>, static_cast<size_t>(NUM_FONTS)>;
 
 struct TextStrip {
     std::vector<TexturePoint> points;
@@ -53,14 +55,18 @@ struct Text {
     TextStrip textStrip;
     Model model;
     FontIndex fontIndex;
+    uint fontSizePx = 24;
 };
 
-void text_init(Text& text, const std::wstring& str);
+
+void init_freetype();
+void shutdown_freetype();
+void text_init(Text& text, const std::wstring& str, uint fontSizePx);
 void free_gl(Text& text);
 void free_gl(FontData& font);
 void create_font(FontData& font, std::string fontName, uint size, std::vector<wchar_t> unicodeToCreate);
 const TextGlyph* get_non_ascii_glyph(const FontData& font, const wchar_t c);
-void layout_text(Text& text, FontList& fonts, FontIndex desiredFont);
+void layout_text(Text& text, FontList& fonts, FontIndex desiredFont, uint fontSizePx);
 void generate_text_strip_buffers(TextStrip& textStrip);
 void render_text(const Text& text, const FontData& font, const Camera& camera);
 

@@ -2,8 +2,8 @@
     "id": 2,
     "name": "short song playlist",
     "tracks": [
-        "test_sound_1.mp3",
+        "test_sound_2.mp3",
         "unicode_test.mp3",
-        "test_sound_2.mp3"
+        "test_sound_1.mp3"
     ]
 }

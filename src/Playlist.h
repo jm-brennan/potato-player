@@ -14,7 +14,7 @@
 struct Playlist {
     uint32_t id = 0;
     std::string name;
-    std::set<std::filesystem::path> tracks;
+    std::vector<std::filesystem::path> tracks;
 };
 
 using Playlists = std::unordered_map<uint32_t, Playlist>;

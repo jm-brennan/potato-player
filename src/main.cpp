@@ -69,7 +69,7 @@ void blank_screen() {
 
 void render_playlists_infO(const std::map<uint, Text>& playlists, FontList& fonts, Camera& camera) {
     for (const std::pair<uint, Text>& playlist : playlists) {
-        render_text(playlist.second, fonts[FontIndex::MEDIUM], camera);
+        render_text(playlist.second, fonts[FontIndex::MEDIUM][32], camera);
     }
 }
 
@@ -123,9 +123,6 @@ void pause(State& playerState, ma_device& device) {
 
 int main(void)
 {
-    //gpio_write();
-    //gpio_read();
-
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit()) {
         exit(EXIT_FAILURE);
@@ -215,16 +212,14 @@ int main(void)
     GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXT), "s_texture"), 0));
     std::cout << "Creating fonts at indices: " << FontIndex::LARGE << ", " << FontIndex::MEDIUM << ", " << FontIndex::SMALL_ITALIC << "\n";
 
+    init_freetype();
 
     FontList fonts;
-    create_font(fonts[FontIndex::LARGE], "Poppins-Medium.ttf", 64, {20363});
-    create_font(fonts[FontIndex::MEDIUM], "Poppins-Light.ttf", 32, {20363});
-    create_font(fonts[FontIndex::SMALL_ITALIC], "Poppins-LightItalic.ttf", 24, {20363});
-    create_font(fonts[FontIndex::MONO], "ChivoMono-Light.ttf", 20, {20363});
-    //create_font(fonts[LARGE], "NotoSansJP-Regular.ttf", 64, {20363});
-    //create_font(fonts[MEDIUM], "NotoSansJP-Regular.ttf", 32, {20363});
-    //create_font(fonts[SMALL_ITALIC], "NotoSansJP-Regular.ttf", 24, {20363});
-    //create_font(fonts[MONO], "NotoSansJP-Regular.ttf", 20, {20363});
+    create_font(fonts[FontIndex::LARGE][64], "Poppins-Medium.ttf", 64, {});
+    create_font(fonts[FontIndex::MEDIUM][32], "Poppins-Light.ttf", 32, {});
+    create_font(fonts[FontIndex::SMALL_ITALIC][24], "Poppins-LightItalic.ttf", 24, {});
+    create_font(fonts[FontIndex::MONO][20], "ChivoMono-Light.ttf", 20, {});
+    create_font(fonts[FontIndex::JAPANESE][20], "NotoSansJP-Regular.ttf", 20, {20363});
 
     ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderColorStr, SHADER::COLOR);
 
@@ -240,8 +235,8 @@ int main(void)
     for (const std::pair<uint, Playlist>& playlist : playlists) {
         uint playlistID = playlist.first;
         if (playlistID > 0 && playlistID <= NUM_PLAYLISTS) {
-            text_init(playlistsDisplay[playlistID], wsconverter.from_bytes(playlist.second.name));
-            layout_text(playlistsDisplay[playlistID], fonts, FontIndex::MEDIUM);
+            text_init(playlistsDisplay[playlistID], wsconverter.from_bytes(playlist.second.name), 32);
+            layout_text(playlistsDisplay[playlistID], fonts, FontIndex::MEDIUM, playlistsDisplay[playlistID].fontSizePx);
             generate_text_strip_buffers(playlistsDisplay[playlistID].textStrip);
             std::cout << "adding playlist text for playlist " << playlist.second.name
                       << " to playlist slot " << playlistID << "\n";
@@ -374,13 +369,15 @@ int main(void)
     }
     
     free_gl(currentTrackDisplays);
-    free_gl(fonts[LARGE]);
-    free_gl(fonts[MEDIUM]);
-    free_gl(fonts[SMALL_ITALIC]);
-    free_gl(fonts[MONO]);
+    for (uint i = 0; i < FontIndex::NUM_FONTS; ++i) {
+        for (std::pair<const uint, FontData>& font : fonts[i]) {
+            FT_Done_Face(font.second.face);
+            free_gl(font.second);
+        }
+    }
     ShaderManager::delete_shaders();
 
-
+    shutdown_freetype();
     glfwDestroyWindow(window);
     glfwTerminate();
     exit(EXIT_SUCCESS);

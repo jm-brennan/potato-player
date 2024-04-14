@@ -12,9 +12,9 @@ void audio_file_init(AudioFileDisplay& audioFile, std::string filename)
 
     if (!f.isNull() && f.tag()) {
         TagLib::Tag *tag = f.tag();
-        text_init(audioFile.displayTitle, tag->title().toWString());
-        text_init(audioFile.displayArtistName, tag->artist().toWString());
-        text_init(audioFile.displayAlbumName, tag->album().toWString());
+        text_init(audioFile.displayTitle, tag->title().toWString(), 64);
+        text_init(audioFile.displayArtistName, tag->artist().toWString(), 32);
+        text_init(audioFile.displayAlbumName, tag->album().toWString(), 24);
         init(audioFile.progressBar, vec2(396.0f, 50.0f), vec2(364.0f, 2.0f), vec4(0.9f, 0.6f, 0.9f, 1.0f));
         init(audioFile.progressIndicator, vec2(396.0f, 40.0f), vec2(4.0f, 20.0f), vec4(0.9f, 0.6f, 0.9f, 1.0f));
 
@@ -24,8 +24,8 @@ void audio_file_init(AudioFileDisplay& audioFile, std::string filename)
             audioFile.lengthS = f.audioProperties()->lengthInSeconds();
         }
 
-        text_init(audioFile.displayLength, wsconverter.from_bytes("/" + seconds_to_display_time(audioFile.lengthS)));
-        text_init(audioFile.displayProgress, wsconverter.from_bytes(seconds_to_display_time(audioFile.displayTimeS)));
+        text_init(audioFile.displayLength, wsconverter.from_bytes("/" + seconds_to_display_time(audioFile.lengthS)), 20);
+        text_init(audioFile.displayProgress, wsconverter.from_bytes(seconds_to_display_time(audioFile.displayTimeS)), 20);
     }
     else
     {
@@ -48,25 +48,24 @@ void generate_display_objects(AudioFileDisplay& audioFile, FontList& fonts) {
     generate_image_buffers(audioFile.displayArt);
     set_image_texture_from_audio_file(audioFile.displayArt, audioFile.filename);
 
-
-    layout_text(audioFile.displayTitle, fonts, FontIndex::LARGE);
+    layout_text(audioFile.displayTitle, fonts, FontIndex::LARGE, audioFile.displayTitle.fontSizePx);
     float xpos = (800.0 / 2.0) - (audioFile.displayTitle.textStrip.width / 2.0);
     audioFile.displayTitle.model.pos = vec2(xpos, 396.0f);
     generate_text_strip_buffers(audioFile.displayTitle.textStrip);
 
-    layout_text(audioFile.displayArtistName, fonts, FontIndex::MEDIUM);
+    layout_text(audioFile.displayArtistName, fonts, FontIndex::MEDIUM, audioFile.displayArtistName.fontSizePx);
     audioFile.displayArtistName.model.pos = vec2(396.0f, 240.0f);
     generate_text_strip_buffers(audioFile.displayArtistName.textStrip);
 
-    layout_text(audioFile.displayAlbumName, fonts, FontIndex::SMALL_ITALIC);
+    layout_text(audioFile.displayAlbumName, fonts, FontIndex::SMALL_ITALIC, audioFile.displayAlbumName.fontSizePx);
     audioFile.displayAlbumName.model.pos = vec2(396.0f, 200.0f);
     generate_text_strip_buffers(audioFile.displayAlbumName.textStrip);
 
-    layout_text(audioFile.displayLength, fonts, FontIndex::MONO);
+    layout_text(audioFile.displayLength, fonts, FontIndex::MONO, audioFile.displayLength.fontSizePx);
     audioFile.displayLength.model.pos = vec2(760.0f - audioFile.displayLength.textStrip.width, 80.0f);
     generate_text_strip_buffers(audioFile.displayLength.textStrip);
     
-    layout_text(audioFile.displayProgress, fonts, FontIndex::MONO);
+    layout_text(audioFile.displayProgress, fonts, FontIndex::MONO, audioFile.displayProgress.fontSizePx);
     audioFile.displayProgress.model.pos = vec2(audioFile.displayLength.model.pos.x - audioFile.displayProgress.textStrip.width, 80.0f);
     generate_text_strip_buffers(audioFile.displayProgress.textStrip);
 }
@@ -82,8 +81,8 @@ void update_playback_progress(AudioFileDisplay& audioFile, uint currentFrame, ui
     {
         audioFile.displayTimeS = displayTimeS;
         free_gl(audioFile.displayProgress);
-        text_init(audioFile.displayProgress, wsconverter.from_bytes(seconds_to_display_time(displayTimeS)));
-        layout_text(audioFile.displayProgress, fonts, FontIndex::MONO);
+        text_init(audioFile.displayProgress, wsconverter.from_bytes(seconds_to_display_time(displayTimeS)), 20);
+        layout_text(audioFile.displayProgress, fonts, FontIndex::MONO, audioFile.displayProgress.fontSizePx);
         audioFile.displayProgress.model.pos = vec2(audioFile.displayLength.model.pos.x - audioFile.displayProgress.textStrip.width, 80.0f);
         generate_text_strip_buffers(audioFile.displayProgress.textStrip);
     }
@@ -119,11 +118,11 @@ std::string seconds_to_display_time(uint seconds) {
 void render_audio_file_display(const AudioFileDisplay& audioFile, FontList& fonts, bool isPlaying, const Camera& camera) {
     render_image(audioFile.displayArt, camera);
 
-    render_text(audioFile.displayTitle, fonts[audioFile.displayTitle.fontIndex], camera);
-    render_text(audioFile.displayArtistName, fonts[audioFile.displayArtistName.fontIndex], camera);
-    render_text(audioFile.displayAlbumName, fonts[audioFile.displayAlbumName.fontIndex], camera);
-    render_text(audioFile.displayLength, fonts[audioFile.displayLength.fontIndex], camera);
-    render_text(audioFile.displayProgress, fonts[audioFile.displayProgress.fontIndex], camera);
+    render_text(audioFile.displayTitle, fonts[audioFile.displayTitle.fontIndex][audioFile.displayTitle.fontSizePx], camera);
+    render_text(audioFile.displayArtistName, fonts[audioFile.displayArtistName.fontIndex][audioFile.displayArtistName.fontSizePx], camera);
+    render_text(audioFile.displayAlbumName, fonts[audioFile.displayAlbumName.fontIndex][audioFile.displayAlbumName.fontSizePx], camera);
+    render_text(audioFile.displayLength, fonts[audioFile.displayLength.fontIndex][audioFile.displayLength.fontSizePx], camera);
+    render_text(audioFile.displayProgress, fonts[audioFile.displayProgress.fontIndex][audioFile.displayProgress.fontSizePx], camera);
 
     render_color_quad(audioFile.progressBar, camera);
     render_color_quad(audioFile.progressIndicator, camera);

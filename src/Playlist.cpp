@@ -3,7 +3,7 @@
 namespace fs = std::filesystem;
 using namespace nlohmann;
 
-void add_all_tracks_in_dir(fs::path dir, std::set<fs::path>& tracks) {
+void add_all_tracks_in_dir(fs::path dir, std::vector<fs::path>& tracks) {
     for (const auto& path : fs::directory_iterator(dir)) {
         if (!fs::exists(path)) {
             continue;
@@ -15,7 +15,7 @@ void add_all_tracks_in_dir(fs::path dir, std::set<fs::path>& tracks) {
         } else {
             if (path.path().extension().u8string() == ".mp3") {
                 std::cout << "adding track " << path << "\n";
-                tracks.insert(path);
+                tracks.push_back(path);
             } else {
                 std::cout << "ignoring non music file " << path << "\n";
             }
@@ -80,7 +80,7 @@ Playlists parse_playlists() {
                     add_all_tracks_in_dir(trackPath, playlist.tracks);
                 } else {
                     std::cout << "found track " << track << "\n";
-                    playlist.tracks.insert(trackPath);
+                    playlist.tracks.push_back(trackPath);
                 }
             }
 
