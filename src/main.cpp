@@ -136,12 +136,15 @@ GLFWwindow* window_init() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     #endif
 
-    //glfwGetPrimaryMonitor()
+    // todo make cl param to pass glfwGetPrimaryMonitor() to enable fullscreen
     GLFWwindow* window = glfwCreateWindow(800, 480, "Le Potato Player", nullptr, nullptr);
     if (!window) {
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
+
+    // todo make cl param to enable
+    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
     glfwSetKeyCallback(window, glfw_key_callback);
     glfwMakeContextCurrent(window);
