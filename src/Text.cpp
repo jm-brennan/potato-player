@@ -272,6 +272,7 @@ void layout_text(Text& text, FontList& fonts, FontIndex desiredFontIndex, uint f
     if (!unseenGlyphs.empty()) {
         std::cout << "recreating font\n";
         free_gl(font);
+        // TODO shouldnt have to recreate font, should just be able to change glyph atlas
         create_font(font, font.fontFile, font.fontSizePx, unseenGlyphs);
     }
     
