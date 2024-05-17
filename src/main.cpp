@@ -261,7 +261,7 @@ int main(void) {
     std::random_device random;
 
 
-    std::vector<std::filesystem::path> playlist = randomize_playlist(playlists[1], random);
+    std::vector<std::filesystem::path> playlist = randomize_playlist(playlists[2], random);
 
     std::cout << "playlist size " << playlist.size() << ":\n";
     for (auto p : playlist) {

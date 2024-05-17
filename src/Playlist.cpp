@@ -12,11 +12,13 @@ void add_all_tracks_in_dir(fs::path dir, std::vector<fs::path>& tracks) {
         if (fs::is_directory(path)) {
             std::cout << "adding dir " << path << "\n";
             add_all_tracks_in_dir(path, tracks);
-        } else {
+        }
+        else {
             if (path.path().extension().u8string() == ".mp3") {
                 std::cout << "adding track " << path << "\n";
                 tracks.push_back(path);
-            } else {
+            }
+            else {
                 std::cout << "ignoring non music file " << path << "\n";
             }
         }
@@ -101,7 +103,7 @@ std::vector<std::filesystem::path> randomize_playlist(const Playlist& playlist,
     for (const std::filesystem::path& playlistEntry : playlist.tracks) {
         result.emplace_back(playlistEntry);
     }
-    std::shuffle(std::begin(result), std::end(result), random);
+    //std::shuffle(std::begin(result), std::end(result), random);
 
     return result;
 }
