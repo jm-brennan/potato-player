@@ -14,7 +14,8 @@ std::vector<fs::path> paths;
 std::atomic<uint> pathsIndex{0};
 ma_decoder* activeDecoder = nullptr;
 ma_decoder* nextDecoder = nullptr;
-std::atomic<float> currentTrackProgress{0.0f};
+std::atomic<uint> currentTrackFrame{0};
+std::atomic<uint> currentTrackLength{0};
 
 static ma_data_source* next_callback(ma_data_source* pDataSource)
 {
@@ -34,6 +35,29 @@ static ma_data_source* next_callback(ma_data_source* pDataSource)
     }
     ma_data_source_set_next_callback(nextDecoder, next_callback);
 
+    ma_format format;
+    ma_uint32 channels;
+    ma_uint32 sampleRate;
+    ma_channel channelMap[MA_MAX_CHANNELS];
+
+    result = ma_data_source_get_data_format(nextDecoder, &format, &channels, &sampleRate, channelMap, MA_MAX_CHANNELS);
+    if (result != MA_SUCCESS) {
+        printf("bad data format\n");
+    }
+
+    ma_uint64 length;
+
+    result = ma_data_source_get_length_in_pcm_frames(activeDecoder, &length);
+    if (result != MA_SUCCESS) {
+        printf("bad length\n");
+    }
+
+    currentTrackLength = length;
+
+    printf("new source is %d pcm frames long with sample rate of %d, giving time in seconds %d\n", length, sampleRate, (int)((1.0f/(float)sampleRate) * length));
+
+    currentTrackFrame = 0;
+
     /*
     This will be fired when the last item in the chain has reached the end. In this example we want
     to loop back to the start, so we need only return a pointer back to the head.
@@ -52,6 +76,8 @@ void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uin
         return;  // Failed to retrieve the cursor.
     }
 
+    currentTrackFrame += frameCount;// cursor;
+    //printf("setting current frame to %d from data pointer %d\n", currentTrackFrame.load(), pDevice->pUserData);
     //printf("cursor currently at frame %d\n", cursor);
 
     ma_decoder* pDecoder = (ma_decoder*)pDevice->pUserData;
@@ -211,6 +237,28 @@ int start_playlist_playback(ma_device_config& deviceConfig,
         printf("could not init decoder for %s\n", audioPaths[0].c_str());
     }
     ma_data_source_set_next_callback(activeDecoder, next_callback);
+
+    ma_format format;
+    ma_uint32 channels;
+    ma_uint32 sampleRate;
+    ma_channel channelMap[MA_MAX_CHANNELS];
+
+    result = ma_data_source_get_data_format(activeDecoder, &format, &channels, &sampleRate, channelMap, MA_MAX_CHANNELS);
+    if (result != MA_SUCCESS) {
+        printf("bad data format\n");
+    }
+
+    ma_uint64 length;
+
+    result = ma_data_source_get_length_in_pcm_frames(activeDecoder, &length);
+    if (result != MA_SUCCESS) {
+        printf("bad length\n");
+    }
+
+    currentTrackLength = length;
+    currentTrackFrame = 0;
+    printf("first source is %d pcm frames long with sample rate of %d, giving time in seconds %d\n", length, sampleRate, (int)((1.0f/(float)sampleRate) * length));
+
 
     result = ma_decoder_init_file(audioPaths[1].c_str(), &decoderConfig, nextDecoder);
     if (result != MA_SUCCESS) {

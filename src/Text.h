@@ -10,12 +10,10 @@
 #include "Texture.h"
 #include "Model.h"
 #include "Camera.h"
-
-struct TextStrip {
-    std::vector<TexturePoint> points;
-    float width = 0.0;
-    uint vertexBufferID = 0;
-};
+#include <map>
+#include <unordered_map>
+#include <array>
+#include <wchar.h>
 
 struct TextGlyph {
     vec2 texCoord; // 0 to 1 start of the glyph texture in the atlas
@@ -24,23 +22,51 @@ struct TextGlyph {
     vec2 bearing; // offset from baseline to left/top of glyph
 };
 
-struct Text {
-    std::string str;
-    TextStrip textStrip;
-    Model model;
-};
-
 struct FontData {
+    std::string fontFile;
+    FT_Face face;
+    uint fontSizePx = 24;
     uint atlasTextureID = 0;
     vec2 atlasSize;
-    std::vector<TextGlyph> glyphs;
+    std::vector<TextGlyph> ascii_glyphs;
+    std::map<wchar_t, TextGlyph> non_ascii_glyphs;
 };
 
-void init(Text& text, const std::string& str);
+enum FontIndex {
+    MONO = 0,
+    SMALL_ITALIC,
+    MEDIUM,
+    LARGE,
+    JAPANESE,
+
+    NUM_FONTS
+};
+
+using FontList = std::array<std::unordered_map<uint, FontData>, static_cast<size_t>(NUM_FONTS)>;
+
+struct TextStrip {
+    std::vector<TexturePoint> points;
+    float width = 0.0;
+    uint vertexBufferID = 0;
+};
+
+struct Text {
+    std::wstring str;
+    TextStrip textStrip;
+    Model model;
+    FontIndex fontIndex;
+    uint fontSizePx = 24;
+};
+
+
+void init_freetype();
+void shutdown_freetype();
+void text_init(Text& text, const std::wstring& str, uint fontSizePx);
 void free_gl(Text& text);
 void free_gl(FontData& font);
-FontData create_font(std::string font, uint size);
-void layout_text(Text& text, const FontData& font);
+void create_font(FontData& font, std::string fontName, uint size, std::vector<wchar_t> unicodeToCreate);
+const TextGlyph* get_non_ascii_glyph(const FontData& font, const wchar_t c);
+void layout_text(Text& text, FontList& fonts, FontIndex desiredFont, uint fontSizePx);
 void generate_text_strip_buffers(TextStrip& textStrip);
 void render_text(const Text& text, const FontData& font, const Camera& camera);
 

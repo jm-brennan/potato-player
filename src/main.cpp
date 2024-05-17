@@ -26,12 +26,17 @@
 #include "miniaudio.h"
 
 #include "Playlist.h"
-#include "AudioFile.h"
+#include "AudioFileDisplay.h"
 #include "audio_player.h"
+#include "gpio.h"
+#include "ColorQuad.h"
 
 using namespace std;
 
 const uint NUM_PLAYLISTS = 6;
+
+extern std::atomic<uint> currentTrackFrame;
+extern std::atomic<uint> currentTrackLength;
 
 enum State {
     IDLE,
@@ -62,9 +67,9 @@ void blank_screen() {
     std::cout << "disable screen\n";
 }
 
-void render_playlists_infO(const std::map<uint, Text>& playlists, const FontData& font, Camera& camera) {
+void render_playlists_infO(const std::map<uint, Text>& playlists, FontList& fonts, Camera& camera) {
     for (const std::pair<uint, Text>& playlist : playlists) {
-        render_text(playlist.second, font, camera);
+        render_text(playlist.second, fonts[FontIndex::MEDIUM][32], camera);
     }
 }
 
@@ -94,7 +99,7 @@ void play(State& playerState, ma_device& device) {
         }
     }
     else {
-        std::cout << "Already playing\n";
+        //std::cout << "Already playing\n";
     } 
 }
 
@@ -191,19 +196,36 @@ int main(void)
         "{\n"
         "   gl_FragColor = vec4(1.0, 1.0, 1.0, texture2D(s_texture, v_texCoord).a);\n"
         "}\n";
-        
+    
+    string fShaderColorStr =
+        "precision mediump float;\n"
+        "//uniform vec4 v_color;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n"
+        "}\n";
+
 
     ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderTextStr, SHADER::TEXT);
 
     ShaderManager::use(TEXT);
     GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXT), "s_texture"), 0));
-    std::cout << "Creating fonts\n";
-    FontData smallFont = create_font("Poppins-Light.ttf", 32);
-    FontData largeFont = create_font("Poppins-Medium.ttf", 64);
+    std::cout << "Creating fonts at indices: " << FontIndex::LARGE << ", " << FontIndex::MEDIUM << ", " << FontIndex::SMALL_ITALIC << "\n";
+
+    init_freetype();
+
+    FontList fonts;
+    create_font(fonts[FontIndex::LARGE][64], "Poppins-Medium.ttf", 64, {});
+    create_font(fonts[FontIndex::MEDIUM][32], "Poppins-Light.ttf", 32, {});
+    create_font(fonts[FontIndex::SMALL_ITALIC][24], "Poppins-LightItalic.ttf", 24, {});
+    create_font(fonts[FontIndex::MONO][20], "ChivoMono-Light.ttf", 20, {});
+    create_font(fonts[FontIndex::JAPANESE][20], "NotoSansJP-Regular.ttf", 20, {20363});
+
+    ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderColorStr, SHADER::COLOR);
 
     ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderTextureStr, SHADER::IMAGE);
 
-    State playerState = PLAYLIST_INFO;
+    State playerState = PLAYING;//PLAYLIST_INFO;
 
     Playlists playlists = parse_playlists();
 
@@ -213,8 +235,8 @@ int main(void)
     for (const std::pair<uint, Playlist>& playlist : playlists) {
         uint playlistID = playlist.first;
         if (playlistID > 0 && playlistID <= NUM_PLAYLISTS) {
-            init(playlistsDisplay[playlistID], playlist.second.name);
-            layout_text(playlistsDisplay[playlistID], smallFont);
+            text_init(playlistsDisplay[playlistID], wsconverter.from_bytes(playlist.second.name), 32);
+            layout_text(playlistsDisplay[playlistID], fonts, FontIndex::MEDIUM, playlistsDisplay[playlistID].fontSizePx);
             generate_text_strip_buffers(playlistsDisplay[playlistID].textStrip);
             std::cout << "adding playlist text for playlist " << playlist.second.name
                       << " to playlist slot " << playlistID << "\n";
@@ -235,19 +257,17 @@ int main(void)
     std::random_device random;
 
 
-    std::vector<std::filesystem::path> playlist = randomize_playlist(playlists[1], random);
+    std::vector<std::filesystem::path> playlist = randomize_playlist(playlists[2], random);
 
     std::cout << "playlist size " << playlist.size() << ":\n";
     for (auto p : playlist) {
         std::cout << p << "\n";
     }
 
-    std::vector<std::pair<bool, AudioFile>> fileDisplays;
-    fileDisplays.resize(playlist.size());
+    AudioFileDisplay currentTrackDisplays;
     uint currentPathsIndex = 0;
-    init(fileDisplays[currentPathsIndex].second, playlist[currentPathsIndex]);
-    generate_display_objects(fileDisplays[currentPathsIndex].second, largeFont, smallFont);
-    fileDisplays[currentPathsIndex].first = true;
+    audio_file_init(currentTrackDisplays, playlist[currentPathsIndex]);
+    generate_display_objects(currentTrackDisplays, fonts);
     ShaderManager::use(IMAGE);
     GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
 
@@ -258,7 +278,7 @@ int main(void)
 
     bool firstPlay = true;
 
-    uint framesToSwitch = 210;
+    uint framesToSwitch = 140;
     uint frameCounter = 0;
 
     const float FPS = 30.0f;
@@ -280,22 +300,26 @@ int main(void)
         glClearColor(0.13f, 0.14f, 0.15f, 1.0f);
 
         // process input
-        State newState = (State)((uint)(frameCounter / framesToSwitch) % 4);
-        std::cout << "current state is " << StateString(playerState)
-                  << ", state to switch to is " << StateString(newState) << "\n";
+        State newState = playerState;//(State)((uint)(frameCounter / framesToSwitch) % 4);
+        //std::cout << "current state is " << StateString(playerState)
+         //         << ", state to switch to is " << StateString(newState) << "\n";
 
-        uint newPathsIndex = pathsIndex.load();
-        if (currentPathsIndex != newPathsIndex && !fileDisplays[newPathsIndex].first) {
+        int newPathsIndex = pathsIndex.load();
+        if (currentPathsIndex != newPathsIndex) {
+            free_gl(currentTrackDisplays);
             std::cout << "generating display objects for " << paths[newPathsIndex] << "\n";
-            init(fileDisplays[newPathsIndex].second, playlist[newPathsIndex]);
-            generate_display_objects(fileDisplays[newPathsIndex].second, largeFont, smallFont);
+            audio_file_init(currentTrackDisplays, playlist[newPathsIndex]);
+            generate_display_objects(currentTrackDisplays, fonts);
             ShaderManager::use(IMAGE);
             GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
-            fileDisplays[newPathsIndex].first = true;
         }
 
         currentPathsIndex = newPathsIndex;
         // end process input
+
+        uint currentLength = currentTrackLength.load();
+        //std::cout << "current length is " << currentLength << "\n";
+        update_playback_progress(currentTrackDisplays, currentTrackFrame.load(), currentLength, fonts);
 
         switch (newState) {
             case IDLE:
@@ -312,19 +336,19 @@ int main(void)
                 else {
                     play(playerState, device);
                 }
-                render_audio_file_display(fileDisplays[currentPathsIndex].second, largeFont, smallFont, true, camera);
+                render_audio_file_display(currentTrackDisplays, fonts, true, camera);
                 break;
             case PAUSED:
                 if (playerState == PLAYING) {
                     pause(playerState, device);
                 }
-                render_audio_file_display(fileDisplays[currentPathsIndex].second, largeFont, smallFont, false, camera);
+                render_audio_file_display(currentTrackDisplays, fonts, false, camera);
                 break;
             case PLAYLIST_INFO:
                 if (playerState == PLAYING) {
                     pause(playerState, device);
                 }
-                render_playlists_infO(playlistsDisplay, smallFont, camera);
+                render_playlists_infO(playlistsDisplay, fonts, camera);
                 break;
             default:
                 break;
@@ -344,15 +368,16 @@ int main(void)
         ++frameCounter;
     }
     
-    for (std::pair<bool, AudioFile>& fileDisplay : fileDisplays) {
-        free_gl(fileDisplay.second);
-        fileDisplay.first = false;
+    free_gl(currentTrackDisplays);
+    for (uint i = 0; i < FontIndex::NUM_FONTS; ++i) {
+        for (std::pair<const uint, FontData>& font : fonts[i]) {
+            FT_Done_Face(font.second.face);
+            free_gl(font.second);
+        }
     }
-    free_gl(largeFont);
-    free_gl(smallFont);
     ShaderManager::delete_shaders();
 
-
+    shutdown_freetype();
     glfwDestroyWindow(window);
     glfwTerminate();
     exit(EXIT_SUCCESS);
