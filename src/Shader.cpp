@@ -1,14 +1,16 @@
-#include "ShaderManager.h"
+#include "Shader.h"
 #include <array>
 #include <algorithm>
 #include "paths.h"
+
+namespace shader {
 
 std::array<uint, SHADER::NUM_SHADERS> shaders;
 
 uint compile_shader(std::string shaderFilename, GLint shaderType);
 std::string load_shader_file(std::string filename);
 
-void ShaderManager::create_shader_from_string(std::string vShaderStr, std::string fShaderStr, SHADER s) {
+void create_shader_from_string(std::string vShaderStr, std::string fShaderStr, SHADER s) {
     uint id = glCreateProgram(); // @TODO change GLEC to be able get the value out?
     uint vid = compile_shader(vShaderStr, GL_VERTEX_SHADER);
     GLEC(glAttachShader(id, vid));
@@ -29,19 +31,19 @@ void ShaderManager::create_shader_from_string(std::string vShaderStr, std::strin
     shaders[s] = id;
 }
 
-void ShaderManager::create_shader_from_file(std::string vShaderFile, std::string fShaderFile, SHADER s) {
+void create_shader_from_file(std::string vShaderFile, std::string fShaderFile, SHADER s) {
     create_shader_from_string(load_shader_file(vShaderFile), load_shader_file(fShaderFile), s);
 }
 
-void ShaderManager::use(SHADER s) {
+void use(SHADER s) {
     GLEC(glUseProgram(shaders[s]));
 }
 
-uint ShaderManager::program(SHADER s) {
+uint program(SHADER s) {
     return shaders[s];
 }
 
-void ShaderManager::delete_shaders() {
+void delete_shaders() {
     for (uint shader : shaders) {
         GLEC(glDeleteProgram(shader));
     }
@@ -81,4 +83,4 @@ std::string load_shader_file(std::string filename) {
 }
 
 
-
+}

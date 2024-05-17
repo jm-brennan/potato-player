@@ -17,8 +17,7 @@ ma_decoder* nextDecoder = nullptr;
 std::atomic<uint> currentTrackFrame{0};
 std::atomic<uint> currentTrackLength{0};
 
-static ma_data_source* next_callback(ma_data_source* pDataSource)
-{
+static ma_data_source* next_callback(ma_data_source* pDataSource) {
     printf("finished data source at index %d\n", pathsIndex.load());
     pathsIndex = (pathsIndex + 1) % paths.size();
 
@@ -65,8 +64,7 @@ static ma_data_source* next_callback(ma_data_source* pDataSource)
     return activeDecoder;
 }
 
-void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
-{
+void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount) {
     //printf("data callback called with %d frames\n", frameCount);
 
     ma_uint64 cursor;

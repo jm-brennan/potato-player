@@ -20,7 +20,7 @@
 #include <mutex>
 #include <filesystem>
 
-#include "ShaderManager.h"
+#include "Shader.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "miniaudio.h"
@@ -73,12 +73,10 @@ void render_playlists_infO(const std::map<uint, Text>& playlists, FontList& font
     }
 }
 
-static void glfw_error_callback(int error, const char* description)
-{
+static void glfw_error_callback(int error, const char* description) {
     fprintf(stderr, "GLFW Error: %s\n", description);
 }
-static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
+static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
@@ -121,8 +119,7 @@ void pause(State& playerState, ma_device& device) {
     }
 }
 
-int main(void)
-{
+GLFWwindow* window_init() {
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit()) {
         exit(EXIT_FAILURE);
@@ -148,7 +145,11 @@ int main(void)
 
     glfwSetKeyCallback(window, glfw_key_callback);
     glfwMakeContextCurrent(window);
-    
+
+    return window;
+}
+
+void opengl_init() {
     #ifdef USE_OPENGL_ES
     gladLoadGLES2(glfwGetProcAddress);
     #else
@@ -159,6 +160,11 @@ int main(void)
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+int main(void) {
+    GLFWwindow* window = window_init();
+    opengl_init();
 
     Camera camera;
     camera.screenWidth = 800;
@@ -168,13 +174,14 @@ int main(void)
     camera.up = vec3(0.0, 1.0, 0.0);
     calculate_view_projection(camera);
 
+    //shaders_init();
+
     string vShaderTextureStr = 
         "attribute vec2 a_position;\n"
         "attribute vec2 a_texCoord;\n"
         "varying vec2 v_texCoord;\n"
         "uniform mat4 m_mvp;\n"
-        "void main()\n"
-        "{\n"
+        "void main() {\n"
         "   gl_Position = m_mvp * vec4(a_position.x, a_position.y, 0.0, 1.0);\n"
         "   v_texCoord = a_texCoord;\n"
         "}\n";
@@ -183,8 +190,7 @@ int main(void)
         "precision mediump float;\n"
         "varying vec2 v_texCoord;\n"
         "uniform sampler2D s_texture;\n"
-        "void main()\n"
-        "{\n"
+        "void main() {\n"
         "   gl_FragColor = texture2D(s_texture, v_texCoord);\n"
         "}\n";
     
@@ -192,44 +198,42 @@ int main(void)
         "precision mediump float;\n"
         "varying vec2 v_texCoord;\n"
         "uniform sampler2D s_texture;\n"
-        "void main()\n"
-        "{\n"
+        "void main() {\n"
         "   gl_FragColor = vec4(1.0, 1.0, 1.0, texture2D(s_texture, v_texCoord).a);\n"
         "}\n";
     
     string fShaderColorStr =
         "precision mediump float;\n"
         "//uniform vec4 v_color;\n"
-        "void main()\n"
-        "{\n"
+        "void main() {\n"
         "   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n"
         "}\n";
 
 
-    ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderTextStr, SHADER::TEXT);
+    shader::create_shader_from_string(vShaderTextureStr, fShaderTextStr, SHADER::TEXT);
 
-    ShaderManager::use(TEXT);
-    GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(TEXT), "s_texture"), 0));
-    std::cout << "Creating fonts at indices: " << FontIndex::LARGE << ", " << FontIndex::MEDIUM << ", " << FontIndex::SMALL_ITALIC << "\n";
+    //shader::use(TEXT);
+    //GLEC(glUniform1i(glGetUniformLocation(shader::program(TEXT), "s_texture"), 0));
+    //std::cout << "Creating fonts at indices: " << FontIndex::LARGE << ", " << FontIndex::MEDIUM << ", " << FontIndex::SMALL_ITALIC << "\n";
 
-    init_freetype();
+    freetype_init();
 
     FontList fonts;
-    create_font(fonts[FontIndex::LARGE][64], "Poppins-Medium.ttf", 64, {});
-    create_font(fonts[FontIndex::MEDIUM][32], "Poppins-Light.ttf", 32, {});
-    create_font(fonts[FontIndex::SMALL_ITALIC][24], "Poppins-LightItalic.ttf", 24, {});
-    create_font(fonts[FontIndex::MONO][20], "ChivoMono-Light.ttf", 20, {});
-    create_font(fonts[FontIndex::JAPANESE][20], "NotoSansJP-Regular.ttf", 20, {20363});
+    font_init(fonts[FontIndex::LARGE][64], "Poppins-Medium.ttf", 64, {});
+    font_init(fonts[FontIndex::MEDIUM][32], "Poppins-Light.ttf", 32, {});
+    font_init(fonts[FontIndex::SMALL_ITALIC][24], "Poppins-LightItalic.ttf", 24, {});
+    font_init(fonts[FontIndex::MONO][20], "ChivoMono-Light.ttf", 20, {});
+    font_init(fonts[FontIndex::JAPANESE][20], "NotoSansJP-Regular.ttf", 20, {});
 
-    ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderColorStr, SHADER::COLOR);
+    shader::create_shader_from_string(vShaderTextureStr, fShaderColorStr, SHADER::COLOR);
 
-    ShaderManager::create_shader_from_string(vShaderTextureStr, fShaderTextureStr, SHADER::IMAGE);
+    shader::create_shader_from_string(vShaderTextureStr, fShaderTextureStr, SHADER::IMAGE);
 
     State playerState = PLAYING;//PLAYLIST_INFO;
 
     Playlists playlists = parse_playlists();
 
-    ShaderManager::use(TEXT);
+    shader::use(TEXT);
     std::cout << "Creating playlists display\n";
     std::map<uint, Text> playlistsDisplay;
     for (const std::pair<uint, Playlist>& playlist : playlists) {
@@ -257,7 +261,7 @@ int main(void)
     std::random_device random;
 
 
-    std::vector<std::filesystem::path> playlist = randomize_playlist(playlists[2], random);
+    std::vector<std::filesystem::path> playlist = randomize_playlist(playlists[1], random);
 
     std::cout << "playlist size " << playlist.size() << ":\n";
     for (auto p : playlist) {
@@ -268,8 +272,8 @@ int main(void)
     uint currentPathsIndex = 0;
     audio_file_init(currentTrackDisplays, playlist[currentPathsIndex]);
     generate_display_objects(currentTrackDisplays, fonts);
-    ShaderManager::use(IMAGE);
-    GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
+    shader::use(IMAGE);
+    GLEC(glUniform1i(glGetUniformLocation(shader::program(IMAGE), "s_texture"), 1));
 
     ma_device_config deviceConfig;
     ma_device device;
@@ -310,8 +314,8 @@ int main(void)
             std::cout << "generating display objects for " << paths[newPathsIndex] << "\n";
             audio_file_init(currentTrackDisplays, playlist[newPathsIndex]);
             generate_display_objects(currentTrackDisplays, fonts);
-            ShaderManager::use(IMAGE);
-            GLEC(glUniform1i(glGetUniformLocation(ShaderManager::program(IMAGE), "s_texture"), 1));
+            shader::use(IMAGE);
+            GLEC(glUniform1i(glGetUniformLocation(shader::program(IMAGE), "s_texture"), 1));
         }
 
         currentPathsIndex = newPathsIndex;
@@ -375,7 +379,7 @@ int main(void)
             free_gl(font.second);
         }
     }
-    ShaderManager::delete_shaders();
+    shader::delete_shaders();
 
     shutdown_freetype();
     glfwDestroyWindow(window);

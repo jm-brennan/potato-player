@@ -5,8 +5,7 @@
 
 std::string seconds_to_display_time(uint seconds);
 
-void audio_file_init(AudioFileDisplay& audioFile, std::string filename)
-{
+void audio_file_init(AudioFileDisplay& audioFile, std::string filename) {
     audioFile.filename = filename;
     TagLib::FileRef f(filename.c_str());
 
@@ -27,8 +26,7 @@ void audio_file_init(AudioFileDisplay& audioFile, std::string filename)
         text_init(audioFile.displayLength, wsconverter.from_bytes("/" + seconds_to_display_time(audioFile.lengthS)), 20);
         text_init(audioFile.displayProgress, wsconverter.from_bytes(seconds_to_display_time(audioFile.displayTimeS)), 20);
     }
-    else
-    {
+    else {
         std::cerr << "Could not find tags for file " << filename << "\n";
     }
 }
@@ -77,8 +75,7 @@ void update_playback_progress(AudioFileDisplay& audioFile, uint currentFrame, ui
     audioFile.progressIndicator.pos.x = audioFile.progressBar.pos.x + (barSize * progressPercent);
 
     uint displayTimeS = std::floor(progressPercent * audioFile.lengthS);
-    if (displayTimeS != audioFile.displayTimeS)
-    {
+    if (displayTimeS != audioFile.displayTimeS) {
         audioFile.displayTimeS = displayTimeS;
         free_gl(audioFile.displayProgress);
         text_init(audioFile.displayProgress, wsconverter.from_bytes(seconds_to_display_time(displayTimeS)), 20);

@@ -1,15 +1,14 @@
 #include "ColorQuad.h"
-#include "ShaderManager.h"
+#include "Shader.h"
 
 #include <glm/gtx/rotate_vector.hpp>
 
-void init(ColorQuad& quad, vec2 pos, vec2 size, vec4 color)
-{
+void init(ColorQuad& quad, vec2 pos, vec2 size, vec4 color) {
     quad.pos = pos;
     quad.size = size;
 
 
-    ShaderManager::use(COLOR);
+    shader::use(COLOR);
     float vertices[] = {
         1.0f, 1.0f,
         1.0f, 0.0f,
@@ -32,20 +31,20 @@ void init(ColorQuad& quad, vec2 pos, vec2 size, vec4 color)
 
     GLEC(glEnableVertexAttribArray(0));
     GLEC(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(GL_FLOAT), (void*)0));
-    GLEC(glBindAttribLocation(ShaderManager::program(COLOR), 0, "a_position"));
+    GLEC(glBindAttribLocation(shader::program(COLOR), 0, "a_position"));
 
-    GLEC(glLinkProgram(ShaderManager::program(COLOR)));
+    GLEC(glLinkProgram(shader::program(COLOR)));
 }
 
 void render_color_quad(const ColorQuad& quad, const Camera& camera) {
     //std::cout << "rendering quad\n";
-    ShaderManager::use(COLOR);
+    shader::use(COLOR);
     GLEC(glBindBuffer(GL_ARRAY_BUFFER, quad.vertexBufferID));
     GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quad.elementBufferID));
 
     GLEC(glEnableVertexAttribArray(0));
     GLEC(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(GL_FLOAT), (void*)0));
-    GLEC(glBindAttribLocation(ShaderManager::program(COLOR), 0, "a_position"));
+    GLEC(glBindAttribLocation(shader::program(COLOR), 0, "a_position"));
 
     //std::cout << "rendering quad at pos " << vec_string(quad.pos) << ", size" << vec_string(quad.size) << ", vbid " << quad.vertexBufferID << " and ebid " << quad.elementBufferID << "\n";
 
@@ -56,8 +55,8 @@ void render_color_quad(const ColorQuad& quad, const Camera& camera) {
     mat4 mvp = mat4(1.0f);
     mvp = camera.viewProjection * model;
 
-    GLEC(glUniformMatrix4fv(glGetUniformLocation(ShaderManager::program(COLOR), "m_mvp"), 1, false, value_ptr(mvp)));
-    //GLEC(glUniform4fv(glGetUniformLocation(ShaderManager::program(COLOR), "v_color"), 1, value_ptr(quad.color)));
+    GLEC(glUniformMatrix4fv(glGetUniformLocation(shader::program(COLOR), "m_mvp"), 1, false, value_ptr(mvp)));
+    //GLEC(glUniform4fv(glGetUniformLocation(shader::program(COLOR), "v_color"), 1, value_ptr(quad.color)));
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }

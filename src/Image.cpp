@@ -1,7 +1,7 @@
 #include "Image.h"
 
 #include "definitions.h"
-#include "ShaderManager.h"
+#include "Shader.h"
 
 #include <glm/gtx/rotate_vector.hpp>
 
@@ -13,7 +13,7 @@
 #include "stb_image.h"
 
 void generate_image_buffers(Image& image) {
-    ShaderManager::use(IMAGE);
+    shader::use(IMAGE);
     GLEC(glActiveTexture(GL_TEXTURE1));
     float vertices[] = {
         // positions        // texture coords
@@ -38,12 +38,12 @@ void generate_image_buffers(Image& image) {
 
     GLEC(glEnableVertexAttribArray(0));
     GLEC(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)0));
-    GLEC(glBindAttribLocation(ShaderManager::program(IMAGE), 0, "a_position"));
+    GLEC(glBindAttribLocation(shader::program(IMAGE), 0, "a_position"));
 
     GLEC(glEnableVertexAttribArray(1));
     GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)(2*sizeof(GL_FLOAT))));
-    GLEC(glBindAttribLocation(ShaderManager::program(IMAGE), 1, "a_texCoord"));
-    GLEC(glLinkProgram(ShaderManager::program(IMAGE)));
+    GLEC(glBindAttribLocation(shader::program(IMAGE), 1, "a_texCoord"));
+    GLEC(glLinkProgram(shader::program(IMAGE)));
 }
 
 void free_gl(Image& image) {
@@ -53,7 +53,7 @@ void free_gl(Image& image) {
 }
 
 void set_image_texture_from_audio_file(Image& image, std::string audioFileName) {
-    ShaderManager::use(IMAGE);
+    shader::use(IMAGE);
     // load and create a texture 
     // -------------------------
     GLEC(glActiveTexture(GL_TEXTURE1));
@@ -114,7 +114,7 @@ void set_image_texture_from_audio_file(Image& image, std::string audioFileName) 
 }
 
 void render_image(const Image& image, const Camera& camera) {
-    ShaderManager::use(IMAGE);
+    shader::use(IMAGE);
     GLEC(glActiveTexture(GL_TEXTURE1));
     GLEC(glBindTexture(GL_TEXTURE_2D, image.textureID));
     GLEC(glBindBuffer(GL_ARRAY_BUFFER, image.vertexBufferID));
@@ -122,11 +122,11 @@ void render_image(const Image& image, const Camera& camera) {
 
     GLEC(glEnableVertexAttribArray(0));
     GLEC(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)0));
-    GLEC(glBindAttribLocation(ShaderManager::program(IMAGE), 0, "a_position"));
+    GLEC(glBindAttribLocation(shader::program(IMAGE), 0, "a_position"));
 
     GLEC(glEnableVertexAttribArray(1));
     GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)(2*sizeof(GL_FLOAT))));
-    GLEC(glBindAttribLocation(ShaderManager::program(IMAGE), 1, "a_texCoord"));
+    GLEC(glBindAttribLocation(shader::program(IMAGE), 1, "a_texCoord"));
     
     glm::mat4 model = glm::mat4(1.0f);
     model = translate(model, vec3(image.model.pos.x, image.model.pos.y, 0.0f));
@@ -135,7 +135,7 @@ void render_image(const Image& image, const Camera& camera) {
     mat4 mvp = mat4(1.0f);
     mvp = camera.viewProjection * model;
 
-    GLEC(glUniformMatrix4fv(glGetUniformLocation(ShaderManager::program(IMAGE), "m_mvp"), 1, false, value_ptr(mvp)));
+    GLEC(glUniformMatrix4fv(glGetUniformLocation(shader::program(IMAGE), "m_mvp"), 1, false, value_ptr(mvp)));
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     GLEC(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }

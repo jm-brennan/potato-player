@@ -51,8 +51,7 @@ namespace fs = std::filesystem;
 ma_uint32   g_decoderCount;
 ma_decoder* decoders;
 
-static ma_data_source* next_callback_tail(ma_data_source* pDataSource)
-{
+static ma_data_source* next_callback_tail(ma_data_source* pDataSource) {
     MA_ASSERT(g_decoderCount > 0);  /* <-- We check for this in main() so should never happen. */
 
     /*
@@ -62,8 +61,7 @@ static ma_data_source* next_callback_tail(ma_data_source* pDataSource)
     return &decoders[0];
 }
 
-static void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
-{
+static void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount) {
     ma_uint64 cursor;
 
     ma_result result = ma_data_source_get_cursor_in_pcm_frames(pDevice->pUserData, &cursor);
@@ -84,8 +82,7 @@ static void data_callback(ma_device* pDevice, void* pOutput, const void* pInput,
     (void)pInput;
 }
 
-int play(std::vector<fs::path> audioPaths, fs::path next)
-{
+int play(std::vector<fs::path> audioPaths, fs::path next) {
     ma_result result = MA_SUCCESS;
     ma_uint32 iDecoder;
     ma_decoder_config decoderConfig;

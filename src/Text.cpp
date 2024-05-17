@@ -1,7 +1,7 @@
 #include "Text.h"
 
 #include "gladInclude.h"
-#include "ShaderManager.h"
+#include "Shader.h"
 #include "definitions.h"
 #include "paths.h"
 
@@ -11,7 +11,7 @@ using namespace glm;
 
 FT_Library freetype;
 
-void init_freetype() {
+void freetype_init() {
     if (FT_Init_FreeType(&freetype)) {
         printf("ERROR::FreeType init\n");
         return;
@@ -22,7 +22,7 @@ void shutdown_freetype() {
     FT_Done_FreeType(freetype);
 }
 
-void create_font(FontData& font, 
+void font_init(FontData& font, 
                  std::string fontName,
                  uint size,
                  std::vector<wchar_t> unicodeToCreate) {
@@ -210,7 +210,7 @@ FontIndex find_font_that_supports_glyphs(std::wstring& str, uint desiredSize, Fo
     }
 
     if (fonts[bestIndex].find(desiredSize) == fonts[bestIndex].end()) {
-        create_font(fonts[bestIndex][desiredSize], bestFontName, desiredSize, {});
+        font_init(fonts[bestIndex][desiredSize], bestFontName, desiredSize, {});
     }
     // TODO iterators to avoid multiple lookups
     FontData& bestFont = fonts[bestIndex][desiredSize];
@@ -273,7 +273,7 @@ void layout_text(Text& text, FontList& fonts, FontIndex desiredFontIndex, uint f
         std::cout << "recreating font\n";
         free_gl(font);
         // TODO shouldnt have to recreate font, should just be able to change glyph atlas
-        create_font(font, font.fontFile, font.fontSizePx, unseenGlyphs);
+        font_init(font, font.fontFile, font.fontSizePx, unseenGlyphs);
     }
     
     uint i = 0; // textStrip points array index
@@ -316,7 +316,7 @@ void layout_text(Text& text, FontList& fonts, FontIndex desiredFontIndex, uint f
 }
 
 void generate_text_strip_buffers(TextStrip& textStrip) {
-    ShaderManager::use(TEXT);
+    shader::use(TEXT);
     GLEC(glGenBuffers(1, &textStrip.vertexBufferID));
 
     std::cout << "text strip size " << sizeof(TexturePoint)
@@ -329,19 +329,19 @@ void generate_text_strip_buffers(TextStrip& textStrip) {
 }
 
 void render_text(const Text& text, const FontData& font, const Camera& camera) {
-    ShaderManager::use(TEXT);
+    shader::use(TEXT);
     GLEC(glActiveTexture(GL_TEXTURE0));
     GLEC(glBindTexture(GL_TEXTURE_2D, font.atlasTextureID));
     GLEC(glBindBuffer(GL_ARRAY_BUFFER, text.textStrip.vertexBufferID));
 
     GLEC(glEnableVertexAttribArray(0));
     GLEC(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)0));
-    GLEC(glBindAttribLocation(ShaderManager::program(TEXT), 0, "a_position"));
+    GLEC(glBindAttribLocation(shader::program(TEXT), 0, "a_position"));
 
     GLEC(glEnableVertexAttribArray(1));
     GLEC(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)(2*sizeof(GL_FLOAT))));
-    GLEC(glBindAttribLocation(ShaderManager::program(TEXT), 1, "a_texCoord"));
-    //GLEC(glLinkProgram(ShaderManager::program(TEXT)));
+    GLEC(glBindAttribLocation(shader::program(TEXT), 1, "a_texCoord"));
+    //GLEC(glLinkProgram(shader::program(TEXT)));
 
     GLEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
@@ -354,7 +354,7 @@ void render_text(const Text& text, const FontData& font, const Camera& camera) {
 
     //std::cout << "vp:\n" << mat_string(camera.viewProjection) << "\n";
 
-    GLEC(glUniformMatrix4fv(glGetUniformLocation(ShaderManager::program(TEXT), "m_mvp"), 1, false, value_ptr(mvp)));
+    GLEC(glUniformMatrix4fv(glGetUniformLocation(shader::program(TEXT), "m_mvp"), 1, false, value_ptr(mvp)));
 
     GLEC(glDrawArrays(GL_TRIANGLES, 0, text.textStrip.points.size()));
 

@@ -59,12 +59,12 @@ struct Text {
 };
 
 
-void init_freetype();
+void freetype_init();
 void shutdown_freetype();
 void text_init(Text& text, const std::wstring& str, uint fontSizePx);
 void free_gl(Text& text);
 void free_gl(FontData& font);
-void create_font(FontData& font, std::string fontName, uint size, std::vector<wchar_t> unicodeToCreate);
+void font_init(FontData& font, std::string fontName, uint size, std::vector<wchar_t> unicodeToCreate);
 const TextGlyph* get_non_ascii_glyph(const FontData& font, const wchar_t c);
 void layout_text(Text& text, FontList& fonts, FontIndex desiredFont, uint fontSizePx);
 void generate_text_strip_buffers(TextStrip& textStrip);

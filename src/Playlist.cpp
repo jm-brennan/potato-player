@@ -78,7 +78,8 @@ Playlists parse_playlists() {
                 if (fs::is_directory(trackPath)) {
                     std::cout << "playlist " << id << " contains all tracks in directory " << trackPath << "\n";
                     add_all_tracks_in_dir(trackPath, playlist.tracks);
-                } else {
+                } 
+                else {
                     std::cout << "found track " << track << "\n";
                     playlist.tracks.push_back(trackPath);
                 }
@@ -86,8 +87,7 @@ Playlists parse_playlists() {
 
             playlists[id] = playlist;
         }
-        else
-        {
+        else {
             std::cout << "Playlist file " << playlistFile.path() << " is not formatted correctly";
         }
     }
@@ -101,7 +101,7 @@ std::vector<std::filesystem::path> randomize_playlist(const Playlist& playlist,
     for (const std::filesystem::path& playlistEntry : playlist.tracks) {
         result.emplace_back(playlistEntry);
     }
-    //std::shuffle(std::begin(result), std::end(result), random);
+    std::shuffle(std::begin(result), std::end(result), random);
 
     return result;
 }
