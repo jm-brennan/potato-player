@@ -11,6 +11,7 @@ const uint SAMPLE_RATE = 44100;
 
 ma_decoder_config decoderConfig;
 std::vector<fs::path> paths;
+std::vector<uint> pathsPlayOrder;
 std::atomic<uint> pathsIndex{0};
 ma_decoder* activeDecoder = nullptr;
 ma_decoder* nextDecoder = nullptr;
@@ -28,7 +29,7 @@ static ma_data_source* next_callback(ma_data_source* pDataSource) {
 
     uint pathIndexOfNewNext = (pathsIndex+1)%paths.size();
 
-    ma_result result = ma_decoder_init_file(paths[pathIndexOfNewNext].c_str(), &decoderConfig, nextDecoder);
+    ma_result result = ma_decoder_init_file(paths[pathsPlayOrder[pathIndexOfNewNext]].c_str(), &decoderConfig, nextDecoder);
     if (result != MA_SUCCESS) {
         printf("could not init decoder for %s\n", paths[pathIndexOfNewNext].c_str());
     }
@@ -214,7 +215,8 @@ void init_decoder_config() {
 
 int start_playlist_playback(ma_device_config& deviceConfig,
                             ma_device& device, 
-                            std::vector<fs::path> audioPaths) {
+                            std::vector<fs::path> audioPaths,
+                            std::vector<uint> playOrder) {
 
     if (audioPaths.size() < 2) {
         printf("need more than 1 paths\n");
@@ -223,6 +225,7 @@ int start_playlist_playback(ma_device_config& deviceConfig,
 
     // TODO this is hacky and not safe yet
     paths = audioPaths;
+    pathsPlayOrder = playOrder;
 
     ma_result result;
     
@@ -230,9 +233,9 @@ int start_playlist_playback(ma_device_config& deviceConfig,
     nextDecoder = (ma_decoder*)malloc(sizeof(ma_decoder));
 
 
-    result = ma_decoder_init_file(audioPaths[0].c_str(), &decoderConfig, activeDecoder);
+    result = ma_decoder_init_file(paths[playOrder[0]].c_str(), &decoderConfig, activeDecoder);
     if (result != MA_SUCCESS) {
-        printf("could not init decoder for %s\n", audioPaths[0].c_str());
+        printf("could not init decoder for %s\n", paths[playOrder[0]].c_str());
     }
     ma_data_source_set_next_callback(activeDecoder, next_callback);
 
@@ -258,9 +261,9 @@ int start_playlist_playback(ma_device_config& deviceConfig,
     printf("first source is %d pcm frames long with sample rate of %d, giving time in seconds %d\n", length, sampleRate, (int)((1.0f/(float)sampleRate) * length));
 
 
-    result = ma_decoder_init_file(audioPaths[1].c_str(), &decoderConfig, nextDecoder);
+    result = ma_decoder_init_file(paths[pathsPlayOrder[1]].c_str(), &decoderConfig, nextDecoder);
     if (result != MA_SUCCESS) {
-        printf("could not init decoder for %s\n", audioPaths[1].c_str());
+        printf("could not init decoder for %s\n", paths[pathsPlayOrder[1]].c_str());
     }
 
     ma_data_source_set_next_callback(nextDecoder, next_callback);

@@ -82,5 +82,46 @@ std::string load_shader_file(std::string filename) {
     return shaderCode;
 }
 
+void shaders_init() {
+    std::string vShaderTextureStr = 
+        "attribute vec2 a_position;\n"
+        "attribute vec2 a_texCoord;\n"
+        "varying vec2 v_texCoord;\n"
+        "uniform mat4 m_mvp;\n"
+        "void main() {\n"
+        "   gl_Position = m_mvp * vec4(a_position.x, a_position.y, 0.0, 1.0);\n"
+        "   v_texCoord = a_texCoord;\n"
+        "}\n";
+    
+    std::string fShaderTextureStr =
+        "precision mediump float;\n"
+        "varying vec2 v_texCoord;\n"
+        "uniform sampler2D s_texture;\n"
+        "void main() {\n"
+        "   gl_FragColor = texture2D(s_texture, v_texCoord);\n"
+        "}\n";
+    
+    std::string fShaderTextStr =
+        "precision mediump float;\n"
+        "varying vec2 v_texCoord;\n"
+        "uniform sampler2D s_texture;\n"
+        "void main() {\n"
+        "   gl_FragColor = vec4(1.0, 1.0, 1.0, texture2D(s_texture, v_texCoord).a);\n"
+        "}\n";
+    
+    std::string fShaderColorStr =
+        "precision mediump float;\n"
+        "//uniform vec4 v_color;\n"
+        "void main() {\n"
+        "   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n"
+        "}\n";
+
+
+    shader::create_shader_from_string(vShaderTextureStr, fShaderTextStr, SHADER::TEXT);
+    shader::create_shader_from_string(vShaderTextureStr, fShaderColorStr, SHADER::COLOR);
+
+    shader::create_shader_from_string(vShaderTextureStr, fShaderTextureStr, SHADER::IMAGE);
+}
+
 
 }

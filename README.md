@@ -6,7 +6,8 @@ This is an (unfinished) exploratory project in making a dedicated speaker system
 
 Playlists are stored in the `playlists` directory and defined through json and list tracks (or directories, which recursively includes all tracks in that directory) from the `tracks` directory. 
 
-Screen rendering is done using OpenGL ES 2.0, as that is what is supported by the Le Potato. I recommend the "OpenGL Es 2.0 Programming Guide" book (ISBN 9780321502797) if you, like me, can't find good online resources for the older spec. The display shows the track title, artist, and album name, along with the album art and a progress bar and playback timestamp.
+Screen rendering is done using OpenGL ES 2.0, as that is what is supported by the Le Potato. I recommend the "OpenGL Es 2.0 Programming Guide" book (ISBN 9780321502797) if you, like me, can't find good online resources for the older spec. The display shows the track title, artist, and album name, along with the album art and a progress bar and playback timestamp. Example from playing a test file:
+![project render](res/playing_example.png)
 
 This project (currently) only renders text using fonts found in the `fonts` directory, which I will not be redistributing through this repo, so manually acquiring the needed fonts is left as an exercise to the reader.
 

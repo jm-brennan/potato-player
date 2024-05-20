@@ -87,6 +87,10 @@ Playlists parse_playlists() {
                 }
             }
 
+            playlist.playOrder.resize(playlist.tracks.size());
+            for (uint i = 0; i < playlist.tracks.size(); ++i) {
+                playlist.playOrder[i] = i;
+            }
             playlists[id] = playlist;
         }
         else {
@@ -96,14 +100,6 @@ Playlists parse_playlists() {
     return playlists;
 }
 
-std::vector<std::filesystem::path> randomize_playlist(const Playlist& playlist,
-                                                      std::random_device& random) {
-    std::vector<std::filesystem::path> result;
-    result.reserve(playlist.tracks.size());
-    for (const std::filesystem::path& playlistEntry : playlist.tracks) {
-        result.emplace_back(playlistEntry);
-    }
-    //std::shuffle(std::begin(result), std::end(result), random);
-
-    return result;
+void randomize_playlist_play_order(Playlist& playlist, std::random_device& random) {
+    std::shuffle(std::begin(playlist.playOrder), std::end(playlist.playOrder), random);
 }

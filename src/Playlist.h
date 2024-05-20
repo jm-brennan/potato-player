@@ -15,10 +15,11 @@ struct Playlist {
     uint32_t id = 0;
     std::string name;
     std::vector<std::filesystem::path> tracks;
+    std::vector<uint> playOrder;
 };
 
 using Playlists = std::unordered_map<uint32_t, Playlist>;
 
 Playlists parse_playlists();
 
-std::vector<std::filesystem::path> randomize_playlist(const Playlist& playlist, std::random_device& random);
+void randomize_playlist_play_order(Playlist& playlist, std::random_device& random);

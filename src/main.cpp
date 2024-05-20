@@ -18,6 +18,7 @@
 #include <string.h>
 #include <thread>
 #include <mutex>
+#include <algorithm>
 #include <filesystem>
 
 #include "Shader.h"
@@ -165,7 +166,16 @@ void opengl_init() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-int main(void) {
+char* get_arg(char** begin, char** end, const std::string& option) {
+    char** itr = std::find(begin, end, option);
+    if (itr != end && ++itr != end) {
+        return *itr;
+    }
+
+    return nullptr;
+}
+
+int main(int argc, char* argv[]) {
     GLFWwindow* window = window_init();
     opengl_init();
 
@@ -177,46 +187,8 @@ int main(void) {
     camera.up = vec3(0.0, 1.0, 0.0);
     calculate_view_projection(camera);
 
-    //shaders_init();
+    shader::shaders_init();
 
-    string vShaderTextureStr = 
-        "attribute vec2 a_position;\n"
-        "attribute vec2 a_texCoord;\n"
-        "varying vec2 v_texCoord;\n"
-        "uniform mat4 m_mvp;\n"
-        "void main() {\n"
-        "   gl_Position = m_mvp * vec4(a_position.x, a_position.y, 0.0, 1.0);\n"
-        "   v_texCoord = a_texCoord;\n"
-        "}\n";
-    
-    string fShaderTextureStr =
-        "precision mediump float;\n"
-        "varying vec2 v_texCoord;\n"
-        "uniform sampler2D s_texture;\n"
-        "void main() {\n"
-        "   gl_FragColor = texture2D(s_texture, v_texCoord);\n"
-        "}\n";
-    
-    string fShaderTextStr =
-        "precision mediump float;\n"
-        "varying vec2 v_texCoord;\n"
-        "uniform sampler2D s_texture;\n"
-        "void main() {\n"
-        "   gl_FragColor = vec4(1.0, 1.0, 1.0, texture2D(s_texture, v_texCoord).a);\n"
-        "}\n";
-    
-    string fShaderColorStr =
-        "precision mediump float;\n"
-        "//uniform vec4 v_color;\n"
-        "void main() {\n"
-        "   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n"
-        "}\n";
-
-
-    shader::create_shader_from_string(vShaderTextureStr, fShaderTextStr, SHADER::TEXT);
-
-    //shader::use(TEXT);
-    //GLEC(glUniform1i(glGetUniformLocation(shader::program(TEXT), "s_texture"), 0));
     //std::cout << "Creating fonts at indices: " << FontIndex::LARGE << ", " << FontIndex::MEDIUM << ", " << FontIndex::SMALL_ITALIC << "\n";
 
     freetype_init();
@@ -228,14 +200,26 @@ int main(void) {
     font_init(fonts[FontIndex::MONO][20], "ChivoMono-Light.ttf", 20, {});
     font_init(fonts[FontIndex::JAPANESE][20], "NotoSansJP-Regular.ttf", 20, {});
 
-    shader::create_shader_from_string(vShaderTextureStr, fShaderColorStr, SHADER::COLOR);
-
-    shader::create_shader_from_string(vShaderTextureStr, fShaderTextureStr, SHADER::IMAGE);
-
     State playerState = PLAYING;//PLAYLIST_INFO;
 
     Playlists playlists = parse_playlists();
 
+    char* playlistArg = get_arg(argv, argv + argc, "-p");
+    int currentPlaylistIndex = 2; // short test tracks by default
+
+    if (playlistArg) {
+        int playlistArgValue = atoi(playlistArg);
+        if (playlists.count(playlistArgValue)) {
+            currentPlaylistIndex = playlistArgValue;
+        }
+        else {
+            std::cout << "No such playlist " << playlistArgValue << ", using default\n";
+        }
+    }
+
+    Playlist& currentPlaylist = playlists[currentPlaylistIndex];
+
+    // TODO get this into a struct and out of main
     shader::use(TEXT);
     std::cout << "Creating playlists display\n";
     std::map<uint, Text> playlistsDisplay;
@@ -261,19 +245,26 @@ int main(void) {
     }
 
 
-    std::random_device random;
+    char* randomizeArg = get_arg(argv, argv + argc, "-r");
+    bool randomize = true;
 
+    if (randomizeArg) {
+        randomize = *randomizeArg == '0' ? false : true;
+    }
 
-    std::vector<std::filesystem::path> playlist = randomize_playlist(playlists[2], random);
+    if (randomize) {
+        std::random_device random;
+        randomize_playlist_play_order(currentPlaylist, random);
+    }
 
-    std::cout << "playlist size " << playlist.size() << ":\n";
-    for (auto p : playlist) {
+    std::cout << "playlist size " << currentPlaylist.tracks.size() << ":\n";
+    for (auto p : currentPlaylist.tracks) {
         std::cout << p << "\n";
     }
 
     AudioFileDisplay currentTrackDisplays;
     uint currentPathsIndex = 0;
-    audio_file_init(currentTrackDisplays, playlist[currentPathsIndex]);
+    audio_file_init(currentTrackDisplays, currentPlaylist.tracks[currentPlaylist.playOrder[currentPathsIndex]]);
     generate_display_objects(currentTrackDisplays, fonts);
     shader::use(IMAGE);
     GLEC(glUniform1i(glGetUniformLocation(shader::program(IMAGE), "s_texture"), 1));
@@ -314,8 +305,8 @@ int main(void) {
         int newPathsIndex = pathsIndex.load();
         if (currentPathsIndex != newPathsIndex) {
             free_gl(currentTrackDisplays);
-            std::cout << "generating display objects for " << paths[newPathsIndex] << "\n";
-            audio_file_init(currentTrackDisplays, playlist[newPathsIndex]);
+            std::cout << "generating display objects for " << paths[currentPlaylist.playOrder[newPathsIndex]] << "\n";
+            audio_file_init(currentTrackDisplays, currentPlaylist.tracks[currentPlaylist.playOrder[newPathsIndex]]);
             generate_display_objects(currentTrackDisplays, fonts);
             shader::use(IMAGE);
             GLEC(glUniform1i(glGetUniformLocation(shader::program(IMAGE), "s_texture"), 1));
@@ -337,7 +328,7 @@ int main(void) {
                 break;
             case PLAYING:
                 if (firstPlay) {
-                    start_playlist_playback(deviceConfig, device, playlist);
+                    start_playlist_playback(deviceConfig, device, currentPlaylist.tracks, currentPlaylist.playOrder);
                     firstPlay = false;
                 }
                 else {

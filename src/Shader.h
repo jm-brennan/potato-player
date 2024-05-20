@@ -28,4 +28,6 @@ void use(SHADER s);
 uint program(SHADER s);
 void delete_shaders();
 
+void shaders_init();
+
 }
